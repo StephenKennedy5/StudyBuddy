@@ -8,6 +8,9 @@ Dont dockerize the app code but can dockerize the database
 
 npx create-next-app -e https://github.com/theodorusclarence/ts-nextjs-tailwind-starter/tree/pages-directory study-buddy
 
+Color Pallete
+Pure Black: #000000 | Ash: #bababa | Sky: #94a8b3 | Cream: #dcd3c9 | Soft Grey: #dedcde
+
 # Next.js + Tailwind CSS + TypeScript Starter and Boilerplate
 
 <div align="center">

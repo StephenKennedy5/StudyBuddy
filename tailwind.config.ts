@@ -24,6 +24,11 @@ export default {
           950: 'rgb(var(--tw-color-primary-950) / <alpha-value>)',
         },
         dark: '#222222',
+        pureblack: '#000000',
+        ash: '#bababa',
+        sky: '#94a8b3',
+        cream: '#dcd3c9',
+        softgray: '#dedcde',
       },
       keyframes: {
         flicker: {
@@ -49,6 +54,13 @@ export default {
       animation: {
         flicker: 'flicker 3s linear infinite',
         shimmer: 'shimmer 1.3s linear infinite',
+      },
+      borderRadius: {
+        standard: '20px',
+      },
+      fontSize: {
+        title: '36px', // Custom font size for title
+        copy: '20px', // Custom font size for copy
       },
     },
   },
