@@ -11,6 +11,35 @@ npx create-next-app -e https://github.com/theodorusclarence/ts-nextjs-tailwind-s
 Color Pallete
 Pure Black: #000000 | Ash: #bababa | Sky: #94a8b3 | Cream: #dcd3c9 | Soft Grey: #dedcde
 
+# Docker Database Commands
+
+Run the Docker Database (`-d` runs it in the background)
+
+`docker-compose up -d`
+
+`docker exec -it {Container ID/Name} bash`
+
+`psql -U {userName} -d {dbName}`
+
+Extended Mode
+`\x`
+
+Quit SQL Database
+`\q` or `quit`
+
+Exit out of docker Bash
+`exit`
+
+# Knex setup
+
+`npm install pg knex`
+
+Make Initial Migration
+`npx knex migrate:make initial_migration`
+
+Run Migration
+`npx knex migrate:latest`
+
 # Next.js + Tailwind CSS + TypeScript Starter and Boilerplate
 
 <div align="center">
