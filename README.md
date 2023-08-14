@@ -34,11 +34,25 @@ Exit out of docker Bash
 
 `npm install pg knex`
 
+https://knexjs.org/guide/migrations.html#migration-cli
+
 Make Initial Migration
 `npx knex migrate:make initial_migration`
 
 Run Migration
 `npx knex migrate:latest`
+
+Make seed file
+`$ knex seed:make seed_name`
+
+Run seed
+`npx knex seed:run`
+
+Run specific migration up
+`npx knex migrate:up {filename}`
+
+Run speific migration down
+`npx knex migrate:down {filename}`
 
 # Next.js + Tailwind CSS + TypeScript Starter and Boilerplate
 

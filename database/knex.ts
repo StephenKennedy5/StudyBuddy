@@ -20,6 +20,5 @@ type KnexConfig = {
 
 const environment = process.env.NODE_ENV || 'development';
 const knex = knexFactory(config[environment]);
-// const knex = knexFactory('development');
 
 export default knex;

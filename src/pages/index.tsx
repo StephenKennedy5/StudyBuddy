@@ -10,23 +10,21 @@ import UnderlineLink from '@/components/links/UnderlineLink';
 import UnstyledLink from '@/components/links/UnstyledLink';
 import Seo from '@/components/Seo';
 
-/**
- * SVGR Support
- * Caveat: No React Props Type.
- *
- * You can override the next-env if the type is important to you
- * @see https://stackoverflow.com/questions/68103844/how-to-override-next-js-svg-module-declaration
- */
-import Vercel from '~/svg/Vercel.svg';
+/*  
+In header make Login in button that will send user to auth/signin page
+When they complete the auth sign in page reroute to dashboard
+Uses data from Google Sign in to create user account
+Have reroute from sign in page do API call to create user
 
-// !STARTERCONF -> Select !STARTERCONF and CMD + SHIFT + F
-// Before you begin editing, follow all comments with `STARTERCONF`,
-// to customize the default configuration.
+Have a get started button in the middle of the CallToAction where user
+doesnt need to login in to start using the service
+Tell user that they need to log in to have history saved
+
+*/
 
 export default function LandingPage() {
   return (
     <Layout>
-      {/* <Seo templateTitle='Home' /> */}
       <Seo />
 
       <main>
