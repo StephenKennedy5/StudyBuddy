@@ -16,7 +16,6 @@ Study Session Table:
     - Creation Date (Timestamp)
     - Updated Date (Timestamp)
 
-
 PDF Table:
     - ID (UUID)
     - Title (Text)
