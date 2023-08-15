@@ -19,14 +19,13 @@ PDF Table:
     - ID (UUID)
     - Title (Text)
     - User ID (UUID) (FROM USER TABLE)
-    - Upload Date (Timestamp)
     - PDF INFO (Text?)
+    - Upload Date (Timestamp)
 
 Chat Logs Table:
     - ID (UUID)
     - Session ID (UUID) (FROM STUDY SESSION TABLE)
-    - Chat Message ID (UUID) (FROM CHAT MESSAGE TABLE)
-    - Field (Text)
+    - Field (Text) Not needed from all text will be from actual messages and not stored here
     - Creation Date (Timestamp)
     - Updated Date (Timestamp)
 
@@ -40,6 +39,8 @@ Pivot Table for StudySession and PDFs
     - ID (UUID)
     - PDF_ID (UUID) (FROM PDF TABLE)
     - Study_Session_ID (UUID) (FROM STUDY SESSION TABLE)
+
+Need to add chat_logs ID to Study Session Table as foreign key
 
 */
 
