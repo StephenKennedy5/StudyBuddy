@@ -12,7 +12,6 @@ Study Session Table:
     - Session Name (Text)
     - Subject (Text)
     - Chat ID (UUID) (FROM CHAT LOGS TABLE)
-    - PDF ID (UUID) (FROM PDF TABLE)
     - Creation Date (Timestamp)
     - Updated Date (Timestamp)
 

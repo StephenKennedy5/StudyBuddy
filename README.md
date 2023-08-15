@@ -30,6 +30,9 @@ Quit SQL Database
 Exit out of docker Bash
 `exit`
 
+See tables column names
+`\d {tableName}`
+
 # Knex setup
 
 `npm install pg knex`
