@@ -46,7 +46,7 @@ Run Migration
 `npx knex migrate:latest`
 
 Make seed file
-`$ knex seed:make seed_name`
+`$ npx knex seed:make seed_name`
 
 Run seed
 `npx knex seed:run`
