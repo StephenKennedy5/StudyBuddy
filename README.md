@@ -30,6 +30,9 @@ Quit SQL Database
 Exit out of docker Bash
 `exit`
 
+See tables column names
+`\d {tableName}`
+
 # Knex setup
 
 `npm install pg knex`
@@ -43,7 +46,7 @@ Run Migration
 `npx knex migrate:latest`
 
 Make seed file
-`$ knex seed:make seed_name`
+`$ npx knex seed:make seed_name`
 
 Run seed
 `npx knex seed:run`
