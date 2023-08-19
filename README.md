@@ -46,10 +46,11 @@ Run Migration
 `npx knex migrate:latest`
 
 Make seed file
-`$ npx knex seed:make seed_name`
+`npx knex seed:make seed_name`
 
 Run seed
 `npx knex seed:run`
+`npx knex seed:run test_user.js`
 
 Run specific migration up
 `npx knex migrate:up {filename}`
