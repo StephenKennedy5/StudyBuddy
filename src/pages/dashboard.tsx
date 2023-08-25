@@ -5,6 +5,10 @@ import { GetServerSideProps } from 'next';
 import StudySessionMap from 'src/components/StudySessionDashboard';
 import NewStudySession from 'src/components/NewStudySession';
 
+interface StudySessionArray {
+  studySessions: StudySessionProps[];
+}
+
 type StudySessionProps = {
   session_name: string;
   subject: string;
@@ -12,7 +16,7 @@ type StudySessionProps = {
   id: string;
 };
 
-function dashboard({ studySessions }: StudySessionProps) {
+function dashboard({ studySessions }: StudySessionArray) {
   return (
     <div>
       <div className='flex justify-between px-[30px] py-[30px]'>
@@ -23,13 +27,9 @@ function dashboard({ studySessions }: StudySessionProps) {
         <div className='mx-0 h-screen w-[200px] bg-gray-50 p-[20px]'>
           Left Side Add PDFS
         </div>
-        <div className='flex h-screen flex-wrap px-[30px] py-[20px]'>
-          <div id='DivToFix'>
-            <NewStudySession />
-          </div>
-          <div id='DivToFix'>
-            <StudySessionMap StudySessions={studySessions} />
-          </div>
+        <div className='flex flex-wrap items-start  px-[30px] py-[20px]'>
+          <NewStudySession />
+          <StudySessionMap StudySessions={studySessions} />
         </div>
       </div>
       <div className='px-[30px] py-[40px]'>Footer</div>

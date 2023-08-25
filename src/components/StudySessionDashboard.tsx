@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 interface StudySessionProps {
   chat_log_id: string;
   creation_date: string;
@@ -24,6 +26,14 @@ function StudySessionMap({ StudySessions }) {
               >
                 <div className='p-[10px]'>{subject}</div>
                 <div className='p-[10px]'>{session_name}</div>
+                <div className='p-[20px]'>
+                  <Link
+                    href={`/study-session/${id}`}
+                    className='bg-blue-50 p-[20px]'
+                  >
+                    Click Here
+                  </Link>
+                </div>
               </div>
             );
           }
