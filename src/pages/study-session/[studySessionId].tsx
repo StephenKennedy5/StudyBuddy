@@ -79,14 +79,14 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
         </div>
       </div>
       <div className='flex'>
-        <div className=' bg-blue-300 px-[20px] py-[10px]'>
+        <div className=' max-w-[40%] bg-blue-300 px-[20px] py-[10px]'>
           <div>
             <NewPdf />
             <PDFS pdfList={userPdfs} />
           </div>
         </div>
         <div className=''>
-          <Chat chatMessages={chatLogs} />
+          <Chat chatMessages={chatLogs} studySessionId={studySession.id} />
         </div>
       </div>
     </div>

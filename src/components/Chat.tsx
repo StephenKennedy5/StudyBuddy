@@ -12,8 +12,42 @@ import classNames from 'classnames';
 
 import { useState } from 'react';
 
-function Chat({ chatMessages }) {
+function Chat({ chatMessages, studySessionId }) {
   const [newQuestion, setNewQuestion] = useState('');
+
+  const sumbitNewChatMessage = async () => {
+    if (newQuestion.trim() === '') return;
+
+    console.log({ chatMessages });
+    const StudySessionId = studySessionId;
+
+    console.log({ StudySessionId });
+
+    const apiCall = `${process.env.NEXT_PUBLIC_API_HOST}/api/${process.env.NEXT_PUBLIC_USER_ID}/study-session/${StudySessionId}/newchatmessage`;
+    console.log(apiCall);
+    console.log(newQuestion);
+
+    const requestBody = { chat_message: newQuestion };
+    console.log(requestBody);
+
+    try {
+      const response = await fetch(apiCall, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+      if (response.ok) {
+        console.log('Chat messag sent successfully');
+        // Perform any other necessary actions
+      } else {
+        console.error('chat messaged failed to upload');
+      }
+    } catch (error) {
+      console.error('Error uploading chat message: ', error);
+    }
+  };
 
   return (
     <div>
@@ -54,7 +88,7 @@ function Chat({ chatMessages }) {
           <div
             className='ml-[10px] bg-blue-100 px-[20px] py-[10px]'
             onClick={() => {
-              console.log(newQuestion), setNewQuestion('');
+              sumbitNewChatMessage(), setNewQuestion('');
             }}
           >
             Submit
