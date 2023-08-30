@@ -27,9 +27,13 @@ function dashboard({ studySessions }: StudySessionArray) {
         <div className='mx-0 h-screen w-[200px] bg-gray-50 p-[20px]'>
           Left Side Add PDFS
         </div>
-        <div className='flex flex-wrap items-start  px-[30px] py-[20px]'>
-          <NewStudySession />
-          <StudySessionMap StudySessions={studySessions} />
+        <div className='px-[30px] py-[20px]'>
+          <div>
+            <NewStudySession />
+          </div>
+          <div>
+            <StudySessionMap StudySessions={studySessions} />
+          </div>
         </div>
       </div>
       <div className='px-[30px] py-[40px]'>Footer</div>

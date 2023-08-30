@@ -15,13 +15,13 @@ function StudySessionMap({ StudySessions }) {
   console.log(StudySessions);
   return (
     <div>
-      <div className=' mx-auto flex  px-[30px] py-[20px]'>
+      <div className=' mx-auto flex flex-wrap  px-[30px] py-[20px]'>
         {StudySessions.map(
           ({ subject, session_name, id }: StudySessionProps) => {
             return (
               <div
                 key={id}
-                className='flex h-[150px] w-[300px] cursor-pointer flex-col justify-center rounded-[20px] bg-white text-center align-middle'
+                className='mb-[20px] flex h-[150px] w-[300px] cursor-pointer flex-col justify-center rounded-[20px] bg-white text-center align-middle'
                 onClick={() => console.log({ StudySessionId: id })}
               >
                 <div className='p-[10px]'>{subject}</div>

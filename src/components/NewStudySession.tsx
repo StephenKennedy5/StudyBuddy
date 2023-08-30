@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
-function PopUp({ isCreateNewOpen, setIsCreateNewOpen }) {
+function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router }) {
   const [subject, setSubject] = useState('');
   const [sessionName, setSessionName] = useState('');
   const [newStudySessionValidation, setNewStudySessionValidation] =
@@ -25,6 +26,47 @@ function PopUp({ isCreateNewOpen, setIsCreateNewOpen }) {
       setNewStudySessionValidation(false);
     }
   }, [subject, sessionName]);
+
+  const CreateNewStudySesssion = async () => {
+    console.log('Calling Create New Study Session');
+    if (!newStudySessionValidation) return;
+    console.log('AFTER IF STATEMENT');
+
+    const session_name = sessionName;
+    console.log({ session_name });
+    console.log({ subject });
+
+    const requestBody = {
+      session_name,
+      subject,
+    };
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_HOST}/api/${process.env.NEXT_PUBLIC_USER_ID}/new-study-session`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
+      if (response.ok) {
+        console.log('Study Session Successfully Made');
+        const jsonResponse = await response.json(); // Parse the JSON response
+        const { studySessionId } = jsonResponse;
+        setIsCreateNewOpen(!isCreateNewOpen);
+        // Perform any other necessary actions
+
+        router.push(`/study-session/${studySessionId}`);
+      } else {
+        console.error('Failed to Create Study Session');
+      }
+    } catch (error) {
+      console.error('Error Making Study Session: ', error);
+    }
+  };
 
   return (
     <div className='flex justify-end'>
@@ -54,7 +96,7 @@ function PopUp({ isCreateNewOpen, setIsCreateNewOpen }) {
           </div>
           <div
             className={CreateButtonCls}
-            onClick={() => console.log({ sessionName, subject })}
+            onClick={() => CreateNewStudySesssion()}
           >
             Create
           </div>
@@ -66,6 +108,8 @@ function PopUp({ isCreateNewOpen, setIsCreateNewOpen }) {
 
 function NewStudySession() {
   const [isCreateNewOpen, setIsCreateNewOpen] = useState(false);
+  const router = useRouter();
+
   return (
     <div className=' mx-auto flex  px-[30px] py-[20px]'>
       <div
@@ -80,6 +124,7 @@ function NewStudySession() {
         <PopUp
           isCreateNewOpen={isCreateNewOpen}
           setIsCreateNewOpen={setIsCreateNewOpen}
+          router={router}
         />
       ) : null}
     </div>

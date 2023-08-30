@@ -13,9 +13,10 @@ export default async function PostStudySessions(
   try {
     const userId = req.query.userid;
     const { session_name, subject } = req.body;
+    const newStudySessionId = uuid.v4();
     const studySessions = await knex('study_sessions').insert([
       {
-        id: uuid.v4(),
+        id: newStudySessionId,
         user_id: userId,
         session_name: session_name,
         subject: subject,
@@ -26,8 +27,8 @@ export default async function PostStudySessions(
       .select()
       .where('user_id', userId);
 
-    console.log(allStudySessions);
-    res.status(200).json(allStudySessions);
+    console.log(newStudySessionId);
+    res.status(200).json({ studySessionId: newStudySessionId });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'An error occurred' });
