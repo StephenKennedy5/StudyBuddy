@@ -11,6 +11,11 @@ npx create-next-app -e https://github.com/theodorusclarence/ts-nextjs-tailwind-s
 Color Pallete
 Pure Black: #000000 | Ash: #bababa | Sky: #94a8b3 | Cream: #dcd3c9 | Soft Grey: #dedcde
 
+Primary Color (Background): RGB(238, 238, 238)
+Secondary Color (Accents): RGB(115, 138, 148)
+Text Color: RGB(40, 40, 40)
+Button Color: RGB(0, 105, 148)
+
 # Docker Database Commands
 
 Run the Docker Database (`-d` runs it in the background)

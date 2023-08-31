@@ -1,4 +1,5 @@
 /* Component that will return a list of PDFs Objects */
+import NewPdf from 'src/components/newPdf';
 
 interface PDFProps {
   pdfList: PDFListProps[];
@@ -16,6 +17,9 @@ function PDFS({ pdfList }: PDFProps) {
   return (
     <div>
       <div className=' cursor-pointer'>
+        <div>
+          <NewPdf />
+        </div>
         {pdfList.map(({ title, id }) => {
           return (
             <div

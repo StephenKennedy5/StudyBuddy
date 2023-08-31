@@ -2,6 +2,7 @@
 // Make a new chat log table also and add the Study session ID to the chat log table
 
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import knex from '../../../../database/knex';
 
 const uuid = require('uuid');
@@ -27,7 +28,6 @@ export default async function PostStudySessions(
       .select()
       .where('user_id', userId);
 
-    console.log(newStudySessionId);
     res.status(200).json({ studySessionId: newStudySessionId });
   } catch (error) {
     console.error('Error:', error);

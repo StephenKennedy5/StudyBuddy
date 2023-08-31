@@ -19,10 +19,7 @@ function newPdf() {
   };
 
   const submitFile = async () => {
-    console.log('Submitting File');
-
     if (!titleName) return;
-    console.log('File is Chosen');
     const pdfTitle = titleName.split('.')[0];
     const pdfText = 'This is a mock statement and filler.';
     const requestBody = {
@@ -53,20 +50,25 @@ function newPdf() {
   };
 
   return (
-    <div className='mb-[20px] bg-white p-[20px]'>
+    <div className='mb-[20px] rounded bg-white p-[20px]'>
       <div>
-        <input
-          type='file'
-          accept='.pdf'
-          onChange={handleFileChange} // Call Function that uploads PDF
-          className='max-w-[200px] rounded bg-gray-100 px-[16px] py-[8px]'
-        />
-        <div
-          className='mt-[10px] cursor-pointer rounded bg-green-50 p-[10px]'
-          onClick={() => submitFile()}
-        >
-          Submit
-        </div>
+        <label className='relative inline-flex cursor-pointer items-center rounded-md bg-black px-4 py-2 text-white hover:bg-gray-800'>
+          <span>{titleName === null ? 'Choose File' : titleName}</span>
+          <input
+            type='file'
+            accept='.pdf'
+            onChange={handleFileChange} // Call Function that uploads PDF
+            className='hidden'
+          />
+        </label>
+        {titleName === null ? null : (
+          <div
+            className='mt-[10px] cursor-pointer rounded bg-green-50 p-[10px]'
+            onClick={() => submitFile()}
+          >
+            Submit
+          </div>
+        )}
       </div>
     </div>
   );

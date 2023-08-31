@@ -3,6 +3,7 @@
 // Be used to create a map of study sessions on dashboard
 
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import knex from '../../../../database/knex';
 
 export default async function GetStudySessions(
@@ -11,12 +12,10 @@ export default async function GetStudySessions(
 ) {
   try {
     const userId = req.query.userid;
-    console.log(userId);
     const studySessions = await knex('study_sessions')
       .select()
       .where('user_id', userId);
 
-    console.log(studySessions);
     res.status(200).json(studySessions);
   } catch (error) {
     console.error('Error:', error);
