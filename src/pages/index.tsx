@@ -9,6 +9,7 @@ import ButtonLink from '@/components/links/ButtonLink';
 import UnderlineLink from '@/components/links/UnderlineLink';
 import UnstyledLink from '@/components/links/UnstyledLink';
 import Seo from '@/components/Seo';
+import Link from 'next/link';
 
 /*  
 In header make Login in button that will send user to auth/signin page
@@ -31,7 +32,10 @@ export default function LandingPage() {
         <Header />
         <div className='min-h-screen'>
           <CallToAction />
-          <div>Example of a study page</div>
+          <div className='p-[20px]'>Example of a study page</div>
+          <Link href='/dashboard' className='bg-blue-100 p-[20px]'>
+            Click Here for Dashboard
+          </Link>
         </div>
         <Footer />
       </main>
