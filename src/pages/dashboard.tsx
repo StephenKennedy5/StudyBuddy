@@ -1,13 +1,9 @@
-import * as React from 'react';
-
 import { GetServerSideProps } from 'next';
-
-import StudySessionMap from 'src/components/StudySessionDashboard';
+import * as React from 'react';
+import NewPdf from 'src/components/newPdf';
 import NewStudySession from 'src/components/NewStudySession';
-
-interface StudySessionArray {
-  studySessions: StudySessionProps[];
-}
+import PDFS from 'src/components/Pdfs';
+import StudySessionMap from 'src/components/StudySessionDashboard';
 
 type StudySessionProps = {
   session_name: string;
@@ -16,7 +12,20 @@ type StudySessionProps = {
   id: string;
 };
 
-function dashboard({ studySessions }: StudySessionArray) {
+interface UserPdfsProps {
+  id: string;
+  pdf_info: string;
+  title: string;
+  upload_date: string;
+  user_id: string;
+}
+
+interface StudySessionArray {
+  studySessions: StudySessionProps[];
+  userPdfs: UserPdfsProps[];
+}
+
+function dashboard({ studySessions, userPdfs }: StudySessionArray) {
   return (
     <div>
       <div className='flex justify-between px-[30px] py-[30px]'>
@@ -24,8 +33,11 @@ function dashboard({ studySessions }: StudySessionArray) {
         <div>LogOut</div>
       </div>
       <div className='mx-auto flex bg-slate-100'>
-        <div className='mx-0 h-screen w-[200px] bg-gray-50 p-[20px]'>
-          Left Side Add PDFS
+        <div className=' max-w-[40%] bg-blue-300 px-[20px] py-[10px]'>
+          <div>
+            <NewPdf />
+            <PDFS pdfList={userPdfs} />
+          </div>
         </div>
         <div className='px-[30px] py-[20px]'>
           <div>
@@ -47,12 +59,19 @@ export const getServerSideProps: GetServerSideProps<{
   const userId = '1972c0eb-a3ed-4377-b09f-79684995899f';
   const host = 'http://localhost:3000';
   const apiEndpoint = `${host}/api/${userId}/study-sessions`;
+  const apiEndPointPdfs = `${host}/api/${userId}/getPdfs`;
 
   const res = await fetch(apiEndpoint);
   const studySessions = await res.json();
 
+  const resPdfs = await fetch(apiEndPointPdfs);
+  if (!resPdfs.ok) {
+    throw new Error(`API request failed with status: ${resPdfs.status}`);
+  }
+  const userPdfs = await resPdfs.json();
+
   console.log(studySessions);
-  return { props: { studySessions } };
+  return { props: { studySessions, userPdfs } };
 };
 
 export default dashboard;

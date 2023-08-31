@@ -20,7 +20,11 @@ function PDFS({ pdfList }: PDFProps) {
           return (
             <div
               key={id}
-              className='mb-[20px] bg-white p-[20px]'
+              className={`
+              group mb-[20px] transform rounded-[10px] bg-white p-[20px]
+              transition duration-300 ease-in-out hover:-translate-y-1
+              hover:bg-gray-200 hover:shadow-lg
+            `}
               onClick={() => console.log({ title })}
             >
               <div>{title}</div>

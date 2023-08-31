@@ -18,8 +18,10 @@ Run the Docker Database (`-d` runs it in the background)
 `docker-compose up -d`
 
 `docker exec -it {Container ID/Name} bash`
+`docker exec -it 7d35242fa1fa bash`
 
 `psql -U {userName} -d {dbName}`
+`psql -U stephen -d studydb`
 
 Extended Mode
 `\x`
