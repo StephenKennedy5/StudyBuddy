@@ -37,31 +37,24 @@ function dashboard({ studySessions, userPdfs }: StudySessionArray) {
         <div>LogOut</div>
       </div>
       <div className='mx-auto flex bg-slate-100'>
-        {showPdfs ? (
-          <div className=' max-w-[40%] bg-blue-300 px-[20px] py-[10px]'>
-            <div>
-              <PDFS pdfList={userPdfs} />
-            </div>
+        <div
+          className={`max-w-[40%] bg-blue-300 px-[20px] py-[10px] transition-transform duration-300  ${
+            showPdfs ? 'translate-x-0 ' : '-translate-x-full'
+          }`}
+        >
+          <div>
+            <PDFS pdfList={userPdfs} />
           </div>
-        ) : null}
+        </div>
 
         <div className='px-[30px] py-[20px]'>
-          <div className={`absolute z-10 ${!showPdfs ? 'left-[10px]' : ''}`}>
-            {showPdfs ? (
-              <div
-                className='cursor-pointer bg-green-100 p-[20px]'
-                onClick={() => setShowPdfs(!showPdfs)}
-              >
-                Hide Pdfs
-              </div>
-            ) : (
-              <div
-                className='cursor-pointer bg-green-100 p-[20px] '
-                onClick={() => setShowPdfs(!showPdfs)}
-              >
-                Show Pdfs
-              </div>
-            )}
+          <div
+            className={`absolute z-10 cursor-pointer bg-green-100 p-[20px] transition-transform duration-300 ${
+              !showPdfs ? '-translate-x-full' : 'translate-x-[-20px]'
+            }`}
+            onClick={() => setShowPdfs(!showPdfs)}
+          >
+            {showPdfs ? 'Hide Pdfs' : 'Show Pdfs'}
           </div>
 
           <div>

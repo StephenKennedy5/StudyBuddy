@@ -50,10 +50,14 @@ function newPdf() {
   };
 
   return (
-    <div className='mb-[20px] rounded bg-white p-[20px]'>
+    <div className='mb-[20px] mt-[20px]'>
       <div>
-        <label className='relative inline-flex cursor-pointer items-center rounded-md bg-black px-4 py-2 text-white hover:bg-gray-800'>
-          <span>{titleName === null ? 'Choose File' : titleName}</span>
+        <label
+          className={`group relative  inline-flex transform cursor-pointer  items-center rounded-[10px]  bg-white  p-[20px]
+              transition duration-300 ease-in-out hover:-translate-y-1
+              hover:bg-gray-200 hover:shadow-lg`}
+        >
+          <span>{titleName === null ? 'Upload File' : titleName}</span>
           <input
             type='file'
             accept='.pdf'
