@@ -1,11 +1,11 @@
-import Link from 'next/link';
 import { GetServerSideProps } from 'next';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { getServerSession } from 'next-auth/next';
 import { ParsedUrlQuery } from 'querystring';
-
 import Chat from 'src/components/Chat';
+// import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
-import NewPdf from 'src/components/newPdf';
 
 /*
 
@@ -61,14 +61,17 @@ interface StudySessionTypes {
 
 function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   const studySessionName = studySession.session_name;
+  const router = useRouter();
   return (
     <div>
       <div className='grid grid-cols-3 gap-[20px] px-[20px] py-[10px] sm:grid-cols-5'>
-        <Link href='/dashboard'>
-          <div className='col-span-1 cursor-pointer bg-blue-200 p-[20px] text-center'>
-            Dashboard
-          </div>
-        </Link>
+        <div
+          onClick={() => router.push('/dashboard')}
+          className='col-span-1 cursor-pointer bg-blue-200 p-[20px] text-center'
+        >
+          Dashboard
+        </div>
+
         <div className='hidden sm:col-span-1 sm:block'></div>
         <div className='col-span-1 flex items-center justify-center p-[10px] text-center'>
           {studySessionName}
@@ -81,7 +84,6 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
       <div className='flex'>
         <div className=' max-w-[40%] bg-blue-300 px-[20px] py-[10px]'>
           <div>
-            <NewPdf />
             <PDFS pdfList={userPdfs} />
           </div>
         </div>

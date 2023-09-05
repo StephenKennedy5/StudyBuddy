@@ -1,9 +1,11 @@
 import { GetServerSideProps } from 'next';
 import * as React from 'react';
+import { useState } from 'react';
 import NewPdf from 'src/components/newPdf';
-import NewStudySession from 'src/components/NewStudySession';
 import PDFS from 'src/components/Pdfs';
 import StudySessionMap from 'src/components/StudySessionDashboard';
+
+/* Hide and show user PDF tab with button click */
 
 type StudySessionProps = {
   session_name: string;
@@ -26,25 +28,40 @@ interface StudySessionArray {
 }
 
 function dashboard({ studySessions, userPdfs }: StudySessionArray) {
+  const [showPdfs, setShowPdfs] = useState(true);
   return (
     <div>
       <div className='flex justify-between px-[30px] py-[30px]'>
         <div>Logo</div>
+        <div>Welcome User</div>
         <div>LogOut</div>
       </div>
       <div className='mx-auto flex bg-slate-100'>
-        <div className=' max-w-[40%] bg-blue-300 px-[20px] py-[10px]'>
+        <div
+          className={`max-w-[40%] bg-blue-300 px-[20px] py-[10px] transition-transform duration-300  ${
+            showPdfs ? 'translate-x-0 ' : '-translate-x-full'
+          }`}
+        >
           <div>
-            <NewPdf />
             <PDFS pdfList={userPdfs} />
           </div>
         </div>
+
         <div className='px-[30px] py-[20px]'>
-          <div>
-            <NewStudySession />
+          <div
+            className={`absolute z-10 cursor-pointer bg-green-100 p-[20px] transition-transform duration-300 ${
+              !showPdfs ? '-translate-x-full' : 'translate-x-[-20px]'
+            }`}
+            onClick={() => setShowPdfs(!showPdfs)}
+          >
+            {showPdfs ? 'Hide Pdfs' : 'Show Pdfs'}
           </div>
+
           <div>
-            <StudySessionMap StudySessions={studySessions} />
+            <StudySessionMap
+              StudySessions={studySessions}
+              showPdfs={showPdfs}
+            />
           </div>
         </div>
       </div>
@@ -70,7 +87,6 @@ export const getServerSideProps: GetServerSideProps<{
   }
   const userPdfs = await resPdfs.json();
 
-  console.log(studySessions);
   return { props: { studySessions, userPdfs } };
 };
 

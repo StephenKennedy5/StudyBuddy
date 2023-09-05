@@ -12,6 +12,7 @@
 */
 
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import knex from '../../../../database/knex';
 
 const uuid = require('uuid');
@@ -34,7 +35,6 @@ export default async function NewPdf(
 
     const allPdfs = await knex('pdfs').select().where('user_id', userId);
 
-    console.log(allPdfs);
     res.status(200).json(allPdfs); // Change to a 204
   } catch (error) {
     console.error('Error:', error);

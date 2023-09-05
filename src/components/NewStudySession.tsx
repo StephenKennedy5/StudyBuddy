@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import classNames from 'classnames';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 
 function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router }) {
   const [subject, setSubject] = useState('');
@@ -28,13 +28,9 @@ function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router }) {
   }, [subject, sessionName]);
 
   const CreateNewStudySesssion = async () => {
-    console.log('Calling Create New Study Session');
     if (!newStudySessionValidation) return;
-    console.log('AFTER IF STATEMENT');
 
     const session_name = sessionName;
-    console.log({ session_name });
-    console.log({ subject });
 
     const requestBody = {
       session_name,
@@ -53,7 +49,6 @@ function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router }) {
         }
       );
       if (response.ok) {
-        console.log('Study Session Successfully Made');
         const jsonResponse = await response.json(); // Parse the JSON response
         const { studySessionId } = jsonResponse;
         setIsCreateNewOpen(!isCreateNewOpen);
@@ -71,7 +66,7 @@ function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router }) {
   return (
     <div className='flex justify-end'>
       <div
-        className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform bg-gray-200 p-8'
+        className='absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 transform bg-gray-200 p-8'
         onClick={() => setIsCreateNewOpen(!isCreateNewOpen)}
       >
         <div
@@ -111,12 +106,16 @@ function NewStudySession() {
   const router = useRouter();
 
   return (
-    <div className=' mx-auto flex  px-[30px] py-[20px]'>
+    <div className=' mx-auto flex'>
       <div
         onClick={() => {
           setIsCreateNewOpen(!isCreateNewOpen);
         }}
-        className='flex h-[150px] w-[300px] cursor-pointer flex-col justify-center rounded-[20px] bg-white text-center align-middle'
+        className={`
+                  group mx-[20px] mb-[20px] flex h-[150px] w-[250px] transform cursor-pointer
+                  flex-col justify-center rounded-[20px] bg-white p-[20px] text-center align-middle transition
+                  duration-300 ease-in-out hover:-translate-y-1 hover:bg-gray-200 hover:shadow-lg
+                `}
       >
         Create a New Study Session
       </div>

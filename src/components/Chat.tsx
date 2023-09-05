@@ -9,7 +9,6 @@
 */
 
 import classNames from 'classnames';
-
 import { useState } from 'react';
 
 function Chat({ chatMessages, studySessionId }) {
@@ -18,17 +17,11 @@ function Chat({ chatMessages, studySessionId }) {
   const sumbitNewChatMessage = async () => {
     if (newQuestion.trim() === '') return;
 
-    console.log({ chatMessages });
     const StudySessionId = studySessionId;
 
-    console.log({ StudySessionId });
-
     const apiCall = `${process.env.NEXT_PUBLIC_API_HOST}/api/${process.env.NEXT_PUBLIC_USER_ID}/study-session/${StudySessionId}/newchatmessage`;
-    console.log(apiCall);
-    console.log(newQuestion);
 
     const requestBody = { chat_message: newQuestion };
-    console.log(requestBody);
 
     try {
       const response = await fetch(apiCall, {

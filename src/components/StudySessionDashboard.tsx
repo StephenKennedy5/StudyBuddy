@@ -1,4 +1,7 @@
+import classNames from 'classnames';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import NewStudySession from 'src/components/NewStudySession';
 
 interface StudySessionProps {
   chat_log_id: string;
@@ -10,30 +13,45 @@ interface StudySessionProps {
   user_id: string;
 }
 
-function StudySessionMap({ StudySessions }) {
-  console.log('Study Sessions Component');
-  console.log(StudySessions);
+interface StudySessionMapsProps {
+  StudySessions: StudySessionProps[];
+  showPdfs: boolean;
+}
+
+function StudySessionMap({ StudySessions, showPdfs }: StudySessionMapsProps) {
+  const router = useRouter();
+
+  const StudySessionMapBase =
+    'flex flex-wrap justify-evenly px-[30px] py-[20px] mx-[50px]';
+  const StudySessionMapPdfTrue = '';
+  const StudySessionMapPdfFalse = '';
+
+  const StudySessionMapCls = classNames({
+    [StudySessionMapBase]: true,
+    [StudySessionMapPdfTrue]: showPdfs,
+    [StudySessionMapPdfFalse]: !showPdfs,
+  });
+
   return (
     <div>
-      <div className=' mx-auto flex flex-wrap  px-[30px] py-[20px]'>
+      <div className={StudySessionMapCls}>
+        <div className=''>
+          <NewStudySession />
+        </div>
         {StudySessions.map(
           ({ subject, session_name, id }: StudySessionProps) => {
             return (
               <div
                 key={id}
-                className='mb-[20px] flex h-[150px] w-[300px] cursor-pointer flex-col justify-center rounded-[20px] bg-white text-center align-middle'
-                onClick={() => console.log({ StudySessionId: id })}
+                className={`
+                  group mx-[20px] mb-[20px] flex h-[150px] w-[250px] transform cursor-pointer
+                  flex-col justify-center rounded-[20px] bg-white p-[20px] text-center align-middle transition
+                  duration-300 ease-in-out hover:-translate-y-1 hover:bg-gray-200 hover:shadow-lg
+                `}
+                onClick={() => router.push(`/study-session/${id}`)}
               >
                 <div className='p-[10px]'>{subject}</div>
                 <div className='p-[10px]'>{session_name}</div>
-                <div className='p-[20px]'>
-                  <Link
-                    href={`/study-session/${id}`}
-                    className='bg-blue-50 p-[20px]'
-                  >
-                    Click Here
-                  </Link>
-                </div>
               </div>
             );
           }
