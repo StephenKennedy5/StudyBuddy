@@ -1,26 +1,46 @@
+import type { IncomingMessage, ServerResponse } from 'http';
+import type {
+  GetServerSidePropsContext,
+  NextApiRequest,
+  NextApiResponse,
+} from 'next';
+import type { AuthOptions, SessionStrategy } from 'next-auth';
+import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
-const clientId = process.env.GOOGLE_CLIENT_ID;
-const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const clientId = process.env.GOOGLE_ID;
+const clientSecret = process.env.GOOGLE_SECRET;
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-export const authOptionsCb = () => {
+// Do basic sign in that doesnt store in adapter
+
+if (!clientId) {
+  throw new Error('GOOGLE_ID environment variable is not defined');
+}
+
+if (!clientSecret) {
+  throw new Error('GOOGLE_SECRET environment variable is not defined');
+}
+
+if (!baseUrl) {
+  throw new Error('NEXT_PUBLIC_BASE_URL env variable is needed');
+}
+
+export const authOptionsCb = (
+  req: IncomingMessage | NextApiRequest | GetServerSidePropsContext['req'],
+  res: ServerResponse | NextApiResponse
+): AuthOptions => {
+  console.log(clientId);
+  console.log(clientSecret);
   return {
     providers: [
       GoogleProvider({
-        clientId,
-        clientSecret,
+        clientId: clientId,
+        clientSecret: clientSecret,
       }),
     ],
-    pages: {
-      signIn: '/auth/signin',
-      signOut: '/auth/signout',
-      error: '/auth/error', // Error code passed in query string as ?error=
-      verifyRequest: '/auth/verify-request', // (used for check email message)
-      newUser: '/auth/new-user', // New users will be directed here on first sign in (leave the property out if not of interest)
-    },
     callbacks: {
-      async signIn({ user, account, profile, email, credentials }) {
-        console.log('SIGN IN DEBUG');
+      async signIn({ user, account, profile }) {
         console.log('user');
         console.log(user);
         console.log('account');
@@ -29,30 +49,22 @@ export const authOptionsCb = () => {
         console.log(profile);
         return true;
       },
-      async redirect({ url, baseUrl }) {
+      async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
         // Allows relative callback URLs
         if (url.startsWith('/')) return `${baseUrl}${url}`;
         // Allows callback URLs on the same origin
         else if (new URL(url).origin === baseUrl) return url;
         return baseUrl;
       },
-      async session({ session, user, token }) {
-        return session;
-      },
+    },
+    pages: {
+      signIn: 'auth/signin',
     },
   };
 };
 
-/*
+// export default (req, res) => NextAuth(req, res, options);
 
-  profile(profile) {
-    return {
-      id: this.id,
-      name: this.name,
-      // Return all the profile information you need.
-      // The only truly required field is `id`
-      // to be able identify the account when added to a database
-    };
-  },
-});
-*/
+export default async function auth(req: NextApiRequest, res: NextApiResponse) {
+  return await NextAuth(req, res, authOptionsCb(req, res));
+}
