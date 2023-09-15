@@ -11,50 +11,90 @@ import type {
   VerificationToken,
 } from 'next-auth/adapters';
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+if (!baseUrl) {
+  throw new Error('NEXT_PUBLIC_BASE_URL env variable is needed');
+}
+
 /** @return { import("next-auth/adapters").Adapter } */
-export default function MyAdapter(client, options = {}) {
+export function MyAdapter(
+  req: IncomingMessage | NextApiRequest | GetServerSidePropsContext['req'],
+  res: ServerResponse | NextApiResponse
+): Adapter {
   return {
     async createUser(user) {
-      return;
+      console.log('CREATE USER');
+      console.log({ user });
+      console.log('CALL LOGIN');
+      try {
+        const loginUser = await fetch(`${baseUrl}/api/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: user.name, email: user.email }),
+        });
+        if (!loginUser.ok) {
+          throw new Error('API login endpoint down');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+
+      return { id: user.email, ...user };
     },
     async getUser(id) {
-      return;
+      console.log('GetUser');
+      console.log({ id });
+      return null;
     },
     async getUserByEmail(email) {
-      return;
+      console.log('getUserByEmail');
+      console.log({ email });
+      return null;
     },
     async getUserByAccount({ providerAccountId, provider }) {
-      return;
+      console.log('getUserByAccount');
+      return null;
     },
     async updateUser(user) {
-      return;
+      return null;
     },
     async deleteUser(userId) {
-      return;
+      return null;
     },
     async linkAccount(account) {
-      return;
+      return null;
     },
     async unlinkAccount({ providerAccountId, provider }) {
-      return;
+      return null;
     },
-    async createSession({ sessionToken, userId, expires }) {
-      return;
+    async createSession(session) {
+      console.log('createSession');
+      console.log({ session });
+      return session;
     },
     async getSessionAndUser(sessionToken) {
-      return;
+      console.log('getSessionAndUser');
+      console.log({ sessionToken });
+      return null;
     },
     async updateSession({ sessionToken }) {
-      return;
+      return null;
     },
     async deleteSession(sessionToken) {
-      return;
+      return null;
     },
     async createVerificationToken({ identifier, expires, token }) {
-      return;
+      console.log('createVerificationToken');
+      console.log({ token });
+      return null;
     },
     async useVerificationToken({ identifier, token }) {
-      return;
+      console.log('useVerificationToken');
+      console.log({ token });
+      return null;
     },
   };
 }

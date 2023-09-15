@@ -1,5 +1,7 @@
 import { getServerSession } from 'next-auth';
-import { getProviders, signIn } from 'next-auth/react';
+import { getCsrfToken, getProviders, signIn } from 'next-auth/react';
+
+import { authOptionsCb } from '../api/auth/[...nextauth]';
 
 export default function SignIn() {
   return (
@@ -20,12 +22,21 @@ export default function SignIn() {
 }
 
 export async function getServerSideProps(context) {
-  const session = await getServerSession(context.req, context.res);
+  const session = await getServerSession(
+    context.req,
+    context.res,
+    authOptionsCb(context.req, context.res)
+  );
+  const csrfToken = await getCsrfToken(context);
+  const error = context?.query?.error ?? null;
 
   if (session) {
     console.log({ session });
+    console.log('HELLO SERVER');
+    return { redirect: { destination: '/dashboard' } };
   }
 
   const providers = await getProviders();
-  return { props: { providers: providers ? Object.values(providers) : [] } };
+  console.log({ providers });
+  return { props: { providers: providers ?? [] } };
 }

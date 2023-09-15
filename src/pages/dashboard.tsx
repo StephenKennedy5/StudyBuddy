@@ -1,9 +1,14 @@
 import { GetServerSideProps } from 'next';
+import { GetServerSidePropsContext } from 'next';
+import { getServerSession } from 'next-auth';
+import { signOut, useSession } from 'next-auth/react';
 import * as React from 'react';
 import { useState } from 'react';
 import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
 import StudySessionMap from 'src/components/StudySessionDashboard';
+
+import { authOptionsCb } from './api/auth/[...nextauth]';
 
 /* Hide and show user PDF tab with button click */
 
@@ -29,12 +34,22 @@ interface StudySessionArray {
 
 function dashboard({ studySessions, userPdfs }: StudySessionArray) {
   const [showPdfs, setShowPdfs] = useState(true);
+  const { data: session, status } = useSession();
+
+  console.log({ session });
+  console.log({ status });
+
   return (
     <div>
       <div className='flex justify-between px-[30px] py-[30px]'>
         <div>Logo</div>
         <div>Welcome User</div>
-        <div>LogOut</div>
+        <div
+          onClick={() => signOut({ callbackUrl: '/' })}
+          className='cursor-pointer bg-blue-50 p-[20px]'
+        >
+          LogOut
+        </div>
       </div>
       <div className='mx-auto flex bg-slate-100'>
         <div
@@ -70,9 +85,14 @@ function dashboard({ studySessions, userPdfs }: StudySessionArray) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps<{
-  props: StudySessionProps;
-}> = async () => {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(
+    context.req,
+    context.res,
+    authOptionsCb(context.req, context.res)
+  );
+  console.log({ session });
+
   const userId = '1972c0eb-a3ed-4377-b09f-79684995899f';
   const host = 'http://localhost:3000';
   const apiEndpoint = `${host}/api/${userId}/study-sessions`;
@@ -88,6 +108,6 @@ export const getServerSideProps: GetServerSideProps<{
   const userPdfs = await resPdfs.json();
 
   return { props: { studySessions, userPdfs } };
-};
+}
 
 export default dashboard;
