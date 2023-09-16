@@ -16,9 +16,14 @@ interface StudySessionProps {
 interface StudySessionMapsProps {
   StudySessions: StudySessionProps[];
   showPdfs: boolean;
+  id: string;
 }
 
-function StudySessionMap({ StudySessions, showPdfs }: StudySessionMapsProps) {
+function StudySessionMap({
+  StudySessions,
+  showPdfs,
+  id,
+}: StudySessionMapsProps) {
   const router = useRouter();
 
   const StudySessionMapBase =
@@ -36,7 +41,7 @@ function StudySessionMap({ StudySessions, showPdfs }: StudySessionMapsProps) {
     <div>
       <div className={StudySessionMapCls}>
         <div className=''>
-          <NewStudySession />
+          <NewStudySession id={id} />
         </div>
         {StudySessions.map(
           ({ subject, session_name, id }: StudySessionProps) => {

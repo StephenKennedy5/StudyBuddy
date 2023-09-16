@@ -9,28 +9,32 @@
 */
 
 import classNames from 'classnames';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+
+import { fetchCreds, routes } from '@/lib/routes';
 
 function Chat({ chatMessages, studySessionId }) {
   const [newQuestion, setNewQuestion] = useState('');
+  const { data: session, status } = useSession();
+  const userId = session?.user?.sub;
 
   const sumbitNewChatMessage = async () => {
     if (newQuestion.trim() === '') return;
 
-    const StudySessionId = studySessionId;
-
-    const apiCall = `${process.env.NEXT_PUBLIC_API_HOST}/api/${process.env.NEXT_PUBLIC_USER_ID}/study-session/${StudySessionId}/newchatmessage`;
-
     const requestBody = { chat_message: newQuestion };
 
     try {
-      const response = await fetch(apiCall, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await fetch(
+        routes.newChatMessage(userId, studySessionId),
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
       if (response.ok) {
         console.log('Chat messag sent successfully');
         // Perform any other necessary actions
@@ -45,9 +49,7 @@ function Chat({ chatMessages, studySessionId }) {
   return (
     <div>
       <div>
-        {chatMessages.map(({ chat_message, user_id, id }) => {
-          const userId = '1972c0eb-a3ed-4377-b09f-79684995899f';
-
+        {chatMessages.map(({ chat_message, id }) => {
           // UserId !=
           const UserIdNotEqual = 'bg-blue-50';
           // UserId ==
@@ -57,8 +59,8 @@ function Chat({ chatMessages, studySessionId }) {
 
           const chatMessageCls = classNames({
             [chatMessageBase]: true,
-            [UserIdEqual]: userId == user_id,
-            [UserIdNotEqual]: userId != user_id,
+            [UserIdEqual]: userId == userId,
+            [UserIdNotEqual]: userId != userId,
           });
           return (
             <div key={id} className={chatMessageCls}>

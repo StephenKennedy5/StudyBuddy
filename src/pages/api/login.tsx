@@ -17,11 +17,7 @@ import knex from '../../../database/knex';
 
 const uuid = require('uuid');
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-if (!baseUrl) {
-  throw new Error('NEXT_PUBLIC_BASE_URL env variable is needed');
-}
+import { fetchCreds, routes } from '@/lib/routes';
 
 export default async function Login(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -30,7 +26,7 @@ export default async function Login(req: NextApiRequest, res: NextApiResponse) {
     const getUser = await knex('users').select().where('email', email);
     if (getUser.length === 0) {
       console.log('CREATE USER');
-      const createUserResponse = await fetch(`${baseUrl}/api/createUser`, {
+      const createUserResponse = await fetch(routes.createUser(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

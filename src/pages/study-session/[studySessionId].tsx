@@ -1,11 +1,18 @@
+import { useQuery } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
+import { GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { getServerSession } from 'next-auth/next';
+import { signOut, useSession } from 'next-auth/react';
 import { ParsedUrlQuery } from 'querystring';
 import Chat from 'src/components/Chat';
 // import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
+
+import { fetchCreds, routes } from '@/lib/routes';
+
+import { authOptionsCb } from './../api/auth/[...nextauth]';
 
 /*
 
@@ -62,6 +69,9 @@ interface StudySessionTypes {
 function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   const studySessionName = studySession.session_name;
   const router = useRouter();
+  // const [showPdfs, setShowPdfs] = useState(true);
+  // const { data: session, status } = useSession();
+
   return (
     <div>
       <div className='grid grid-cols-3 gap-[20px] px-[20px] py-[10px] sm:grid-cols-5'>
@@ -95,31 +105,33 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps<{
-  chatLogs: ChatLogsProps[];
-  studySession: StudySessionProp;
-}> = async (context) => {
-  const userId = '1972c0eb-a3ed-4377-b09f-79684995899f';
-  const host = 'http://localhost:3000';
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(
+    context.req,
+    context.res,
+    authOptionsCb(context.req, context.res)
+  );
+  const userId = session?.user?.sub;
   const { studySessionId } = context.params as ParsedUrlQuery;
-  const apiEndpointChatLogs = `${host}/api/${userId}/study-session/${studySessionId}/chatlogs`;
-  const apiEndpointStudySession = `${host}/api/${userId}/study-session/${studySessionId}/getStudySession`;
-  const apiEndPointPdfs = `${host}/api/${userId}/getPdfs`;
 
   try {
-    const resChat = await fetch(apiEndpointChatLogs);
+    const resChat = await fetch(
+      routes.getChatLogs(userId, studySessionId as string)
+    );
     if (!resChat.ok) {
       throw new Error(`API request failed with status: ${resChat.status}`);
     }
     const chatLogs = await resChat.json();
 
-    const resStudy = await fetch(apiEndpointStudySession);
+    const resStudy = await fetch(
+      routes.getStudySessions(userId, studySessionId as string)
+    );
     if (!resStudy.ok) {
       throw new Error(`API request failed with status: ${resStudy.status}`);
     }
     const studySession = await resStudy.json();
 
-    const resPdfs = await fetch(apiEndPointPdfs);
+    const resPdfs = await fetch(routes.getPdfs(userId));
     if (!resPdfs.ok) {
       throw new Error(`API request failed with status: ${resPdfs.status}`);
     }
@@ -130,6 +142,6 @@ export const getServerSideProps: GetServerSideProps<{
     console.error('API request error:', error);
     return { props: { chatLogs: [] } };
   }
-};
+}
 
 export default StudySession;

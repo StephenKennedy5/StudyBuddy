@@ -29,54 +29,6 @@
                 }
             ]
 
-const PYTHON_API_URL = process.env.NEXT_PUBLIC_PYTHON_API_URL;
-const FETCH_CREDENTIALS = process.env.NEXT_PUBLIC_FETCH_CREDENTIALS;
-if (!PYTHON_API_URL) {
-  throw new Error('need to define NEXT_PUBLIC_PYTHON_API_URL');
-}
-
-if (!FETCH_CREDENTIALS) {
-  throw new Error('need to define NEXT_PUBLIC_FETCH_CREDENTIALS');
-}
-
-export const fetchCreds = FETCH_CREDENTIALS || 'same-origin';
-
-export const routes = {
-  login(): string {
-    return `${PYTHON_API_URL}/v1/auth/login`;
-  },
-  createOrderAndPay(): string {
-    return `${PYTHON_API_URL}/v1/orders/order-and-pay`;
-  },
-  createOrderAndPayLoggedIn(userId: string): string {
-    return `${PYTHON_API_URL}/v1/users/${userId}/orders/order-and-pay`;
-  },
-  uploadPhotos(orderId: string): string {
-    return `${PYTHON_API_URL}/v1/orders/${orderId}/upload-photos`;
-  },
-  getOrderStatus(orderId: string): string {
-    return `${PYTHON_API_URL}/v1/orders/${orderId}/status`;
-  },
-  getAllOrders(userId: string): string {
-    return `${PYTHON_API_URL}/v1/users/${userId}/orders`;
-  },
-  getResultPhotosAuth(userId: string, orderId: string): string {
-    return `${PYTHON_API_URL}/v1/users/${userId}/orders/${orderId}/result-photos`;
-  },
-  getResultPhotos(orderId: string): string {
-    return `${PYTHON_API_URL}/v1/orders/${orderId}/result-photos`;
-  },
-  updateResultPhotosPrivate(userId: string, orderId: string): string {
-    return `${PYTHON_API_URL}/v1/users/${userId}/orders/${orderId}/update-result-photos-private`;
-  },
-  updateEnableBonusContent(userId: string, orderId: string): string {
-    return `${PYTHON_API_URL}/v1/users/${userId}/orders/${orderId}/enable-bonus-content`;
-  },
-  updateCompleteTrial(userId: string, orderId: string): string {
-    return `${PYTHON_API_URL}/v1/users/${userId}/orders/${orderId}/complete-trial`;
-  },
-};
-
 
 */
 
@@ -91,8 +43,37 @@ if (!FETCH_CREDENTIALS) {
   throw new Error('need to define NEXT_PUBLIC_FETCH_CREDENTIALS');
 }
 
-const fetchCreds = FETCH_CREDENTIALS || 'same-origin';
+export const fetchCreds = FETCH_CREDENTIALS || 'same-origin';
 
 export const routes = {
-  login() {},
+  login(): string {
+    return `${baseUrl}/api/login`;
+  },
+  getStudySession(userId: string): string {
+    return `${baseUrl}/api/${userId}/study-sessions`;
+  },
+  getPdfs(userId: string): string {
+    return `${baseUrl}/api/${userId}/getPdfs`;
+  },
+  createUser(): string {
+    return `${baseUrl}/api/createUser`;
+  },
+  newStudySession(userId: string): string {
+    return `${baseUrl}/api/${userId}/new-study-session`;
+  },
+  getChatLogs(userId: string, studySessionId: string): string {
+    //   const apiEndpointChatLogs = `${host}/api/${userId}/study-session/${studySessionId}/chatlogs`;
+    return `${baseUrl}/api/${userId}/study-session/${studySessionId}/chatlogs`;
+  },
+  getStudySessions(userId: string, studySessionId: string): string {
+    // const apiEndpointStudySession = `${host}/api/${userId}/study-session/${studySessionId}/getStudySession`;
+    return `${baseUrl}/api/${userId}/study-session/${studySessionId}/getStudySession`;
+  },
+  newChatMessage(userId: string, studySessionId: string): string {
+    // const apiCall = `${process.env.NEXT_PUBLIC_API_HOST}/api/${process.env.NEXT_PUBLIC_USER_ID}/study-session/${StudySessionId}/newchatmessage`;
+    return `${baseUrl}/api/${userId}/study-session/${studySessionId}/newchatmessage`;
+  },
+  newPdf(userId: string): string {
+    return `${baseUrl}/api/${userId}/newPdf`;
+  },
 };

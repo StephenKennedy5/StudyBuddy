@@ -9,6 +9,8 @@ import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
 import StudySessionMap from 'src/components/StudySessionDashboard';
 
+import { fetchCreds, routes } from '@/lib/routes';
+
 import { authOptionsCb } from './api/auth/[...nextauth]';
 
 /* Hide and show user PDF tab with button click */
@@ -40,11 +42,11 @@ if (!baseUrl) {
   throw new Error('NEXT_PUBLIC_BASE_URL env variable is needed');
 }
 
-if (!FETCH_CREDENTIALS) {
-  throw new Error('need to define NEXT_PUBLIC_FETCH_CREDENTIALS');
-}
+// if (!FETCH_CREDENTIALS) {
+//   throw new Error('need to define NEXT_PUBLIC_FETCH_CREDENTIALS');
+// }
 
-const fetchCreds = FETCH_CREDENTIALS || 'same-origin';
+// const fetchCreds = FETCH_CREDENTIALS || 'same-origin';
 
 function dashboard() {
   const [showPdfs, setShowPdfs] = useState(true);
@@ -63,7 +65,7 @@ function dashboard() {
   } = useQuery(
     ['DashboardStudySessions', userId],
     async () => {
-      const res = await fetch(`${baseUrl}/api/${userId}/study-sessions`, {
+      const res = await fetch(routes.getStudySession(userId), {
         method: 'GET',
         credentials: fetchCreds as RequestCredentials,
       });
@@ -82,7 +84,7 @@ function dashboard() {
   } = useQuery(
     ['DashboardPDFS', userId],
     async () => {
-      const res = await fetch(`${baseUrl}/api/${userId}/getPdfs`, {
+      const res = await fetch(routes.getPdfs(userId), {
         method: 'GET',
         credentials: fetchCreds as RequestCredentials,
       });
@@ -114,6 +116,7 @@ function dashboard() {
             <StudySessionMap
               StudySessions={dataStudySessions}
               showPdfs={showPdfs}
+              id={userId}
             />
           </div>
         </div>

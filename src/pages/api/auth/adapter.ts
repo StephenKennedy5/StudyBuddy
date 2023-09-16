@@ -11,6 +11,8 @@ import type {
   VerificationToken,
 } from 'next-auth/adapters';
 
+import { fetchCreds, routes } from '@/lib/routes';
+
 import Login from '@/pages/api/login';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -27,7 +29,7 @@ export function MyAdapter(
   return {
     async createUser(user) {
       try {
-        const loginUser = await fetch(`${baseUrl}/api/login`, {
+        const loginUser = await fetch(routes.login(), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
