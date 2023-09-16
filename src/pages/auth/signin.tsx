@@ -31,8 +31,6 @@ export async function getServerSideProps(context) {
   const error = context?.query?.error ?? null;
 
   if (session) {
-    console.log({ session });
-    console.log('HELLO SERVER');
     return { redirect: { destination: '/dashboard' } };
   }
 

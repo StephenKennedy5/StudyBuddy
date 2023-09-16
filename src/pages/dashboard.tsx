@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { GetServerSidePropsContext } from 'next';
 import { getServerSession } from 'next-auth';
@@ -32,21 +33,129 @@ interface StudySessionArray {
   userPdfs: UserPdfsProps[];
 }
 
-function dashboard({ studySessions, userPdfs }: StudySessionArray) {
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const FETCH_CREDENTIALS = process.env.NEXT_PUBLIC_FETCH_CREDENTIALS;
+
+if (!baseUrl) {
+  throw new Error('NEXT_PUBLIC_BASE_URL env variable is needed');
+}
+
+if (!FETCH_CREDENTIALS) {
+  throw new Error('need to define NEXT_PUBLIC_FETCH_CREDENTIALS');
+}
+
+const fetchCreds = FETCH_CREDENTIALS || 'same-origin';
+
+function dashboard() {
   const [showPdfs, setShowPdfs] = useState(true);
   const { data: session, status } = useSession();
+  const userId = session?.user?.sub;
+  const userName = session?.user?.name as string;
+  // const userId = user.id;
+  console.log({ userId });
+  // console.log({ userId: user.sub });
 
-  console.log({ session });
-  console.log({ status });
+  const {
+    isLoading: isLoadingStudySessions,
+    isError: isErrorStudySessions,
+    isSuccess: isSuccessStudySessions,
+    data: dataStudySessions,
+  } = useQuery(
+    ['DashboardStudySessions', userId],
+    async () => {
+      const res = await fetch(`${baseUrl}/api/${userId}/study-sessions`, {
+        method: 'GET',
+        credentials: fetchCreds as RequestCredentials,
+      });
+      if (!res.ok) throw new Error('Failed to fetch study Session');
+      const body = await res.json();
+      return body;
+    },
+    { enabled: !!userId }
+  );
+
+  const {
+    isLoading: isLoadingPDFs,
+    isError: isErrorPDFs,
+    isSuccess: isSuccessPDFs,
+    data: dataPDFs,
+  } = useQuery(
+    ['DashboardPDFS', userId],
+    async () => {
+      const res = await fetch(`${baseUrl}/api/${userId}/getPdfs`, {
+        method: 'GET',
+        credentials: fetchCreds as RequestCredentials,
+      });
+      if (!res.ok) throw new Error('Failed to fetch PDFs');
+      const body = await res.json();
+      return body;
+    },
+    { enabled: !!userId }
+  );
+
+  const renderResultsStudySessions = () => {
+    if (isLoadingStudySessions) {
+      // Fix loading... animation
+      return <div className='loading text-center text-[24px]'>Loading</div>;
+    }
+    if (isErrorStudySessions) {
+      return (
+        <div className='text-center text-[24px]'>
+          Something went wrong. Please refresh page.
+        </div>
+      );
+    }
+    // session.user needs to exists for isSuccess to be true
+    if (isSuccessStudySessions && session?.user) {
+      console.log(dataStudySessions);
+      return (
+        <div>
+          <div>
+            <StudySessionMap
+              StudySessions={dataStudySessions}
+              showPdfs={showPdfs}
+            />
+          </div>
+        </div>
+      );
+    }
+    return <></>;
+  };
+
+  const renderResultsPDFS = () => {
+    if (isLoadingPDFs) {
+      // Fix loading... animation
+      return <div className='loading text-center text-[24px]'>Loading</div>;
+    }
+    if (isErrorPDFs) {
+      return (
+        <div className='text-center text-[24px]'>
+          Something went wrong. Please refresh page.
+        </div>
+      );
+    }
+    // session.user needs to exists for isSuccess to be true
+    if (isSuccessPDFs && session?.user) {
+      console.log(dataPDFs);
+      return (
+        <div>
+          <div>
+            <PDFS pdfList={dataPDFs} />
+          </div>
+        </div>
+      );
+    }
+    return <></>;
+  };
 
   return (
     <div>
       <div className='flex justify-between px-[30px] py-[30px]'>
-        <div>Logo</div>
-        <div>Welcome User</div>
+        <div className='flex items-center p-[10px]'>Logo</div>
+        <div className='flex items-center p-[10px]'>Welcome {userName}</div>
         <div
           onClick={() => signOut({ callbackUrl: '/' })}
-          className='cursor-pointer bg-blue-50 p-[20px]'
+          className='cursor-pointer rounded-[10px] bg-blue-50 px-[20px] py-[10px]'
         >
           LogOut
         </div>
@@ -57,9 +166,7 @@ function dashboard({ studySessions, userPdfs }: StudySessionArray) {
             showPdfs ? 'translate-x-0 ' : '-translate-x-full'
           }`}
         >
-          <div>
-            <PDFS pdfList={userPdfs} />
-          </div>
+          <div>{renderResultsPDFS()}</div>
         </div>
 
         <div className='px-[30px] py-[20px]'>
@@ -72,12 +179,8 @@ function dashboard({ studySessions, userPdfs }: StudySessionArray) {
             {showPdfs ? 'Hide Pdfs' : 'Show Pdfs'}
           </div>
 
-          <div>
-            <StudySessionMap
-              StudySessions={studySessions}
-              showPdfs={showPdfs}
-            />
-          </div>
+          <div></div>
+          <div>{renderResultsStudySessions()}</div>
         </div>
       </div>
       <div className='px-[30px] py-[40px]'>Footer</div>
@@ -92,22 +195,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     authOptionsCb(context.req, context.res)
   );
   console.log({ session });
+  // Get user id
+  // use user ID to call other API endpoints
+  // Connect through API?
 
-  const userId = '1972c0eb-a3ed-4377-b09f-79684995899f';
-  const host = 'http://localhost:3000';
-  const apiEndpoint = `${host}/api/${userId}/study-sessions`;
-  const apiEndPointPdfs = `${host}/api/${userId}/getPdfs`;
+  // const userId = '1972c0eb-a3ed-4377-b09f-79684995899f';
+  // const host = 'http://localhost:3000';
+  // const apiEndpoint = `${host}/api/${userId}/study-sessions`;
+  // const apiEndPointPdfs = `${host}/api/${userId}/getPdfs`;
 
-  const res = await fetch(apiEndpoint);
-  const studySessions = await res.json();
+  // const res = await fetch(apiEndpoint);
+  // const studySessions = await res.json();
 
-  const resPdfs = await fetch(apiEndPointPdfs);
-  if (!resPdfs.ok) {
-    throw new Error(`API request failed with status: ${resPdfs.status}`);
-  }
-  const userPdfs = await resPdfs.json();
+  // const resPdfs = await fetch(apiEndPointPdfs);
+  // if (!resPdfs.ok) {
+  //   throw new Error(`API request failed with status: ${resPdfs.status}`);
+  // }
+  // const userPdfs = await resPdfs.json();
 
-  return { props: { studySessions, userPdfs } };
+  return { props: {} };
 }
 
 export default dashboard;

@@ -11,6 +11,8 @@ import type {
   VerificationToken,
 } from 'next-auth/adapters';
 
+import Login from '@/pages/api/login';
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 if (!baseUrl) {
@@ -24,9 +26,6 @@ export function MyAdapter(
 ): Adapter {
   return {
     async createUser(user) {
-      console.log('CREATE USER');
-      console.log({ user });
-      console.log('CALL LOGIN');
       try {
         const loginUser = await fetch(`${baseUrl}/api/login`, {
           method: 'POST',
@@ -38,20 +37,20 @@ export function MyAdapter(
         if (!loginUser.ok) {
           throw new Error('API login endpoint down');
         }
+        const loginResponseData = await loginUser.json();
+
+        return {
+          id: loginResponseData[0].id,
+          ...user,
+        };
       } catch (error) {
         console.error('Error:', error);
       }
-
-      return { id: user.email, ...user };
     },
     async getUser(id) {
-      console.log('GetUser');
-      console.log({ id });
       return null;
     },
     async getUserByEmail(email) {
-      console.log('getUserByEmail');
-      console.log({ email });
       return null;
     },
     async getUserByAccount({ providerAccountId, provider }) {
@@ -87,11 +86,13 @@ export function MyAdapter(
       return null;
     },
     async createVerificationToken({ identifier, expires, token }) {
+      // Dont need as not doing email verfication
       console.log('createVerificationToken');
       console.log({ token });
       return null;
     },
     async useVerificationToken({ identifier, token }) {
+      // Dont need as not doing email verficiation
       console.log('useVerificationToken');
       console.log({ token });
       return null;

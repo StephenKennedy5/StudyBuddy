@@ -54,7 +54,6 @@ export const authOptionsCb = (
       },
       async jwt({ token, account }) {
         // Persist the OAuth access_token to the token right after signin
-        console.log('JWT Token:', token);
         if (account) {
           token.accessToken = account.access_token;
         }
@@ -62,7 +61,6 @@ export const authOptionsCb = (
       },
       async session({ session, token, user }) {
         // Send properties to the client, like an access_token from a provider.
-        console.log('SESSION');
         return {
           user: token,
           expires: session.expires,

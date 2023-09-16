@@ -26,7 +26,7 @@ if (!baseUrl) {
 export default async function Login(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { name, email } = req.body;
-    console.log('Email:', email);
+
     const getUser = await knex('users').select().where('email', email);
     if (getUser.length === 0) {
       console.log('CREATE USER');
@@ -42,13 +42,14 @@ export default async function Login(req: NextApiRequest, res: NextApiResponse) {
       if (createUserResponse.ok) {
         console.log('User created successfully');
         console.log({ createUserResponse });
+        // Create response for new user that returns ID value
       } else {
         console.error('Failed to create user');
       }
     } else {
+      console.log('USER EXISTS');
       console.log('UPDATE JWT TOKEN');
     }
-
     res.status(200).json(getUser);
   } catch (error) {
     console.error('Error:', error);
