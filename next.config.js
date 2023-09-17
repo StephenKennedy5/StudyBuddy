@@ -32,6 +32,9 @@ const nextConfig = {
 
     return config;
   },
+  env: {
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  },
 };
 
 module.exports = nextConfig;

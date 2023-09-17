@@ -11,50 +11,93 @@ import type {
   VerificationToken,
 } from 'next-auth/adapters';
 
+import { fetchCreds, routes } from '@/lib/routes';
+
+import Login from '@/pages/api/login';
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+if (!baseUrl) {
+  throw new Error('NEXT_PUBLIC_BASE_URL env variable is needed');
+}
+
 /** @return { import("next-auth/adapters").Adapter } */
-export default function MyAdapter(client, options = {}) {
+export function MyAdapter(
+  req: IncomingMessage | NextApiRequest | GetServerSidePropsContext['req'],
+  res: ServerResponse | NextApiResponse
+): Adapter {
   return {
     async createUser(user) {
-      return;
+      try {
+        const loginUser = await fetch(routes.login(), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: user.name, email: user.email }),
+        });
+        if (!loginUser.ok) {
+          throw new Error('API login endpoint down');
+        }
+        const loginResponseData = await loginUser.json();
+
+        return {
+          id: loginResponseData[0].id,
+          ...user,
+        };
+      } catch (error) {
+        console.error('Error:', error);
+      }
     },
     async getUser(id) {
-      return;
+      return null;
     },
     async getUserByEmail(email) {
-      return;
+      return null;
     },
     async getUserByAccount({ providerAccountId, provider }) {
-      return;
+      console.log('getUserByAccount');
+      return null;
     },
     async updateUser(user) {
-      return;
+      return null;
     },
     async deleteUser(userId) {
-      return;
+      return null;
     },
     async linkAccount(account) {
-      return;
+      return null;
     },
     async unlinkAccount({ providerAccountId, provider }) {
-      return;
+      return null;
     },
-    async createSession({ sessionToken, userId, expires }) {
-      return;
+    async createSession(session) {
+      console.log('createSession');
+      console.log({ session });
+      return session;
     },
     async getSessionAndUser(sessionToken) {
-      return;
+      console.log('getSessionAndUser');
+      console.log({ sessionToken });
+      return null;
     },
     async updateSession({ sessionToken }) {
-      return;
+      return null;
     },
     async deleteSession(sessionToken) {
-      return;
+      return null;
     },
     async createVerificationToken({ identifier, expires, token }) {
-      return;
+      // Dont need as not doing email verfication
+      console.log('createVerificationToken');
+      console.log({ token });
+      return null;
     },
     async useVerificationToken({ identifier, token }) {
-      return;
+      // Dont need as not doing email verficiation
+      console.log('useVerificationToken');
+      console.log({ token });
+      return null;
     },
   };
 }

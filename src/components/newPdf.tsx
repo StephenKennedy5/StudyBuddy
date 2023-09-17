@@ -2,10 +2,15 @@
 
 // Get Title from File being uploaded,
 // Use filler content for now for pdf_info
+import { signOut, useSession } from 'next-auth/react';
 import { useState } from 'react';
+
+import { fetchCreds, routes } from '@/lib/routes';
 
 function newPdf() {
   const [titleName, setTitleName] = useState(null);
+  const { data: session, status } = useSession();
+  const userId = session?.user?.sub;
 
   //   Calls new PDF API endpoint
   const handleFileChange = (event) => {
@@ -28,16 +33,13 @@ function newPdf() {
     };
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_HOST}/api/${process.env.NEXT_PUBLIC_USER_ID}/newPdf`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const response = await fetch(routes.newPdf(userId), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
       if (response.ok) {
         console.log('PDF uploaded successfully');
         // Perform any other necessary actions

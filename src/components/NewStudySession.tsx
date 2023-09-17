@@ -1,8 +1,15 @@
+import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
-function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router }) {
+import { fetchCreds, routes } from '@/lib/routes';
+
+interface NewStudySessionProps {
+  id: string;
+}
+
+function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router, id }) {
   const [subject, setSubject] = useState('');
   const [sessionName, setSessionName] = useState('');
   const [newStudySessionValidation, setNewStudySessionValidation] =
@@ -38,16 +45,13 @@ function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router }) {
     };
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_HOST}/api/${process.env.NEXT_PUBLIC_USER_ID}/new-study-session`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const response = await fetch(routes.newStudySession(id), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
       if (response.ok) {
         const jsonResponse = await response.json(); // Parse the JSON response
         const { studySessionId } = jsonResponse;
@@ -101,10 +105,9 @@ function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router }) {
   );
 }
 
-function NewStudySession() {
+function NewStudySession({ id }) {
   const [isCreateNewOpen, setIsCreateNewOpen] = useState(false);
   const router = useRouter();
-
   return (
     <div className=' mx-auto flex'>
       <div
@@ -124,6 +127,7 @@ function NewStudySession() {
           isCreateNewOpen={isCreateNewOpen}
           setIsCreateNewOpen={setIsCreateNewOpen}
           router={router}
+          id={id}
         />
       ) : null}
     </div>
