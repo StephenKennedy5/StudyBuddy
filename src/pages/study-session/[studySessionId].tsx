@@ -87,7 +87,10 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
           {studySessionName}
         </div>
         <div className='hidden sm:col-span-1 sm:block'></div>
-        <div className='col-span-1 flex items-center justify-center'>
+        <div
+          className='col-span-1 flex cursor-pointer items-center justify-center rounded-[10px] bg-blue-50 p-[10px]'
+          onClick={() => signOut({ callbackUrl: '/' })}
+        >
           Logout
         </div>
       </div>

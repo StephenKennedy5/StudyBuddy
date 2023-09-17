@@ -53,9 +53,6 @@ function dashboard() {
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
   const userName = session?.user?.name as string;
-  // const userId = user.id;
-  console.log({ userId });
-  // console.log({ userId: user.sub });
 
   const {
     isLoading: isLoadingStudySessions,
@@ -109,7 +106,6 @@ function dashboard() {
     }
     // session.user needs to exists for isSuccess to be true
     if (isSuccessStudySessions && session?.user) {
-      console.log(dataStudySessions);
       return (
         <div>
           <div>
@@ -139,7 +135,6 @@ function dashboard() {
     }
     // session.user needs to exists for isSuccess to be true
     if (isSuccessPDFs && session?.user) {
-      console.log(dataPDFs);
       return (
         <div>
           <div>
@@ -152,7 +147,7 @@ function dashboard() {
   };
 
   return (
-    <div>
+    <div className=''>
       <div className='flex justify-between px-[30px] py-[30px]'>
         <div className='flex items-center p-[10px]'>Logo</div>
         <div className='flex items-center p-[10px]'>Welcome {userName}</div>
@@ -163,26 +158,25 @@ function dashboard() {
           LogOut
         </div>
       </div>
-      <div className='mx-auto flex bg-slate-100'>
+      <div className='mx-auto flex min-h-screen bg-slate-100'>
         <div
           className={`max-w-[40%] bg-blue-300 px-[20px] py-[10px] transition-transform duration-300  ${
             showPdfs ? 'translate-x-0 ' : '-translate-x-full'
           }`}
         >
-          <div>{renderResultsPDFS()}</div>
+          {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
         </div>
 
         <div className='px-[30px] py-[20px]'>
           <div
-            className={`absolute z-10 cursor-pointer bg-green-100 p-[20px] transition-transform duration-300 ${
-              !showPdfs ? '-translate-x-full' : 'translate-x-[-20px]'
+            className={`absolute z-10 cursor-pointer bg-green-100 p-[20px] transition-transform duration-300 ease-in-out ${
+              !showPdfs ? 'translate-x-[-30px]' : 'translate-x-[-20px]'
             }`}
             onClick={() => setShowPdfs(!showPdfs)}
           >
             {showPdfs ? 'Hide Pdfs' : 'Show Pdfs'}
           </div>
 
-          <div></div>
           <div>{renderResultsStudySessions()}</div>
         </div>
       </div>
@@ -197,24 +191,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     context.res,
     authOptionsCb(context.req, context.res)
   );
-  console.log({ session });
-  // Get user id
-  // use user ID to call other API endpoints
-  // Connect through API?
-
-  // const userId = '1972c0eb-a3ed-4377-b09f-79684995899f';
-  // const host = 'http://localhost:3000';
-  // const apiEndpoint = `${host}/api/${userId}/study-sessions`;
-  // const apiEndPointPdfs = `${host}/api/${userId}/getPdfs`;
-
-  // const res = await fetch(apiEndpoint);
-  // const studySessions = await res.json();
-
-  // const resPdfs = await fetch(apiEndPointPdfs);
-  // if (!resPdfs.ok) {
-  //   throw new Error(`API request failed with status: ${resPdfs.status}`);
-  // }
-  // const userPdfs = await resPdfs.json();
 
   return { props: {} };
 }

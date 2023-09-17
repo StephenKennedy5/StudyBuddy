@@ -15,8 +15,6 @@ const clientId = process.env.GOOGLE_ID;
 const clientSecret = process.env.GOOGLE_SECRET;
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-// Do basic sign in that doesnt store in adapter
-
 if (!clientId) {
   throw new Error('GOOGLE_ID environment variable is not defined');
 }
