@@ -16,6 +16,11 @@ Secondary Color (Accents): RGB(115, 138, 148)
 Text Color: RGB(40, 40, 40)
 Button Color: RGB(0, 105, 148)
 
+Blue: #0066FF
+Black: #1B1B20
+White: #FFFFFF
+Grey: #F6F6F7
+
 # Docker Database Commands
 
 Run the Docker Database (`-d` runs it in the background)

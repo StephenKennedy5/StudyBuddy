@@ -1,13 +1,3 @@
-/* 
-    Component for StudySessions that will display the chat messages
-    Will recieve an array of objects that will be sorted based on creation date
-    Sort messages based on 2 different UserIDs
-    User ID should be a singular background color
-    Bot Message should be a different color
-    Newest Message will be added to the button of the screen 
-
-*/
-
 import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -18,6 +8,8 @@ function Chat({ chatMessages, studySessionId }) {
   const [newQuestion, setNewQuestion] = useState('');
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
+
+  const [chatMessagesState, setChatMessages] = useState(chatMessages);
 
   const sumbitNewChatMessage = async () => {
     if (newQuestion.trim() === '') return;
@@ -37,6 +29,9 @@ function Chat({ chatMessages, studySessionId }) {
       );
       if (response.ok) {
         console.log('Chat messag sent successfully');
+        const newMessage = await response.json();
+        setChatMessages(() => [...newMessage]);
+        setNewQuestion('');
         // Perform any other necessary actions
       } else {
         console.error('chat messaged failed to upload');
@@ -46,10 +41,17 @@ function Chat({ chatMessages, studySessionId }) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sumbitNewChatMessage();
+    }
+  };
+
   return (
     <div>
       <div>
-        {chatMessages.map(({ chat_message, id }) => {
+        {chatMessagesState.map(({ chat_message, id }) => {
           // UserId !=
           const UserIdNotEqual = 'bg-blue-50';
           // UserId ==
@@ -77,13 +79,14 @@ function Chat({ chatMessages, studySessionId }) {
             onChange={(e) => {
               setNewQuestion(e.target.value);
             }}
+            onKeyDown={handleKeyDown}
           />
           {/* Set Onclick to Call API endpoint of new chat message
           Make mock response message to act like real convo in which messages arrives 5 secs later */}
           <div
             className='ml-[10px] bg-blue-100 px-[20px] py-[10px]'
             onClick={() => {
-              sumbitNewChatMessage(), setNewQuestion('');
+              sumbitNewChatMessage();
             }}
           >
             Submit

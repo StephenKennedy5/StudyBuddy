@@ -28,7 +28,11 @@ export default {
         ash: '#bababa',
         sky: '#94a8b3',
         cream: '#dcd3c9',
-        softgray: '#dedcde',
+        grey: '#F6F6F7',
+        main: '#0074D9',
+        mainBlue: '#0066FF',
+        lightBlue: '#3DABE4',
+        lighterBlue: '#5BA9E4',
       },
       keyframes: {
         flicker: {

@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import SignIn from 'src/components/buttons/SignInButton';
 
 import UnstyledLink from '@/components/links/UnstyledLink';
 
@@ -14,13 +15,10 @@ export default function Header() {
     <header className='sticky top-0 z-50 bg-white'>
       <div className='layout flex h-[56px] items-center justify-between'>
         <UnstyledLink href='/' className='font-bold hover:text-gray-600'>
-          Home
+          LOGO
         </UnstyledLink>
-        <div
-          onClick={() => router.push('/auth/signin')}
-          className='cursor-pointer rounded-[10px] bg-blue-200 px-[20px] py-[10px] hover:bg-blue-100'
-        >
-          Sign In
+        <div>
+          <SignIn />
         </div>
       </div>
     </header>

@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import * as React from 'react';
 import { useState } from 'react';
+import SignOut from 'src/components/buttons/signOutButton';
 import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
 import StudySessionMap from 'src/components/StudySessionDashboard';
@@ -151,16 +152,13 @@ function dashboard() {
       <div className='flex justify-between px-[30px] py-[30px]'>
         <div className='flex items-center p-[10px]'>Logo</div>
         <div className='flex items-center p-[10px]'>Welcome {userName}</div>
-        <div
-          onClick={() => signOut({ callbackUrl: '/' })}
-          className='cursor-pointer rounded-[10px] bg-blue-50 px-[20px] py-[10px]'
-        >
-          LogOut
+        <div>
+          <SignOut />
         </div>
       </div>
-      <div className='mx-auto flex min-h-screen bg-slate-100'>
+      <div className='bg-grey mx-auto flex min-h-screen'>
         <div
-          className={`max-w-[40%] bg-blue-300 px-[20px] py-[10px] transition-transform duration-300  ${
+          className={`bg-lightBlue max-w-[40%] px-[20px] py-[10px] transition-transform duration-300  ${
             showPdfs ? 'translate-x-0 ' : '-translate-x-full'
           }`}
         >

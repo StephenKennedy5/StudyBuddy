@@ -22,7 +22,7 @@ PDF Table:
     - PDF INFO (Text?)
     - Upload Date (Timestamp)
 
-Chat Logs Table:
+Chat Logs Table: (Remove table)
     - ID (UUID)
     - Session ID (UUID) (FROM STUDY SESSION TABLE)
     - Field (Text) Not needed from all text will be from actual messages and not stored here
@@ -31,6 +31,7 @@ Chat Logs Table:
 
 Chat Message Table:
     - ID (UUID)
+    - Study Session ID ( From Study Session Table)
     - Chat ID (UUID) (FROM CHAT LOGS TABLE)
     - Chat Message (Text)
     - Creation Date (Timestamp)

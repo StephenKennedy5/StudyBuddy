@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { getServerSession } from 'next-auth/next';
 import { signOut, useSession } from 'next-auth/react';
 import { ParsedUrlQuery } from 'querystring';
+import SignOut from 'src/components/buttons/signOutButton';
 import Chat from 'src/components/Chat';
 // import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
@@ -72,35 +73,31 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   // const [showPdfs, setShowPdfs] = useState(true);
   // const { data: session, status } = useSession();
 
+  // grid grid-cols-3 gap-[20px] px-[20px] py-[10px] sm:grid-cols-5
+
   return (
-    <div>
-      <div className='grid grid-cols-3 gap-[20px] px-[20px] py-[10px] sm:grid-cols-5'>
+    <div className='flex min-h-screen flex-col '>
+      <div className='flex justify-between px-[30px] py-[20px]'>
         <div
           onClick={() => router.push('/dashboard')}
-          className='col-span-1 cursor-pointer bg-blue-200 p-[20px] text-center'
+          className=' bg-mainBlue hover:bg-lightBlue cursor-pointer rounded-[10px] px-[10px] py-[15px] text-center text-white'
         >
           Dashboard
         </div>
 
-        <div className='hidden sm:col-span-1 sm:block'></div>
-        <div className='col-span-1 flex items-center justify-center p-[10px] text-center'>
+        <div className='flex items-center justify-center p-[10px] text-center'>
           {studySessionName}
         </div>
-        <div className='hidden sm:col-span-1 sm:block'></div>
-        <div
-          className='col-span-1 flex cursor-pointer items-center justify-center rounded-[10px] bg-blue-50 p-[10px]'
-          onClick={() => signOut({ callbackUrl: '/' })}
-        >
-          Logout
+
+        <div className='flex items-center justify-center'>
+          <SignOut />
         </div>
       </div>
-      <div className='flex'>
-        <div className=' max-w-[40%] bg-blue-300 px-[20px] py-[10px]'>
-          <div>
-            <PDFS pdfList={userPdfs} />
-          </div>
+      <div className='flex flex-grow'>
+        <div className=' w-1/4 min-w-[200px] bg-blue-300 px-[20px] py-[10px]'>
+          <PDFS pdfList={userPdfs} />
         </div>
-        <div className=''>
+        <div className='w-3/4'>
           <Chat chatMessages={chatLogs} studySessionId={studySession.id} />
         </div>
       </div>

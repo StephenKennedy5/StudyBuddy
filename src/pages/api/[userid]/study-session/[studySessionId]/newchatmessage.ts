@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import knex from '../../../../../../database/knex';
 
 // Chat logs ID = 80d2fb15-0df8-44b6-b389-2e817f7b82b5;
@@ -17,21 +18,21 @@ export default async function GetStudySessions(
     const userId = req.query.userid;
     const studySessionId = req.query.studySessionId;
     const { chat_message } = req.body;
-    const { chat_log_id } = await knex('study_sessions')
-      .select()
-      .where('id', studySessionId)
-      .first();
+    // const { chat_log_id } = await knex('study_sessions')
+    //   .select()
+    //   .where('id', studySessionId)
+    //   .first();
 
     const new_chat_message = await knex('chat_messages').insert({
       id: uuid.v4(),
-      chat_id: chat_log_id,
       chat_message: chat_message,
       user_id: userId,
+      study_session_id: studySessionId,
     });
 
     const chat_messages = await knex('chat_messages')
       .select()
-      .where('chat_id', chat_log_id)
+      .where('study_session_id', studySessionId)
       .orderBy('creation_date');
 
     res.status(200).json(chat_messages);
