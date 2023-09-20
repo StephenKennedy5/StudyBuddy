@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import classNames from 'classnames';
 import { GetServerSideProps } from 'next';
 import { GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
@@ -6,12 +7,15 @@ import { useRouter } from 'next/router';
 import { getServerSession } from 'next-auth/next';
 import { signOut, useSession } from 'next-auth/react';
 import { ParsedUrlQuery } from 'querystring';
+import { useState } from 'react';
 import SignOut from 'src/components/buttons/signOutButton';
 import Chat from 'src/components/Chat';
 // import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
 
 import { fetchCreds, routes } from '@/lib/routes';
+
+import HidePdfs from '@/components/HidePdfs';
 
 import { authOptionsCb } from './../api/auth/[...nextauth]';
 
@@ -70,10 +74,68 @@ interface StudySessionTypes {
 function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   const studySessionName = studySession.session_name;
   const router = useRouter();
-  // const [showPdfs, setShowPdfs] = useState(true);
-  // const { data: session, status } = useSession();
+  const [showPdfs, setShowPdfs] = useState(true);
 
-  // grid grid-cols-3 gap-[20px] px-[20px] py-[10px] sm:grid-cols-5
+  const [newQuestion, setNewQuestion] = useState('');
+  const [isScrollable, setIsScrollable] = useState(false);
+  const [textareaRows, setTextareaRows] = useState(1);
+
+  const maxLines = 3;
+  const { data: session, status } = useSession();
+  const userId = session?.user?.sub;
+
+  const [chatMessagesState, setChatMessages] = useState(chatLogs);
+
+  const sumbitNewChatMessage = async () => {
+    if (newQuestion.trim() === '') return;
+
+    const requestBody = { chat_message: newQuestion };
+
+    try {
+      const response = await fetch(
+        routes.newChatMessage(userId, studySession.id),
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
+      if (response.ok) {
+        console.log('Chat message sent successfully');
+        const newMessage = await response.json();
+        setChatMessages(() => [...newMessage]);
+        setNewQuestion('');
+        // Perform any other necessary actions
+      } else {
+        console.error('Chat message failed to upload');
+      }
+    } catch (error) {
+      console.error('Error uploading chat message: ', error);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    // Update the input value
+    setNewQuestion(e.target.value);
+
+    // Check if the input has more lines than maxLines
+    const lines = e.target.value.split('\n');
+    const newRows = Math.min(maxLines, Math.max(1, lines.length));
+    setTextareaRows(newRows);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sumbitNewChatMessage();
+    }
+  };
+
+  // Create Style Class for PDFS when hidden and shown
+
+  // Create Style class for Chat when pdf hidden and shown
 
   return (
     <div className='flex min-h-screen flex-col '>
@@ -94,11 +156,77 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
         </div>
       </div>
       <div className='flex flex-grow'>
-        <div className=' w-1/4 min-w-[200px] bg-blue-300 px-[20px] py-[10px]'>
-          <PDFS pdfList={userPdfs} />
+        <div
+          className={`bg-lightBlue py-[10px] transition-transform duration-300  ${
+            showPdfs
+              ? 'w-1/4 min-w-[200px] translate-x-0 px-[20px]'
+              : '-translate-x-full'
+          }`}
+        >
+          {showPdfs ? (
+            <PDFS pdfList={userPdfs} />
+          ) : (
+            <div className='hidden'></div>
+          )}
         </div>
-        <div className='w-3/4'>
-          <Chat chatMessages={chatLogs} studySessionId={studySession.id} />
+
+        <div
+          className={
+            showPdfs
+              ? `flex w-3/4 flex-col justify-between`
+              : `flex w-full flex-col justify-between`
+          }
+        >
+          <HidePdfs showPdfs={showPdfs} setShowPdfs={setShowPdfs} />
+
+          <div className=''>
+            {chatMessagesState.map(({ chat_message, id }) => {
+              // UserId !=
+              const UserIdNotEqual = 'bg-blue-50';
+              // UserId ==
+              const UserIdEqual = 'bg-green-50';
+              // Base Styling
+              const chatMessageBase = 'px-[100px] py-[20px] ';
+
+              const chatMessageCls = classNames({
+                [chatMessageBase]: true,
+                [UserIdEqual]: userId == userId,
+                [UserIdNotEqual]: userId != userId,
+              });
+              return (
+                <div key={id} className={chatMessageCls}>
+                  <div>{chat_message}</div>
+                </div>
+              );
+            })}
+          </div>
+          <div className='sticky bottom-0 mt-auto bg-green-50 px-[40px] pb-[20px] pt-[40px]'>
+            <div className='mx-auto flex max-w-[650px] items-center'>
+              {/* Use a container div to create the input box */}
+              <div className='relative flex-1'>
+                <textarea
+                  value={newQuestion}
+                  placeholder='Ask Question Here'
+                  onChange={handleInputChange} // Use the updated change handler
+                  onKeyDown={handleKeyDown}
+                  rows={textareaRows} // Set the number of rows dynamically
+                  className={`focus:ring-mainBlue border-lightBlue flex w-full resize-none items-center rounded-lg border bg-white px-[40px] py-[10px] focus:outline-none focus:ring-2 ${
+                    textareaRows >= maxLines ? 'overflow-y-auto' : ''
+                  }`} // Apply dynamic styles for overflow and height
+                />
+              </div>
+              {/* Set onClick to call the API endpoint of a new chat message */}
+              {/* Make a mock response message to act like a real conversation in which messages arrive 5 seconds later */}
+              <div
+                className='bg-mainBlue hover:bg-lightBlue ml-2 cursor-pointer rounded-full px-[20px] py-[10px] text-center text-white'
+                onClick={() => {
+                  sumbitNewChatMessage();
+                }}
+              >
+                Submit
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

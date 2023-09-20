@@ -12,6 +12,8 @@ import StudySessionMap from 'src/components/StudySessionDashboard';
 
 import { fetchCreds, routes } from '@/lib/routes';
 
+import HidePdfs from '@/components/HidePdfs';
+
 import { authOptionsCb } from './api/auth/[...nextauth]';
 
 /* Hide and show user PDF tab with button click */
@@ -151,30 +153,24 @@ function dashboard() {
     <div className=''>
       <div className='flex justify-between px-[30px] py-[30px]'>
         <div className='flex items-center p-[10px]'>Logo</div>
-        <div className='flex items-center p-[10px]'>Welcome {userName}</div>
+        <div className='mx-auto flex items-center p-[10px] '>
+          Welcome {userName}
+        </div>
         <div>
           <SignOut />
         </div>
       </div>
       <div className='bg-grey mx-auto flex min-h-screen'>
         <div
-          className={`bg-lightBlue max-w-[40%] px-[20px] py-[10px] transition-transform duration-300  ${
-            showPdfs ? 'translate-x-0 ' : '-translate-x-full'
+          className={`bg-lightBlue max-w-[40%]  py-[10px] transition-transform duration-300  ${
+            showPdfs ? 'translate-x-0 px-[20px]' : '-translate-x-full'
           }`}
         >
           {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
         </div>
 
-        <div className='px-[30px] py-[20px]'>
-          <div
-            className={`absolute z-10 cursor-pointer bg-green-100 p-[20px] transition-transform duration-300 ease-in-out ${
-              !showPdfs ? 'translate-x-[-30px]' : 'translate-x-[-20px]'
-            }`}
-            onClick={() => setShowPdfs(!showPdfs)}
-          >
-            {showPdfs ? 'Hide Pdfs' : 'Show Pdfs'}
-          </div>
-
+        <div className='px-[50px] py-[20px]'>
+          <HidePdfs showPdfs={showPdfs} setShowPdfs={setShowPdfs} />
           <div>{renderResultsStudySessions()}</div>
         </div>
       </div>
