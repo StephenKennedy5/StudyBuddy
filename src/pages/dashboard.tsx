@@ -39,19 +39,6 @@ interface StudySessionArray {
   userPdfs: UserPdfsProps[];
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-const FETCH_CREDENTIALS = process.env.NEXT_PUBLIC_FETCH_CREDENTIALS;
-
-if (!baseUrl) {
-  throw new Error('NEXT_PUBLIC_BASE_URL env variable is needed');
-}
-
-// if (!FETCH_CREDENTIALS) {
-//   throw new Error('need to define NEXT_PUBLIC_FETCH_CREDENTIALS');
-// }
-
-// const fetchCreds = FETCH_CREDENTIALS || 'same-origin';
-
 function dashboard() {
   // const [showPdfs, setShowPdfs] = useState(true);
   const { data: session, status } = useSession();

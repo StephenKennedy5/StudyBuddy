@@ -75,7 +75,6 @@ interface StudySessionTypes {
 function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   const studySessionName = studySession.session_name;
   const router = useRouter();
-  // const [showPdfs, setShowPdfs] = useState(true);
   const { showPdfs, toggleShowPdfs } = usePdfs();
 
   const [newQuestion, setNewQuestion] = useState('');
@@ -152,7 +151,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
       </div>
 
       <div className='flex w-full flex-col'>
-        <div className='flex justify-between px-[30px] py-[20px]'>
+        <div className='flex justify-between px-[30px] py-[25px]'>
           <div
             onClick={() => router.push('/dashboard')}
             className=' bg-mainBlue hover:bg-lightBlue cursor-pointer rounded-[10px] px-[10px] py-[15px] text-center text-white'

@@ -53,13 +53,13 @@ function newPdf() {
 
   return (
     <div className='mb-[20px] mt-[20px]'>
-      <div>
+      <div className='rounded-[10px] bg-white px-[20px] py-[10px] text-center'>
         <label
-          className={`group relative  inline-flex transform cursor-pointer  items-center rounded-[10px]  bg-white  p-[20px]
-              transition duration-300 ease-in-out hover:-translate-y-1
+          className={`group relative  inline-flex transform cursor-pointer  items-center
+               transition duration-300 ease-in-out hover:-translate-y-1 
               hover:bg-gray-200 hover:shadow-lg`}
         >
-          <span>{titleName === null ? 'Upload File' : titleName}</span>
+          <span>{titleName === null ? <div>Upload PDF</div> : titleName}</span>
           <input
             type='file'
             accept='.pdf'
