@@ -52,30 +52,30 @@ function newPdf() {
   };
 
   return (
-    <div className='mb-[20px] mt-[20px]'>
-      <div className='rounded-[10px] bg-white px-[20px] py-[10px] text-center'>
-        <label
-          className={`group relative  inline-flex transform cursor-pointer  items-center
-               transition duration-300 ease-in-out hover:-translate-y-1 
+    <div className='mb-[20px] flex flex-col'>
+      <label
+        className={`group relative mt-[20px] inline-flex transform cursor-pointer items-center rounded-[10px]
+               bg-white px-[40px] py-[10px] transition duration-300 ease-in-out hover:-translate-y-1
               hover:bg-gray-200 hover:shadow-lg`}
-        >
+      >
+        <div className=' text-center'>
           <span>{titleName === null ? <div>Upload PDF</div> : titleName}</span>
           <input
             type='file'
             accept='.pdf'
-            onChange={handleFileChange} // Call Function that uploads PDF
+            onChange={handleFileChange}
             className='hidden'
           />
-        </label>
-        {titleName === null ? null : (
-          <div
-            className='mt-[10px] cursor-pointer rounded bg-green-50 p-[10px]'
-            onClick={() => submitFile()}
-          >
-            Submit
-          </div>
-        )}
-      </div>
+        </div>
+      </label>
+      {titleName === null ? null : (
+        <div
+          className=' mt-[20px] cursor-pointer rounded-[10px] bg-green-50 px-[40px] py-[10px] text-center'
+          onClick={() => submitFile()}
+        >
+          Submit
+        </div>
+      )}
     </div>
   );
 }
