@@ -13,6 +13,7 @@ import StudySessionMap from 'src/components/StudySessionDashboard';
 import { fetchCreds, routes } from '@/lib/routes';
 
 import HidePdfs from '@/components/HidePdfs';
+import { usePdfs } from '@/components/PdfsContext';
 
 import { authOptionsCb } from './api/auth/[...nextauth]';
 
@@ -52,10 +53,11 @@ if (!baseUrl) {
 // const fetchCreds = FETCH_CREDENTIALS || 'same-origin';
 
 function dashboard() {
-  const [showPdfs, setShowPdfs] = useState(true);
+  // const [showPdfs, setShowPdfs] = useState(true);
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
   const userName = session?.user?.name as string;
+  const { showPdfs, toggleShowPdfs } = usePdfs();
 
   const {
     isLoading: isLoadingStudySessions,
@@ -140,9 +142,7 @@ function dashboard() {
     if (isSuccessPDFs && session?.user) {
       return (
         <div>
-          <div>
-            <PDFS pdfList={dataPDFs} />
-          </div>
+          <PDFS pdfList={dataPDFs} />
         </div>
       );
     }
@@ -150,31 +150,34 @@ function dashboard() {
   };
 
   return (
-    <div className=''>
-      <div className='flex justify-between px-[30px] py-[30px]'>
-        <div className='flex items-center p-[10px]'>Logo</div>
-        <div className='mx-auto flex items-center p-[10px] '>
-          Welcome {userName}
-        </div>
-        <div>
-          <SignOut />
-        </div>
+    <div className='flex'>
+      <div
+        className={`bg-lightBlue  py-[10px] transition-transform duration-300  ${
+          showPdfs
+            ? 'w-1/4 min-w-[200px] translate-x-0 px-[20px]'
+            : '-translate-x-full'
+        }`}
+      >
+        {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
       </div>
-      <div className='bg-grey mx-auto flex min-h-screen'>
-        <div
-          className={`bg-lightBlue max-w-[40%]  py-[10px] transition-transform duration-300  ${
-            showPdfs ? 'translate-x-0 px-[20px]' : '-translate-x-full'
-          }`}
-        >
-          {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
+      <div>
+        <div className='flex justify-between px-[30px] py-[30px]'>
+          <div className='flex items-center p-[10px]'>Logo</div>
+          <div className='mx-auto flex items-center p-[10px] '>
+            Welcome {userName}
+          </div>
+          <div>
+            <SignOut />
+          </div>
         </div>
-
-        <div className='px-[50px] py-[20px]'>
-          <HidePdfs showPdfs={showPdfs} setShowPdfs={setShowPdfs} />
-          <div>{renderResultsStudySessions()}</div>
+        <div className='bg-grey mx-auto flex min-h-screen'>
+          <div className='px-[50px] py-[20px]'>
+            <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
+            <div>{renderResultsStudySessions()}</div>
+          </div>
         </div>
+        <div className='px-[30px] py-[40px]'>Footer</div>
       </div>
-      <div className='px-[30px] py-[40px]'>Footer</div>
     </div>
   );
 }

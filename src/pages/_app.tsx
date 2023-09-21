@@ -7,6 +7,8 @@ import '@/styles/globals.css';
 // !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately
 import '@/styles/colors.css';
 
+import { PdfsProvider } from '@/components/PdfsContext';
+
 const queryClient = new QueryClient();
 
 export default function App({
@@ -16,7 +18,9 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
-        <Component {...pageProps} />
+        <PdfsProvider>
+          <Component {...pageProps} />
+        </PdfsProvider>
       </QueryClientProvider>
     </SessionProvider>
   );

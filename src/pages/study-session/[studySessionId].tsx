@@ -16,6 +16,7 @@ import PDFS from 'src/components/Pdfs';
 import { fetchCreds, routes } from '@/lib/routes';
 
 import HidePdfs from '@/components/HidePdfs';
+import { usePdfs } from '@/components/PdfsContext';
 
 import { authOptionsCb } from './../api/auth/[...nextauth]';
 
@@ -74,7 +75,8 @@ interface StudySessionTypes {
 function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   const studySessionName = studySession.session_name;
   const router = useRouter();
-  const [showPdfs, setShowPdfs] = useState(true);
+  // const [showPdfs, setShowPdfs] = useState(true);
+  const { showPdfs, toggleShowPdfs } = usePdfs();
 
   const [newQuestion, setNewQuestion] = useState('');
   const [isScrollable, setIsScrollable] = useState(false);
@@ -138,92 +140,90 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   // Create Style class for Chat when pdf hidden and shown
 
   return (
-    <div className='flex min-h-screen flex-col '>
-      <div className='flex justify-between px-[30px] py-[20px]'>
-        <div
-          onClick={() => router.push('/dashboard')}
-          className=' bg-mainBlue hover:bg-lightBlue cursor-pointer rounded-[10px] px-[10px] py-[15px] text-center text-white'
-        >
-          Dashboard
-        </div>
-
-        <div className='flex items-center justify-center p-[10px] text-center'>
-          {studySessionName}
-        </div>
-
-        <div className='flex items-center justify-center'>
-          <SignOut />
-        </div>
+    <div className='flex min-h-screen'>
+      <div
+        className={`bg-lightBlue py-[10px] transition-transform duration-300  ${
+          showPdfs
+            ? 'w-1/4 min-w-[200px] translate-x-0 px-[20px]'
+            : '-translate-x-full'
+        }`}
+      >
+        {showPdfs ? <PDFS pdfList={userPdfs} /> : <div></div>}
       </div>
-      <div className='flex flex-grow'>
-        <div
-          className={`bg-lightBlue py-[10px] transition-transform duration-300  ${
-            showPdfs
-              ? 'w-1/4 min-w-[200px] translate-x-0 px-[20px]'
-              : '-translate-x-full'
-          }`}
-        >
-          {showPdfs ? (
-            <PDFS pdfList={userPdfs} />
-          ) : (
-            <div className='hidden'></div>
-          )}
-        </div>
 
-        <div
-          className={
-            showPdfs
-              ? `flex w-3/4 flex-col justify-between`
-              : `flex w-full flex-col justify-between`
-          }
-        >
-          <HidePdfs showPdfs={showPdfs} setShowPdfs={setShowPdfs} />
-
-          <div className=''>
-            {chatMessagesState.map(({ chat_message, id }) => {
-              // UserId !=
-              const UserIdNotEqual = 'bg-blue-50';
-              // UserId ==
-              const UserIdEqual = 'bg-green-50';
-              // Base Styling
-              const chatMessageBase = 'px-[100px] py-[20px] ';
-
-              const chatMessageCls = classNames({
-                [chatMessageBase]: true,
-                [UserIdEqual]: userId == userId,
-                [UserIdNotEqual]: userId != userId,
-              });
-              return (
-                <div key={id} className={chatMessageCls}>
-                  <div>{chat_message}</div>
-                </div>
-              );
-            })}
+      <div className='flex w-full flex-col'>
+        <div className='flex justify-between px-[30px] py-[20px]'>
+          <div
+            onClick={() => router.push('/dashboard')}
+            className=' bg-mainBlue hover:bg-lightBlue cursor-pointer rounded-[10px] px-[10px] py-[15px] text-center text-white'
+          >
+            Dashboard
           </div>
-          <div className='sticky bottom-0 mt-auto bg-green-50 px-[40px] pb-[20px] pt-[40px]'>
-            <div className='mx-auto flex max-w-[650px] items-center'>
-              {/* Use a container div to create the input box */}
-              <div className='relative flex-1'>
-                <textarea
-                  value={newQuestion}
-                  placeholder='Ask Question Here'
-                  onChange={handleInputChange} // Use the updated change handler
-                  onKeyDown={handleKeyDown}
-                  rows={textareaRows} // Set the number of rows dynamically
-                  className={`focus:ring-mainBlue border-lightBlue flex w-full resize-none items-center rounded-lg border bg-white px-[40px] py-[10px] focus:outline-none focus:ring-2 ${
-                    textareaRows >= maxLines ? 'overflow-y-auto' : ''
-                  }`} // Apply dynamic styles for overflow and height
-                />
-              </div>
-              {/* Set onClick to call the API endpoint of a new chat message */}
-              {/* Make a mock response message to act like a real conversation in which messages arrive 5 seconds later */}
-              <div
-                className='bg-mainBlue hover:bg-lightBlue ml-2 cursor-pointer rounded-full px-[20px] py-[10px] text-center text-white'
-                onClick={() => {
-                  sumbitNewChatMessage();
-                }}
-              >
-                Submit
+
+          <div className='flex items-center justify-center p-[10px] text-center'>
+            {studySessionName}
+          </div>
+
+          <div className='flex items-center justify-center'>
+            <SignOut />
+          </div>
+        </div>
+        <div className='flex flex-grow'>
+          <div
+            className={
+              showPdfs
+                ? `flex w-full flex-col justify-between`
+                : `flex w-full flex-col justify-between`
+            }
+          >
+            <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
+
+            <div className=''>
+              {chatMessagesState.map(({ chat_message, id }) => {
+                // UserId !=
+                const UserIdNotEqual = 'bg-blue-50';
+                // UserId ==
+                const UserIdEqual = 'bg-green-50';
+                // Base Styling
+                const chatMessageBase = 'px-[100px] py-[20px] ';
+
+                const chatMessageCls = classNames({
+                  [chatMessageBase]: true,
+                  [UserIdEqual]: userId == userId,
+                  [UserIdNotEqual]: userId != userId,
+                });
+                return (
+                  <div key={id} className={chatMessageCls}>
+                    <div>{chat_message}</div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className='sticky bottom-0 mt-auto bg-green-50 px-[40px] pb-[20px] pt-[40px]'>
+              <div className='mx-auto flex max-w-[650px] items-center'>
+                {/* Use a container div to create the input box */}
+                <div className='relative flex-1'>
+                  <textarea
+                    value={newQuestion}
+                    placeholder='Ask Question Here'
+                    onChange={handleInputChange} // Use the updated change handler
+                    onKeyDown={handleKeyDown}
+                    rows={textareaRows} // Set the number of rows dynamically
+                    className={`focus:ring-mainBlue border-lightBlue flex w-full resize-none items-center rounded-lg border bg-white px-[40px] py-[10px] focus:outline-none focus:ring-2 ${
+                      textareaRows >= maxLines ? 'overflow-y-auto' : ''
+                    }`} // Apply dynamic styles for overflow and height
+                  />
+                </div>
+                {/* Set onClick to call the API endpoint of a new chat message */}
+                {/* Make a mock response message to act like a real conversation in which messages arrive 5 seconds later */}
+                <div
+                  className='bg-mainBlue hover:bg-lightBlue ml-2 cursor-pointer rounded-full px-[20px] py-[10px] text-center text-white'
+                  onClick={() => {
+                    sumbitNewChatMessage();
+                  }}
+                >
+                  Submit
+                </div>
               </div>
             </div>
           </div>
