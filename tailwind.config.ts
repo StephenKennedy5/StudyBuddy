@@ -33,6 +33,8 @@ export default {
         mainBlue: '#0066FF',
         lightBlue: '#3DABE4',
         lighterBlue: '#5BA9E4',
+        blueToTest: '#001F3F',
+        blueToTest2: '#002855',
       },
       keyframes: {
         flicker: {

@@ -1,12 +1,31 @@
+import classNames from 'classnames';
+
 export default function HidePdfs({ showPdfs, toggleShowPdfs }) {
+  const HidePdfsBaseCls = `bg-blueToTest hover:bg-blueToTest2 absolute z-10 
+  cursor-pointer rounded-[10px] border-[1px] border-solid border-white 
+  bg-opacity-70 px-[20px] py-[10px] text-[18px] text-white 
+  transition-transform duration-300 ease-in-out`;
+  const showPdfsTrue = 'translate-x-[10px]';
+  const showPdfsFalse = 'translate-x-[10px]';
+
+  const HidePdfsClass = classNames({
+    [HidePdfsBaseCls]: true,
+    [showPdfsTrue]: true,
+  });
+
   return (
-    <div
-      className={`bg-mainBlue hover:bg-lightBlue absolute z-10 cursor-pointer rounded-[20px] px-[20px] py-[10px] text-white transition-transform duration-300 ease-in-out ${
-        !showPdfs ? 'translate-x-[0]' : 'translate-x-[10px]'
-      }`}
-      onClick={() => toggleShowPdfs()}
-    >
-      {showPdfs ? 'Hide Pdfs' : 'Show Pdfs'}
+    <div className={HidePdfsClass} onClick={() => toggleShowPdfs()}>
+      {showPdfs ? (
+        <div>
+          Hide
+          <br />
+          Pdfs
+        </div>
+      ) : (
+        <div>
+          Show <br /> PDFs
+        </div>
+      )}
     </div>
   );
 }

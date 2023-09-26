@@ -17,6 +17,7 @@ import { fetchCreds, routes } from '@/lib/routes';
 
 import HidePdfs from '@/components/HidePdfs';
 import { usePdfs } from '@/components/PdfsContext';
+import StudySessionHeader from '@/components/StudySessionHeader';
 
 import { authOptionsCb } from './../api/auth/[...nextauth]';
 
@@ -77,11 +78,12 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   const router = useRouter();
   const { showPdfs, toggleShowPdfs } = usePdfs();
 
+  const [askingQuestion, setAskingQuestion] = useState(false);
+
   const [newQuestion, setNewQuestion] = useState('');
   const [isScrollable, setIsScrollable] = useState(false);
   const [textareaRows, setTextareaRows] = useState(1);
 
-  const maxLines = 3;
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
 
@@ -89,6 +91,11 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
 
   const sumbitNewChatMessage = async () => {
     if (newQuestion.trim() === '') return;
+    if (askingQuestion) {
+      console.log('Tried asking another question');
+      return;
+    }
+    setAskingQuestion(true);
 
     const requestBody = { chat_message: newQuestion };
 
@@ -108,6 +115,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
         const newMessage = await response.json();
         setChatMessages(() => [...newMessage]);
         setNewQuestion('');
+        setAskingQuestion(false);
         // Perform any other necessary actions
       } else {
         console.error('Chat message failed to upload');
@@ -115,16 +123,6 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
     } catch (error) {
       console.error('Error uploading chat message: ', error);
     }
-  };
-
-  const handleInputChange = (e) => {
-    // Update the input value
-    setNewQuestion(e.target.value);
-
-    // Check if the input has more lines than maxLines
-    const lines = e.target.value.split('\n');
-    const newRows = Math.min(maxLines, Math.max(1, lines.length));
-    setTextareaRows(newRows);
   };
 
   const handleKeyDown = (e) => {
@@ -135,6 +133,15 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   };
 
   // Create Style Class for PDFS when hidden and shown
+  const baseTextStyle = 'text-white text-[18px] leading-normal py-[50px] ';
+  const pdfsShownStyle = 'px-[100px]';
+  const pdfsHiddenStyle = 'px-[150px]';
+
+  const textCls = classNames({
+    [baseTextStyle]: true,
+    [pdfsShownStyle]: showPdfs,
+    [pdfsHiddenStyle]: !showPdfs,
+  });
 
   // Create Style class for Chat when pdf hidden and shown
 
@@ -151,66 +158,46 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
       </div>
 
       <div className='flex w-full flex-col'>
-        <div className='flex justify-between px-[30px] py-[25px]'>
-          <div
-            onClick={() => router.push('/dashboard')}
-            className=' bg-mainBlue hover:bg-lightBlue cursor-pointer rounded-[10px] px-[10px] py-[15px] text-center text-white'
-          >
-            Dashboard
-          </div>
-
-          <div className='flex items-center justify-center p-[10px] text-center'>
-            {studySessionName}
-          </div>
-
-          <div className='flex items-center justify-center'>
-            <SignOut />
-          </div>
-        </div>
-        <div className='flex flex-grow'>
-          <div
-            className={
-              showPdfs
-                ? `flex w-full flex-col justify-between`
-                : `flex w-full flex-col justify-between`
-            }
-          >
+        <StudySessionHeader studySessionName={studySessionName} />
+        <div className='bg-blueToTest flex flex-grow'>
+          <div className='flex w-full flex-col justify-between pt-[20px]'>
             <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
 
-            <div className=''>
+            <div className='bg-blueToTest2'>
               {chatMessagesState.map(({ chat_message, id }) => {
                 // UserId !=
                 const UserIdNotEqual = 'bg-blue-50';
                 // UserId ==
-                const UserIdEqual = 'bg-green-50';
+                const UserIdEqual = 'bg-blueToTest';
                 // Base Styling
-                const chatMessageBase = 'px-[100px] py-[20px] ';
+                const chatMessageBase = '';
 
                 const chatMessageCls = classNames({
                   [chatMessageBase]: true,
                   [UserIdEqual]: userId == userId,
                   [UserIdNotEqual]: userId != userId,
+                  [textCls]: true,
                 });
                 return (
                   <div key={id} className={chatMessageCls}>
-                    <div>{chat_message}</div>
+                    <div className=''>{chat_message}</div>
                   </div>
                 );
               })}
             </div>
-            <div className='sticky bottom-0 mt-auto bg-green-50 px-[40px] pb-[20px] pt-[40px]'>
+            <div className='bg-blueToTest2 sticky bottom-0 mt-auto bg-opacity-70 px-[40px] pb-[20px] pt-[40px]'>
               <div className='mx-auto flex max-w-[650px] items-center'>
                 {/* Use a container div to create the input box */}
                 <div className='relative flex-1'>
                   <textarea
                     value={newQuestion}
                     placeholder='Ask Question Here'
-                    onChange={handleInputChange} // Use the updated change handler
                     onKeyDown={handleKeyDown}
-                    rows={textareaRows} // Set the number of rows dynamically
+                    onChange={(e) => setNewQuestion(e.target.value)}
+                    rows={3}
                     className={`focus:ring-mainBlue border-lightBlue flex w-full resize-none items-center rounded-lg border bg-white px-[40px] py-[10px] focus:outline-none focus:ring-2 ${
-                      textareaRows >= maxLines ? 'overflow-y-auto' : ''
-                    }`} // Apply dynamic styles for overflow and height
+                      textareaRows >= 3 ? 'overflow-y-auto' : ''
+                    }`}
                   />
                 </div>
                 {/* Set onClick to call the API endpoint of a new chat message */}

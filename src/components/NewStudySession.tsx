@@ -115,8 +115,8 @@ function NewStudySession({ id }) {
           setIsCreateNewOpen(!isCreateNewOpen);
         }}
         className={`
-                  group mx-[20px] mb-[20px] flex h-[150px] w-[250px] transform cursor-pointer
-                  flex-col justify-center rounded-[20px] bg-white p-[20px] text-center align-middle transition
+                  group mx-[20px] mb-[20px] flex h-[150px] w-[250px] transform cursor-pointer flex-col justify-center rounded-[20px]
+                  bg-white p-[20px] text-center align-middle text-[18px] font-bold leading-normal transition
                   duration-300 ease-in-out hover:-translate-y-1 hover:bg-gray-200 hover:shadow-lg
                 `}
       >

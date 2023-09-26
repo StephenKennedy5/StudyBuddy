@@ -62,18 +62,18 @@ export const routes = {
     return `${baseUrl}/api/${userId}/new-study-session`;
   },
   getChatLogs(userId: string, studySessionId: string): string {
-    //   const apiEndpointChatLogs = `${host}/api/${userId}/study-session/${studySessionId}/chatlogs`;
     return `${baseUrl}/api/${userId}/study-session/${studySessionId}/chatlogs`;
   },
   getStudySessions(userId: string, studySessionId: string): string {
-    // const apiEndpointStudySession = `${host}/api/${userId}/study-session/${studySessionId}/getStudySession`;
     return `${baseUrl}/api/${userId}/study-session/${studySessionId}/getStudySession`;
   },
   newChatMessage(userId: string, studySessionId: string): string {
-    // const apiCall = `${process.env.NEXT_PUBLIC_API_HOST}/api/${process.env.NEXT_PUBLIC_USER_ID}/study-session/${StudySessionId}/newchatmessage`;
     return `${baseUrl}/api/${userId}/study-session/${studySessionId}/newchatmessage`;
   },
   newPdf(userId: string): string {
     return `${baseUrl}/api/${userId}/newPdf`;
+  },
+  openAiMessage(): string {
+    return `${baseUrl}/api/openai`;
   },
 };

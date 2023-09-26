@@ -145,19 +145,19 @@ function dashboard() {
             : '-translate-x-full'
         }`}
       >
-        {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
+        {showPdfs ? <div>{renderResultsPDFS()}</div> : <div className=''></div>}
       </div>
       <div>
         <div className='flex justify-between px-[30px] py-[30px]'>
           <div className='flex items-center p-[10px]'>Logo</div>
-          <div className='mx-auto flex items-center p-[10px] '>
+          <div className='mx-auto flex items-center p-[10px] text-[24px] font-bold leading-normal'>
             Welcome {userName}
           </div>
           <div>
             <SignOut />
           </div>
         </div>
-        <div className='bg-grey mx-auto flex min-h-screen'>
+        <div className='bg-blueToTest mx-auto flex min-h-screen transition-transform duration-300'>
           <div className='px-[50px] py-[20px]'>
             <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
             <div>{renderResultsStudySessions()}</div>

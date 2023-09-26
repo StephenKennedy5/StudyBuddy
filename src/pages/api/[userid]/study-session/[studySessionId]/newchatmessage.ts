@@ -1,4 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { Configuration, OpenAIApi } from 'openai';
+
+import { fetchCreds, routes } from '@/lib/routes';
 
 import knex from '../../../../../../database/knex';
 
@@ -34,6 +37,26 @@ export default async function GetStudySessions(
       .select()
       .where('study_session_id', studySessionId)
       .orderBy('creation_date');
+
+    console.log({ chat_messages });
+    // Call openAi chat message
+    console.log('Chat Message for OpenAI');
+    console.log({ chat_message });
+
+    const call_openai_api = await fetch(routes.openAiMessage(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(chat_message),
+    });
+
+    const result = await call_openai_api.json();
+
+    // insert chat
+
+    console.log('Return from openai Message');
+    console.log({ Response: result.text });
 
     res.status(200).json(chat_messages);
   } catch (error) {

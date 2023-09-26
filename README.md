@@ -21,6 +21,8 @@ Black: #1B1B20
 White: #FFFFFF
 Grey: #F6F6F7
 
+https://stackoverflow.com/questions/75774873/openai-chatgpt-gpt-3-5-api-error-this-is-a-chat-model-and-not-supported-in-t
+
 # Docker Database Commands
 
 Run the Docker Database (`-d` runs it in the background)
