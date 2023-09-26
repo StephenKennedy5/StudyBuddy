@@ -74,6 +74,6 @@ export const routes = {
     return `${baseUrl}/api/${userId}/newPdf`;
   },
   openAiMessage(): string {
-    return `${baseUrl}/api/openai`;
+    return `${baseUrl}/api/openAiMessage`;
   },
 };

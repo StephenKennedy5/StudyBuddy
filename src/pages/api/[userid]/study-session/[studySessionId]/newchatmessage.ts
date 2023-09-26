@@ -31,17 +31,8 @@ export default async function GetStudySessions(
       chat_message: chat_message,
       user_id: userId,
       study_session_id: studySessionId,
+      chat_bot: false,
     });
-
-    const chat_messages = await knex('chat_messages')
-      .select()
-      .where('study_session_id', studySessionId)
-      .orderBy('creation_date');
-
-    console.log({ chat_messages });
-    // Call openAi chat message
-    console.log('Chat Message for OpenAI');
-    console.log({ chat_message });
 
     const call_openai_api = await fetch(routes.openAiMessage(), {
       method: 'POST',
@@ -53,10 +44,21 @@ export default async function GetStudySessions(
 
     const result = await call_openai_api.json();
 
-    // insert chat
-
     console.log('Return from openai Message');
     console.log({ Response: result.text });
+
+    const chat_bot_response = await knex('chat_messages').insert({
+      id: uuid.v4(),
+      chat_message: result.text,
+      user_id: userId,
+      study_session_id: studySessionId,
+      chat_bot: true,
+    });
+
+    const chat_messages = await knex('chat_messages')
+      .select()
+      .where('study_session_id', studySessionId)
+      .orderBy('creation_date');
 
     res.status(200).json(chat_messages);
   } catch (error) {

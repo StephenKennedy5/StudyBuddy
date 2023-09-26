@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { getServerSession } from 'next-auth/next';
 import { signOut, useSession } from 'next-auth/react';
 import { ParsedUrlQuery } from 'querystring';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SignOut from 'src/components/buttons/signOutButton';
 import Chat from 'src/components/Chat';
 // import NewPdf from 'src/components/newPdf';
@@ -20,16 +20,6 @@ import { usePdfs } from '@/components/PdfsContext';
 import StudySessionHeader from '@/components/StudySessionHeader';
 
 import { authOptionsCb } from './../api/auth/[...nextauth]';
-
-/*
-
-    "id": "9f10300c-2d4a-4e52-b67a-4b1910492545",
-    "chat_id": "80d2fb15-0df8-44b6-b389-2e817f7b82b5",
-    "chat_message": "I need help with understanding the following concept",
-    "creation_date": "2023-08-18T12:00:00.000Z",
-    "user_id": "1972c0eb-a3ed-4377-b09f-79684995899f"
-
-*/
 
 /* 
     Create Component for chat messages between User and Bot
@@ -46,6 +36,7 @@ interface ChatLogsProps {
   chat_message: string;
   creation_date: string;
   user_id: string;
+  chat_bot: boolean;
 }
 
 interface PDFProps {
@@ -77,17 +68,26 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   const studySessionName = studySession.session_name;
   const router = useRouter();
   const { showPdfs, toggleShowPdfs } = usePdfs();
+  const chatContainerRef = useRef(null);
 
   const [askingQuestion, setAskingQuestion] = useState(false);
 
   const [newQuestion, setNewQuestion] = useState('');
-  const [isScrollable, setIsScrollable] = useState(false);
   const [textareaRows, setTextareaRows] = useState(1);
 
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
 
   const [chatMessagesState, setChatMessages] = useState(chatLogs);
+
+  // https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
+  const scrollToBottom = () => {
+    chatContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatMessagesState]);
 
   const sumbitNewChatMessage = async () => {
     if (newQuestion.trim() === '') return;
@@ -164,18 +164,18 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
             <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
 
             <div className='bg-blueToTest2'>
-              {chatMessagesState.map(({ chat_message, id }) => {
+              {chatMessagesState.map(({ chat_message, id, chat_bot }) => {
                 // UserId !=
-                const UserIdNotEqual = 'bg-blue-50';
+                const chatBotFalse = 'bg-blueToTest';
                 // UserId ==
-                const UserIdEqual = 'bg-blueToTest';
+                const chatBotTrue = 'bg-blueToTest2';
                 // Base Styling
                 const chatMessageBase = '';
 
                 const chatMessageCls = classNames({
                   [chatMessageBase]: true,
-                  [UserIdEqual]: userId == userId,
-                  [UserIdNotEqual]: userId != userId,
+                  [chatBotTrue]: chat_bot,
+                  [chatBotFalse]: !chat_bot,
                   [textCls]: true,
                 });
                 return (
@@ -184,6 +184,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
                   </div>
                 );
               })}
+              <div ref={chatContainerRef} />
             </div>
             <div className='bg-blueToTest2 sticky bottom-0 mt-auto bg-opacity-70 px-[40px] pb-[20px] pt-[40px]'>
               <div className='mx-auto flex max-w-[650px] items-center'>

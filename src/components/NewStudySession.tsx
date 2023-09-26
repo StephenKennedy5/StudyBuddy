@@ -9,7 +9,7 @@ interface NewStudySessionProps {
   id: string;
 }
 
-function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router, id }) {
+function Modal({ isCreateNewOpen, setIsCreateNewOpen, router, id }) {
   const [subject, setSubject] = useState('');
   const [sessionName, setSessionName] = useState('');
   const [newStudySessionValidation, setNewStudySessionValidation] =
@@ -68,16 +68,16 @@ function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router, id }) {
   };
 
   return (
-    <div className='flex justify-end'>
-      <div
-        className='absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 transform bg-gray-200 p-8'
-        onClick={() => setIsCreateNewOpen(!isCreateNewOpen)}
-      >
+    <div
+      onClick={() => setIsCreateNewOpen(!isCreateNewOpen)}
+      className='fixed inset-0 z-10 flex items-center justify-center bg-gray-200 bg-opacity-50'
+    >
+      <div className='p-8'>
         <div
-          className='cursor-default rounded bg-white p-[20px]'
+          className='flex flex-col items-center justify-center rounded bg-white p-4'
           onClick={(e) => e.stopPropagation()}
         >
-          <div className='py-[20px]'>
+          <div className='py-4'>
             Subject:{' '}
             <input
               type='text'
@@ -85,7 +85,7 @@ function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router, id }) {
               onChange={(e) => setSubject(e.target.value)}
             />
           </div>
-          <div className='py-[20px]'>
+          <div className='py-4'>
             Session Name:{' '}
             <input
               type='text'
@@ -123,7 +123,7 @@ function NewStudySession({ id }) {
         Create a New Study Session
       </div>
       {isCreateNewOpen ? (
-        <PopUp
+        <Modal
           isCreateNewOpen={isCreateNewOpen}
           setIsCreateNewOpen={setIsCreateNewOpen}
           router={router}
