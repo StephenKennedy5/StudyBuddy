@@ -150,7 +150,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
       <div
         className={`bg-lightBlue py-[10px] transition-transform duration-300  ${
           showPdfs
-            ? 'w-1/4 min-w-[200px] translate-x-0 px-[20px]'
+            ? 'w-1/4 min-w-[200px] max-w-[220px] translate-x-0 px-[20px]'
             : '-translate-x-full'
         }`}
       >

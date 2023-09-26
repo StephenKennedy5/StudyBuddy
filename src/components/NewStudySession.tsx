@@ -16,9 +16,10 @@ function Modal({ isCreateNewOpen, setIsCreateNewOpen, router, id }) {
     useState(false);
 
   const CreateButtonBase =
-    'mx-auto cursor-pointer px-[20px] py-[10px] text-center';
-  const CreateButtonFalse = 'bg-slate-50';
-  const CreateButtonTrue = 'bg-green-100';
+    'mx-auto cursor-pointer px-[20px] py-[10px] text-center rounded-[10px]';
+  const CreateButtonFalse =
+    'bg-grey text-black hover:bg-blueToTest hover:text-white';
+  const CreateButtonTrue = 'bg-mainBlue text-white hover:bg-blueToTest';
 
   const CreateButtonCls = classNames({
     [CreateButtonBase]: true,
@@ -70,27 +71,39 @@ function Modal({ isCreateNewOpen, setIsCreateNewOpen, router, id }) {
   return (
     <div
       onClick={() => setIsCreateNewOpen(!isCreateNewOpen)}
-      className='fixed inset-0 z-10 flex items-center justify-center bg-gray-200 bg-opacity-50'
+      className='bg-blueToTest2 fixed inset-0 z-10 flex items-center justify-center bg-opacity-40'
     >
-      <div className='p-8'>
+      <div className=''>
         <div
-          className='flex flex-col items-center justify-center rounded bg-white p-4'
+          className='flex min-w-[500px] flex-col items-center justify-center rounded-[20px] bg-white px-[40px] py-[30px]'
           onClick={(e) => e.stopPropagation()}
         >
-          <div className='py-4'>
-            Subject:{' '}
+          <div className='relative w-full'>
+            <div
+              onClick={() => setIsCreateNewOpen(!isCreateNewOpen)}
+              className='hover:bg-lighterBlue bg-mainBlue absolute -right-[25px] -top-[20px] cursor-pointer rounded-[10px] px-[10px] text-white'
+            >
+              X
+            </div>
+          </div>
+          <div className='flex w-full items-center justify-between py-[20px] text-black'>
+            <div>Subject: </div>
+
             <input
               type='text'
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
+              className='focus:ring-blueToTest2 flex w-4/5 rounded-[10px] border-black px-[20px] py-[10px] text-black'
             />
           </div>
-          <div className='py-4'>
-            Session Name:{' '}
+          <div className='flex w-full items-center justify-between py-[20px] text-black'>
+            <div>Session Name: </div>
+
             <input
               type='text'
               value={sessionName}
               onChange={(e) => setSessionName(e.target.value)}
+              className='focus:ring-blueToTest2 flex w-full rounded-[10px] border-black px-[20px] py-[10px] text-black'
             />
           </div>
           <div
