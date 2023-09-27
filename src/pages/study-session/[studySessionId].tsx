@@ -161,7 +161,9 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
         <StudySessionHeader studySessionName={studySessionName} />
         <div className='bg-blueToTest flex flex-grow'>
           <div className='flex w-full flex-col justify-between pt-[20px]'>
-            <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
+            <div className='relative -top-[10px]'>
+              <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
+            </div>
 
             <div className='bg-blueToTest2'>
               {chatMessagesState.map(({ chat_message, id, chat_bot }) => {

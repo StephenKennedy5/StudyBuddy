@@ -14,7 +14,10 @@ export default async function GetStudySessions(
     const userId = req.query.userid;
     const studySessions = await knex('study_sessions')
       .select()
-      .where('user_id', userId);
+      .where('user_id', userId)
+      .orderBy('updated_date', 'desc');
+
+    console.log(studySessions);
 
     res.status(200).json(studySessions);
   } catch (error) {

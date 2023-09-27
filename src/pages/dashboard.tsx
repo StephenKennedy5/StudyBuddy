@@ -145,8 +145,8 @@ function dashboard() {
       >
         {showPdfs ? <div>{renderResultsPDFS()}</div> : <div className=''></div>}
       </div>
-      <div className='flex-grow overflow-auto'>
-        <div className='flex justify-between px-[30px] py-[30px]'>
+      <div className='bg-blueToTest flex-grow overflow-auto'>
+        <div className='flex justify-between bg-white px-[30px] py-[30px]'>
           <div className='flex items-center p-[10px]'>Logo</div>
           <div className='mx-auto flex items-center p-[10px] text-[24px] font-bold leading-normal'>
             Welcome {userName}
@@ -155,15 +155,15 @@ function dashboard() {
             <SignOut />
           </div>
         </div>
-        <div className='bg-blueToTest mx-auto flex min-h-screen justify-center transition-transform duration-300'>
-          <div className='relative right-[30px] top-[10px]'>
-            <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
-          </div>
-          <div className='px-[50px] py-[20px]'>
+        <div className='relative top-[10px]'>
+          <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
+        </div>
+        <div className='bg-blueToTest mx-auto flex min-h-screen flex-wrap justify-center  transition-transform duration-300'>
+          <div className='flex flex-wrap px-[50px] py-[20px]'>
             <div>{renderResultsStudySessions()}</div>
           </div>
         </div>
-        <div className='px-[30px] py-[40px]'>Footer</div>
+        <div className='bg-white px-[30px] py-[40px]'>Footer</div>
       </div>
     </div>
   );
