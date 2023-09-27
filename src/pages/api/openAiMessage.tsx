@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
+import { ChatCompletionMessageParam } from 'openai';
 
 const openAiKey = process.env.OPENAI_API_KEY;
 if (!openAiKey) {
@@ -10,12 +11,25 @@ const openai = new OpenAI({ apiKey: openAiKey });
 
 export default async function TestOpenAI(req, res) {
   try {
-    const chat_message = req.body;
+    const { chat_message, studySessionName, studySessionSubject } = req.body;
+    console.log('IN OPENAI ENDPOINT');
+    console.log(studySessionName);
+    console.log(studySessionSubject);
 
     if (chat_message !== undefined) {
+      const message: ChatCompletionMessageParam[] = [
+        {
+          role: 'system',
+          content: `You are an expert in ${studySessionSubject} with decades worth of experience.`,
+        },
+        {
+          role: 'user',
+          content: `${chat_message}`,
+        },
+      ];
       const response = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: `${chat_message}` }],
+        messages: message,
         temperature: 0.7,
       });
 

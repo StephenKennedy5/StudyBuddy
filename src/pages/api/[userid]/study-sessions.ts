@@ -17,8 +17,6 @@ export default async function GetStudySessions(
       .where('user_id', userId)
       .orderBy('updated_date', 'desc');
 
-    console.log(studySessions);
-
     res.status(200).json(studySessions);
   } catch (error) {
     console.error('Error:', error);

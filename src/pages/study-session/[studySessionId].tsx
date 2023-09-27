@@ -66,6 +66,7 @@ interface StudySessionTypes {
 
 function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   const studySessionName = studySession.session_name;
+  const studySessionSubject = studySession.subject;
   const router = useRouter();
   const { showPdfs, toggleShowPdfs } = usePdfs();
   const chatContainerRef = useRef(null);
@@ -97,7 +98,13 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
     }
     setAskingQuestion(true);
 
-    const requestBody = { chat_message: newQuestion };
+    // Add study session name/subject to following question
+
+    const requestBody = {
+      chat_message: newQuestion,
+      studySessionName: studySessionName,
+      studySessionSubject: studySessionSubject,
+    };
 
     try {
       const response = await fetch(
