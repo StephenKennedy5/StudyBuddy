@@ -1,6 +1,6 @@
 function CallToAction() {
   return (
-    <div className='bg-softgray flex flex-col p-[40px]'>
+    <div className='bg-grey flex flex-col p-[40px]'>
       <div className=' text-title mb-[40px] leading-normal'>
         <div className='rounded-standard inline-block bg-white px-[50px] py-[40px]'>
           Your New <br /> Study Buddy

@@ -9,16 +9,17 @@ interface NewStudySessionProps {
   id: string;
 }
 
-function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router, id }) {
+function Modal({ isCreateNewOpen, setIsCreateNewOpen, router, id }) {
   const [subject, setSubject] = useState('');
   const [sessionName, setSessionName] = useState('');
   const [newStudySessionValidation, setNewStudySessionValidation] =
     useState(false);
 
   const CreateButtonBase =
-    'mx-auto cursor-pointer px-[20px] py-[10px] text-center';
-  const CreateButtonFalse = 'bg-slate-50';
-  const CreateButtonTrue = 'bg-green-100';
+    'mx-auto cursor-pointer px-[20px] py-[10px] text-center rounded-[10px]';
+  const CreateButtonFalse =
+    'bg-grey text-black hover:bg-blueToTest hover:text-white';
+  const CreateButtonTrue = 'bg-mainBlue text-white hover:bg-blueToTest';
 
   const CreateButtonCls = classNames({
     [CreateButtonBase]: true,
@@ -68,29 +69,41 @@ function PopUp({ isCreateNewOpen, setIsCreateNewOpen, router, id }) {
   };
 
   return (
-    <div className='flex justify-end'>
-      <div
-        className='absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 transform bg-gray-200 p-8'
-        onClick={() => setIsCreateNewOpen(!isCreateNewOpen)}
-      >
+    <div
+      onClick={() => setIsCreateNewOpen(!isCreateNewOpen)}
+      className='bg-blueToTest2 fixed inset-0 z-10 flex items-center justify-center bg-opacity-40'
+    >
+      <div className=''>
         <div
-          className='cursor-default rounded bg-white p-[20px]'
+          className='flex min-w-[500px] flex-col items-center justify-center rounded-[20px] bg-white px-[40px] py-[30px]'
           onClick={(e) => e.stopPropagation()}
         >
-          <div className='py-[20px]'>
-            Subject:{' '}
+          <div className='relative w-full'>
+            <div
+              onClick={() => setIsCreateNewOpen(!isCreateNewOpen)}
+              className='hover:bg-lighterBlue bg-mainBlue absolute -right-[25px] -top-[20px] cursor-pointer rounded-[10px] px-[10px] text-white'
+            >
+              X
+            </div>
+          </div>
+          <div className='flex w-full items-center justify-between py-[20px] text-black'>
+            <div>Subject: </div>
+
             <input
               type='text'
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
+              className='focus:ring-blueToTest2 flex w-4/5 rounded-[10px] border-black px-[20px] py-[10px] text-black'
             />
           </div>
-          <div className='py-[20px]'>
-            Session Name:{' '}
+          <div className='flex w-full items-center justify-between py-[20px] text-black'>
+            <div>Session Name: </div>
+
             <input
               type='text'
               value={sessionName}
               onChange={(e) => setSessionName(e.target.value)}
+              className='focus:ring-blueToTest2 flex w-full rounded-[10px] border-black px-[20px] py-[10px] text-black'
             />
           </div>
           <div
@@ -115,15 +128,15 @@ function NewStudySession({ id }) {
           setIsCreateNewOpen(!isCreateNewOpen);
         }}
         className={`
-                  group mx-[20px] mb-[20px] flex h-[150px] w-[250px] transform cursor-pointer
-                  flex-col justify-center rounded-[20px] bg-white p-[20px] text-center align-middle transition
+                  group mx-[20px] mb-[20px] flex h-[150px] w-[250px] transform cursor-pointer flex-col justify-center rounded-[20px]
+                  bg-white p-[20px] text-center align-middle text-[18px] font-bold leading-normal transition
                   duration-300 ease-in-out hover:-translate-y-1 hover:bg-gray-200 hover:shadow-lg
                 `}
       >
         Create a New Study Session
       </div>
       {isCreateNewOpen ? (
-        <PopUp
+        <Modal
           isCreateNewOpen={isCreateNewOpen}
           setIsCreateNewOpen={setIsCreateNewOpen}
           router={router}

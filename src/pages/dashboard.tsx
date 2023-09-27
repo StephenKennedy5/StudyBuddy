@@ -5,11 +5,15 @@ import { getServerSession } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import * as React from 'react';
 import { useState } from 'react';
+import SignOut from 'src/components/buttons/signOutButton';
 import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
 import StudySessionMap from 'src/components/StudySessionDashboard';
 
 import { fetchCreds, routes } from '@/lib/routes';
+
+import HidePdfs from '@/components/HidePdfs';
+import { usePdfs } from '@/components/PdfsContext';
 
 import { authOptionsCb } from './api/auth/[...nextauth]';
 
@@ -35,24 +39,12 @@ interface StudySessionArray {
   userPdfs: UserPdfsProps[];
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-const FETCH_CREDENTIALS = process.env.NEXT_PUBLIC_FETCH_CREDENTIALS;
-
-if (!baseUrl) {
-  throw new Error('NEXT_PUBLIC_BASE_URL env variable is needed');
-}
-
-// if (!FETCH_CREDENTIALS) {
-//   throw new Error('need to define NEXT_PUBLIC_FETCH_CREDENTIALS');
-// }
-
-// const fetchCreds = FETCH_CREDENTIALS || 'same-origin';
-
 function dashboard() {
-  const [showPdfs, setShowPdfs] = useState(true);
+  // const [showPdfs, setShowPdfs] = useState(true);
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
   const userName = session?.user?.name as string;
+  const { showPdfs, toggleShowPdfs } = usePdfs();
 
   const {
     isLoading: isLoadingStudySessions,
@@ -107,14 +99,12 @@ function dashboard() {
     // session.user needs to exists for isSuccess to be true
     if (isSuccessStudySessions && session?.user) {
       return (
-        <div>
-          <div>
-            <StudySessionMap
-              StudySessions={dataStudySessions}
-              showPdfs={showPdfs}
-              id={userId}
-            />
-          </div>
+        <div className=''>
+          <StudySessionMap
+            StudySessions={dataStudySessions}
+            showPdfs={showPdfs}
+            id={userId}
+          />
         </div>
       );
     }
@@ -137,9 +127,7 @@ function dashboard() {
     if (isSuccessPDFs && session?.user) {
       return (
         <div>
-          <div>
-            <PDFS pdfList={dataPDFs} />
-          </div>
+          <PDFS pdfList={dataPDFs} />
         </div>
       );
     }
@@ -147,40 +135,36 @@ function dashboard() {
   };
 
   return (
-    <div className=''>
-      <div className='flex justify-between px-[30px] py-[30px]'>
-        <div className='flex items-center p-[10px]'>Logo</div>
-        <div className='flex items-center p-[10px]'>Welcome {userName}</div>
-        <div
-          onClick={() => signOut({ callbackUrl: '/' })}
-          className='cursor-pointer rounded-[10px] bg-blue-50 px-[20px] py-[10px]'
-        >
-          LogOut
-        </div>
+    <div className='flex'>
+      <div
+        className={`bg-lightBlue overflow-hidden  py-[10px] transition-transform duration-300  ${
+          showPdfs
+            ? 'w-1/4 min-w-[200px] max-w-[220px] translate-x-0 px-[20px]'
+            : '-translate-x-full'
+        }`}
+      >
+        {showPdfs ? <div>{renderResultsPDFS()}</div> : <div className=''></div>}
       </div>
-      <div className='mx-auto flex min-h-screen bg-slate-100'>
-        <div
-          className={`max-w-[40%] bg-blue-300 px-[20px] py-[10px] transition-transform duration-300  ${
-            showPdfs ? 'translate-x-0 ' : '-translate-x-full'
-          }`}
-        >
-          {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
-        </div>
-
-        <div className='px-[30px] py-[20px]'>
-          <div
-            className={`absolute z-10 cursor-pointer bg-green-100 p-[20px] transition-transform duration-300 ease-in-out ${
-              !showPdfs ? 'translate-x-[-30px]' : 'translate-x-[-20px]'
-            }`}
-            onClick={() => setShowPdfs(!showPdfs)}
-          >
-            {showPdfs ? 'Hide Pdfs' : 'Show Pdfs'}
+      <div className='flex-grow overflow-auto'>
+        <div className='flex justify-between px-[30px] py-[30px]'>
+          <div className='flex items-center p-[10px]'>Logo</div>
+          <div className='mx-auto flex items-center p-[10px] text-[24px] font-bold leading-normal'>
+            Welcome {userName}
           </div>
-
-          <div>{renderResultsStudySessions()}</div>
+          <div>
+            <SignOut />
+          </div>
         </div>
+        <div className='bg-blueToTest mx-auto flex min-h-screen justify-center transition-transform duration-300'>
+          <div className='relative right-[30px] top-[10px]'>
+            <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
+          </div>
+          <div className='px-[50px] py-[20px]'>
+            <div>{renderResultsStudySessions()}</div>
+          </div>
+        </div>
+        <div className='px-[30px] py-[40px]'>Footer</div>
       </div>
-      <div className='px-[30px] py-[40px]'>Footer</div>
     </div>
   );
 }

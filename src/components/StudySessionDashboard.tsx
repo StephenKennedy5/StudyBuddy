@@ -27,9 +27,10 @@ function StudySessionMap({
   const router = useRouter();
 
   const StudySessionMapBase =
-    'flex flex-wrap justify-evenly px-[30px] py-[20px] mx-[50px]';
+    'flex flex-wrap justify-evenly px-[30px] py-[20px] mx-[50px] max-w-[700px]';
   const StudySessionMapPdfTrue = '';
-  const StudySessionMapPdfFalse = '';
+  const StudySessionMapPdfFalse = ' ';
+  const StudySessionAnimation = '';
 
   const StudySessionMapCls = classNames({
     [StudySessionMapBase]: true,
@@ -38,7 +39,7 @@ function StudySessionMap({
   });
 
   return (
-    <div>
+    <div className=''>
       <div className={StudySessionMapCls}>
         <div className=''>
           <NewStudySession id={id} />
@@ -51,12 +52,16 @@ function StudySessionMap({
                 className={`
                   group mx-[20px] mb-[20px] flex h-[150px] w-[250px] transform cursor-pointer
                   flex-col justify-center rounded-[20px] bg-white p-[20px] text-center align-middle transition
-                  duration-300 ease-in-out hover:-translate-y-1 hover:bg-gray-200 hover:shadow-lg
+                  duration-300 ease-in-out hover:-translate-y-1 hover:bg-gray-200
                 `}
                 onClick={() => router.push(`/study-session/${id}`)}
               >
-                <div className='p-[10px]'>{subject}</div>
-                <div className='p-[10px]'>{session_name}</div>
+                <div className='p-[10px] text-[18px] font-bold leading-normal'>
+                  {subject}
+                </div>
+                <div className='p-[10px] text-[16px] font-semibold leading-normal'>
+                  {session_name}
+                </div>
               </div>
             );
           }

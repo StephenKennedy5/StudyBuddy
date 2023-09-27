@@ -1,23 +1,19 @@
-/* 
-    Component for StudySessions that will display the chat messages
-    Will recieve an array of objects that will be sorted based on creation date
-    Sort messages based on 2 different UserIDs
-    User ID should be a singular background color
-    Bot Message should be a different color
-    Newest Message will be added to the button of the screen 
-
-*/
-
 import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { fetchCreds, routes } from '@/lib/routes';
 
 function Chat({ chatMessages, studySessionId }) {
   const [newQuestion, setNewQuestion] = useState('');
+  const [isScrollable, setIsScrollable] = useState(false);
+  const [textareaRows, setTextareaRows] = useState(1);
+
+  const maxLines = 3;
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
+
+  const [chatMessagesState, setChatMessages] = useState(chatMessages);
 
   const sumbitNewChatMessage = async () => {
     if (newQuestion.trim() === '') return;
@@ -36,26 +32,46 @@ function Chat({ chatMessages, studySessionId }) {
         }
       );
       if (response.ok) {
-        console.log('Chat messag sent successfully');
+        console.log('Chat message sent successfully');
+        const newMessage = await response.json();
+        setChatMessages(() => [...newMessage]);
+        setNewQuestion('');
         // Perform any other necessary actions
       } else {
-        console.error('chat messaged failed to upload');
+        console.error('Chat message failed to upload');
       }
     } catch (error) {
       console.error('Error uploading chat message: ', error);
     }
   };
 
+  const handleInputChange = (e) => {
+    // Update the input value
+    setNewQuestion(e.target.value);
+
+    // Check if the input has more lines than maxLines
+    const lines = e.target.value.split('\n');
+    const newRows = Math.min(maxLines, Math.max(1, lines.length));
+    setTextareaRows(newRows);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sumbitNewChatMessage();
+    }
+  };
+
   return (
-    <div>
+    <div className='flex flex-col justify-between'>
       <div>
-        {chatMessages.map(({ chat_message, id }) => {
+        {chatMessagesState.map(({ chat_message, id }) => {
           // UserId !=
           const UserIdNotEqual = 'bg-blue-50';
           // UserId ==
           const UserIdEqual = 'bg-green-50';
           // Base Styling
-          const chatMessageBase = 'px-[40px] py-[20px] ';
+          const chatMessageBase = 'px-[100px] py-[20px] ';
 
           const chatMessageCls = classNames({
             [chatMessageBase]: true,
@@ -69,21 +85,27 @@ function Chat({ chatMessages, studySessionId }) {
           );
         })}
       </div>
-      <div className='mt-[20px] bg-green-50 px-[40px] py-[20px]'>
-        <div className='flex'>
-          <input
-            type='text'
-            value={newQuestion}
-            onChange={(e) => {
-              setNewQuestion(e.target.value);
-            }}
-          />
-          {/* Set Onclick to Call API endpoint of new chat message
-          Make mock response message to act like real convo in which messages arrives 5 secs later */}
+      <div className='bg-green-50 px-[40px] pb-[20px] pt-[40px]'>
+        <div className='mx-auto flex max-w-[650px] items-center'>
+          {/* Use a container div to create the input box */}
+          <div className='relative flex-1'>
+            <textarea
+              value={newQuestion}
+              placeholder='Ask Question Here'
+              onChange={handleInputChange} // Use the updated change handler
+              onKeyDown={handleKeyDown}
+              rows={textareaRows} // Set the number of rows dynamically
+              className={`focus:ring-mainBlue border-lightBlue flex w-full resize-none items-center rounded-lg border bg-white px-[40px] py-[10px] focus:outline-none focus:ring-2 ${
+                textareaRows >= maxLines ? 'overflow-y-auto' : ''
+              }`} // Apply dynamic styles for overflow and height
+            />
+          </div>
+          {/* Set onClick to call the API endpoint of a new chat message */}
+          {/* Make a mock response message to act like a real conversation in which messages arrive 5 seconds later */}
           <div
-            className='ml-[10px] bg-blue-100 px-[20px] py-[10px]'
+            className='bg-mainBlue hover:bg-lightBlue ml-2 cursor-pointer rounded-full px-[20px] py-[10px] text-center text-white'
             onClick={() => {
-              sumbitNewChatMessage(), setNewQuestion('');
+              sumbitNewChatMessage();
             }}
           >
             Submit
