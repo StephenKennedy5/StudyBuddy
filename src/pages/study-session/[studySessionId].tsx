@@ -133,7 +133,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   };
 
   // Create Style Class for PDFS when hidden and shown
-  const baseTextStyle = 'text-white text-[18px] leading-normal py-[50px] ';
+  const baseTextStyle = 'text-white text-[18px] leading-normal py-[50px]';
   const pdfsShownStyle = 'px-[100px]';
   const pdfsHiddenStyle = 'px-[150px]';
 
@@ -180,7 +180,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
                 });
                 return (
                   <div key={id} className={chatMessageCls}>
-                    <div className=''>{chat_message}</div>
+                    <div className='mx-auto max-w-[600px]'>{chat_message}</div>
                   </div>
                 );
               })}

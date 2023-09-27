@@ -99,14 +99,12 @@ function dashboard() {
     // session.user needs to exists for isSuccess to be true
     if (isSuccessStudySessions && session?.user) {
       return (
-        <div>
-          <div>
-            <StudySessionMap
-              StudySessions={dataStudySessions}
-              showPdfs={showPdfs}
-              id={userId}
-            />
-          </div>
+        <div className=''>
+          <StudySessionMap
+            StudySessions={dataStudySessions}
+            showPdfs={showPdfs}
+            id={userId}
+          />
         </div>
       );
     }
@@ -139,7 +137,7 @@ function dashboard() {
   return (
     <div className='flex'>
       <div
-        className={`bg-lightBlue  py-[10px] transition-transform duration-300  ${
+        className={`bg-lightBlue overflow-hidden  py-[10px] transition-transform duration-300  ${
           showPdfs
             ? 'w-1/4 min-w-[200px] max-w-[220px] translate-x-0 px-[20px]'
             : '-translate-x-full'
@@ -147,7 +145,7 @@ function dashboard() {
       >
         {showPdfs ? <div>{renderResultsPDFS()}</div> : <div className=''></div>}
       </div>
-      <div>
+      <div className='flex-grow overflow-auto'>
         <div className='flex justify-between px-[30px] py-[30px]'>
           <div className='flex items-center p-[10px]'>Logo</div>
           <div className='mx-auto flex items-center p-[10px] text-[24px] font-bold leading-normal'>
@@ -157,9 +155,11 @@ function dashboard() {
             <SignOut />
           </div>
         </div>
-        <div className='bg-blueToTest mx-auto flex min-h-screen transition-transform duration-300'>
-          <div className='px-[50px] py-[20px]'>
+        <div className='bg-blueToTest mx-auto flex min-h-screen justify-center transition-transform duration-300'>
+          <div className='relative right-[30px] top-[10px]'>
             <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
+          </div>
+          <div className='px-[50px] py-[20px]'>
             <div>{renderResultsStudySessions()}</div>
           </div>
         </div>

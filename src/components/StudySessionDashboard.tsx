@@ -27,7 +27,7 @@ function StudySessionMap({
   const router = useRouter();
 
   const StudySessionMapBase =
-    'flex flex-wrap justify-evenly px-[30px] py-[20px] mx-[50px]';
+    'flex flex-wrap justify-evenly px-[30px] py-[20px] mx-[50px] max-w-[700px]';
   const StudySessionMapPdfTrue = '';
   const StudySessionMapPdfFalse = ' ';
   const StudySessionAnimation = '';
@@ -39,7 +39,7 @@ function StudySessionMap({
   });
 
   return (
-    <div>
+    <div className=''>
       <div className={StudySessionMapCls}>
         <div className=''>
           <NewStudySession id={id} />
