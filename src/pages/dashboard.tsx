@@ -156,7 +156,7 @@ function dashboard() {
           </div>
         </div>
         <div className='bg-blueToTest mx-auto flex min-h-screen justify-center transition-transform duration-300'>
-          <div className='relative right-[30px] top-[10px]'>
+          <div className='relative top-[10px]'>
             <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
           </div>
           <div className='px-[50px] py-[20px]'>
