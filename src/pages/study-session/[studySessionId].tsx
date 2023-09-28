@@ -81,6 +81,8 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
 
   const [chatMessagesState, setChatMessages] = useState(chatLogs);
 
+  let lastSixMessages = chatMessagesState.slice(-6);
+
   // https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
   const scrollToBottom = () => {
     chatContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -104,6 +106,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
       chat_message: newQuestion,
       studySessionName: studySessionName,
       studySessionSubject: studySessionSubject,
+      lastSixMessages: lastSixMessages,
     };
 
     try {
@@ -121,6 +124,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
         console.log('Chat message sent successfully');
         const newMessage = await response.json();
         setChatMessages(() => [...newMessage]);
+        lastSixMessages = chatMessagesState.slice(-6);
         setNewQuestion('');
         setAskingQuestion(false);
         // Perform any other necessary actions

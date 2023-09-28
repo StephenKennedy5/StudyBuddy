@@ -33,12 +33,12 @@ export default async function NewChatMessage(
   try {
     const userId = req.query.userid;
     const studySessionId = req.query.studySessionId;
-    const { chat_message, studySessionName, studySessionSubject } = req.body;
-
-    console.log(req.body);
-
-    console.log(studySessionName);
-    console.log(studySessionSubject);
+    const {
+      chat_message,
+      studySessionName,
+      studySessionSubject,
+      lastSixMessages,
+    } = req.body;
 
     // Create a timestamp for the user's chat message
     const userMessageCreationDate = new Date();

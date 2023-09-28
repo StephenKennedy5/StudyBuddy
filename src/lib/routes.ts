@@ -76,4 +76,7 @@ export const routes = {
   openAiMessage(): string {
     return `${baseUrl}/api/openAiMessage`;
   },
+  getSixLatestMessages(userId: string, studySessionId: string): string {
+    return `${baseUrl}/api/${userId}/study-session/${studySessionId}/getSixChatMessages`;
+  },
 };

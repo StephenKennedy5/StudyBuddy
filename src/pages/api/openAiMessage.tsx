@@ -11,22 +11,33 @@ const openai = new OpenAI({ apiKey: openAiKey });
 
 export default async function TestOpenAI(req, res) {
   try {
-    const { chat_message, studySessionName, studySessionSubject } = req.body;
-    console.log('IN OPENAI ENDPOINT');
-    console.log(studySessionName);
-    console.log(studySessionSubject);
+    const {
+      chat_message,
+      studySessionName,
+      studySessionSubject,
+      lastSixMessages,
+    } = req.body;
+
+    const message: ChatCompletionMessageParam[] = [
+      {
+        role: 'system',
+        content: `You are an expert in ${studySessionSubject} with decades worth of experience.`,
+      },
+    ];
+    lastSixMessages.forEach((chat) => {
+      const messageObject = chat.chat_bot
+        ? { role: 'assistant', content: chat.chat_message }
+        : { role: 'user', content: chat.chat_message };
+
+      message.push(messageObject);
+    });
+    const newMessage = {
+      role: 'user',
+      content: `${chat_message}`,
+    };
 
     if (chat_message !== undefined) {
-      const message: ChatCompletionMessageParam[] = [
-        {
-          role: 'system',
-          content: `You are an expert in ${studySessionSubject} with decades worth of experience.`,
-        },
-        {
-          role: 'user',
-          content: `${chat_message}`,
-        },
-      ];
+      message.push(newMessage);
       const response = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: message,
