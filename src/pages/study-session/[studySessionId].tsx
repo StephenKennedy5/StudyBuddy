@@ -109,6 +109,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
       user_id: userId,
       chat_bot: false,
     };
+    console.log({ Message: newQuestionMessage.chat_message });
     setChatMessages((prevMessages) => [...prevMessages, newQuestionMessage]);
 
     // Add study session name/subject to the following question
@@ -134,7 +135,6 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
       if (response.ok) {
         console.log('Chat message sent successfully');
         const newMessage = await response.json();
-        console.log(newMessage);
 
         // Replace the temporary message with the actual response from the server
         setChatMessages(() => [...newMessage]);
@@ -165,7 +165,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       submitNewChatMessage();
     }
@@ -221,7 +221,9 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
                 });
                 return (
                   <div key={id} className={chatMessageCls}>
-                    <div className='mx-auto max-w-[600px]'>{chat_message}</div>
+                    <div className='mx-auto max-w-[600px] whitespace-pre-line'>
+                      {chat_message}
+                    </div>
                   </div>
                 );
               })}
