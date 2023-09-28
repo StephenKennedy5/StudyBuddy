@@ -81,7 +81,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
 
   const [chatMessagesState, setChatMessages] = useState(chatLogs);
 
-  let lastSixMessages = chatMessagesState.slice(-6);
+  const lastSixMessages = chatMessagesState.slice(-6);
 
   // https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
   const scrollToBottom = () => {
@@ -92,7 +92,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
     scrollToBottom();
   }, [chatMessagesState]);
 
-  const sumbitNewChatMessage = async () => {
+  const submitNewChatMessage = async () => {
     if (newQuestion.trim() === '') return;
     if (askingQuestion) {
       console.log('Tried asking another question');
@@ -100,8 +100,18 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
     }
     setAskingQuestion(true);
 
-    // Add study session name/subject to following question
+    // Optimistic update: Add the new question to the chat logs
+    const newQuestionMessage = {
+      id: 'temp-id', // You can use a temporary ID to distinguish optimistic updates
+      chat_id: studySession.id,
+      chat_message: newQuestion,
+      creation_date: new Date().toISOString(),
+      user_id: userId,
+      chat_bot: false,
+    };
+    setChatMessages((prevMessages) => [...prevMessages, newQuestionMessage]);
 
+    // Add study session name/subject to the following question
     const requestBody = {
       chat_message: newQuestion,
       studySessionName: studySessionName,
@@ -120,26 +130,44 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
           body: JSON.stringify(requestBody),
         }
       );
+
       if (response.ok) {
         console.log('Chat message sent successfully');
         const newMessage = await response.json();
+        console.log(newMessage);
+
+        // Replace the temporary message with the actual response from the server
         setChatMessages(() => [...newMessage]);
-        lastSixMessages = chatMessagesState.slice(-6);
+
         setNewQuestion('');
         setAskingQuestion(false);
         // Perform any other necessary actions
       } else {
         console.error('Chat message failed to upload');
+
+        // Revert the optimistic update on error
+        setChatMessages((prevMessages) =>
+          prevMessages.filter((message) => message.id !== 'temp-id')
+        );
+
+        // Handle the error, e.g., show an error message to the user
       }
     } catch (error) {
       console.error('Error uploading chat message: ', error);
+
+      // Revert the optimistic update on error
+      setChatMessages((prevMessages) =>
+        prevMessages.filter((message) => message.id !== 'temp-id')
+      );
+
+      // Handle the error, e.g., show an error message to the user
     }
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      sumbitNewChatMessage();
+      submitNewChatMessage();
     }
   };
 
@@ -219,7 +247,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
                 <div
                   className='bg-mainBlue hover:bg-lightBlue ml-2 cursor-pointer rounded-full px-[20px] py-[10px] text-center text-white'
                   onClick={() => {
-                    sumbitNewChatMessage();
+                    submitNewChatMessage();
                   }}
                 >
                   Submit
