@@ -66,6 +66,7 @@ interface StudySessionTypes {
 
 function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   const studySessionName = studySession.session_name;
+  const studySessionSubject = studySession.subject;
   const router = useRouter();
   const { showPdfs, toggleShowPdfs } = usePdfs();
   const chatContainerRef = useRef(null);
@@ -80,6 +81,8 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
 
   const [chatMessagesState, setChatMessages] = useState(chatLogs);
 
+  const lastSixMessages = chatMessagesState.slice(-6);
+
   // https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
   const scrollToBottom = () => {
     chatContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -89,7 +92,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
     scrollToBottom();
   }, [chatMessagesState]);
 
-  const sumbitNewChatMessage = async () => {
+  const submitNewChatMessage = async () => {
     if (newQuestion.trim() === '') return;
     if (askingQuestion) {
       console.log('Tried asking another question');
@@ -97,7 +100,25 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
     }
     setAskingQuestion(true);
 
-    const requestBody = { chat_message: newQuestion };
+    // Optimistic update: Add the new question to the chat logs
+    const newQuestionMessage = {
+      id: 'temp-id', // You can use a temporary ID to distinguish optimistic updates
+      chat_id: studySession.id,
+      chat_message: newQuestion,
+      creation_date: new Date().toISOString(),
+      user_id: userId,
+      chat_bot: false,
+    };
+    console.log({ Message: newQuestionMessage.chat_message });
+    setChatMessages((prevMessages) => [...prevMessages, newQuestionMessage]);
+
+    // Add study session name/subject to the following question
+    const requestBody = {
+      chat_message: newQuestion,
+      studySessionName: studySessionName,
+      studySessionSubject: studySessionSubject,
+      lastSixMessages: lastSixMessages,
+    };
 
     try {
       const response = await fetch(
@@ -110,25 +131,43 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
           body: JSON.stringify(requestBody),
         }
       );
+
       if (response.ok) {
         console.log('Chat message sent successfully');
         const newMessage = await response.json();
+
+        // Replace the temporary message with the actual response from the server
         setChatMessages(() => [...newMessage]);
+
         setNewQuestion('');
         setAskingQuestion(false);
         // Perform any other necessary actions
       } else {
         console.error('Chat message failed to upload');
+
+        // Revert the optimistic update on error
+        setChatMessages((prevMessages) =>
+          prevMessages.filter((message) => message.id !== 'temp-id')
+        );
+
+        // Handle the error, e.g., show an error message to the user
       }
     } catch (error) {
       console.error('Error uploading chat message: ', error);
+
+      // Revert the optimistic update on error
+      setChatMessages((prevMessages) =>
+        prevMessages.filter((message) => message.id !== 'temp-id')
+      );
+
+      // Handle the error, e.g., show an error message to the user
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      sumbitNewChatMessage();
+      submitNewChatMessage();
     }
   };
 
@@ -148,16 +187,20 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   return (
     <div className='flex min-h-screen'>
       <div
-        className={`bg-lightBlue py-[10px] transition-transform duration-300  ${
+        className={
           showPdfs
-            ? 'w-1/4 min-w-[200px] max-w-[220px] translate-x-0 px-[20px]'
+            ? 'bg-lightBlue h-full min-h-screen w-1/4 min-w-[200px] max-w-[220px] flex-none translate-x-0 overflow-y-auto px-[20px]'
             : '-translate-x-full'
-        }`}
+        }
       >
-        {showPdfs ? <PDFS pdfList={userPdfs} /> : <div></div>}
+        <div
+          className={`bg-lightBlue fixed left-0 top-0 h-full w-full py-[10px] transition-transform duration-300 `}
+        >
+          {showPdfs ? <PDFS pdfList={userPdfs} /> : <div></div>}
+        </div>
       </div>
 
-      <div className='flex w-full flex-col'>
+      <div className='flex max-h-screen w-full flex-col overflow-auto'>
         <StudySessionHeader studySessionName={studySessionName} />
         <div className='bg-blueToTest flex flex-grow'>
           <div className='flex w-full flex-col justify-between pt-[20px]'>
@@ -182,7 +225,9 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
                 });
                 return (
                   <div key={id} className={chatMessageCls}>
-                    <div className='mx-auto max-w-[600px]'>{chat_message}</div>
+                    <div className='mx-auto max-w-[600px] whitespace-pre-line'>
+                      {chat_message}
+                    </div>
                   </div>
                 );
               })}
@@ -208,7 +253,7 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
                 <div
                   className='bg-mainBlue hover:bg-lightBlue ml-2 cursor-pointer rounded-full px-[20px] py-[10px] text-center text-white'
                   onClick={() => {
-                    sumbitNewChatMessage();
+                    submitNewChatMessage();
                   }}
                 >
                   Submit

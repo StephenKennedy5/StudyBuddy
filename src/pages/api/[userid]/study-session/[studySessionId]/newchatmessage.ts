@@ -26,14 +26,19 @@ $$ LANGUAGE plpgsql;
 
 const uuid = require('uuid');
 
-export default async function GetStudySessions(
+export default async function NewChatMessage(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
     const userId = req.query.userid;
     const studySessionId = req.query.studySessionId;
-    const { chat_message } = req.body;
+    const {
+      chat_message,
+      studySessionName,
+      studySessionSubject,
+      lastSixMessages,
+    } = req.body;
 
     // Create a timestamp for the user's chat message
     const userMessageCreationDate = new Date();
@@ -56,7 +61,7 @@ export default async function GetStudySessions(
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(chat_message),
+        body: JSON.stringify(req.body),
       });
 
       const result = await call_openai_api.json();

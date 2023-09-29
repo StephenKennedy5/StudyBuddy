@@ -1,10 +1,9 @@
+/* Create API Endpoint that returns the last 6 chat messages */
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import knex from '../../../../../../database/knex';
 
-/* Return an array of chat messages ordered by creation_date */
-
-export default async function GetChatLogs(
+export default async function getLatestChatLogs(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -15,7 +14,8 @@ export default async function GetChatLogs(
     const chat_messages = await knex('chat_messages')
       .select()
       .where('study_session_id', studySessionId)
-      .orderBy('creation_date');
+      .orderBy('creation_date', 'desc')
+      .limit(6);
     res.status(200).json(chat_messages);
   } catch (error) {
     console.error('Error:', error);
