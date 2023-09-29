@@ -47,7 +47,7 @@ function newPdf() {
         console.error('PDF upload failed');
       }
     } catch (error) {
-      <div class='bg-lightBlue  w-1/4 min-w-[200px] translate-x-0  px-[20px] py-[10px] transition-transform duration-300'></div>;
+      // <div class='bg-lightBlue  w-1/4 min-w-[200px] translate-x-0  px-[20px] py-[10px] transition-transform duration-300'></div>;
       console.error('Error Uploading PDF: ', error);
     }
   };
@@ -71,7 +71,7 @@ function newPdf() {
       </label>
       {titleName === null ? null : (
         <div
-          className=' mt-[20px] cursor-pointer rounded-[10px] bg-green-50 px-[40px] py-[10px] text-center'
+          className=' mt-[20px] cursor-pointer rounded-[10px] bg-green-100 px-[40px] py-[10px] text-center transition duration-300 ease-in-out hover:-translate-y-1 hover:bg-green-50 hover:shadow-lg'
           onClick={() => submitFile()}
         >
           Submit

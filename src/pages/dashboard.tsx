@@ -150,15 +150,6 @@ function dashboard() {
         </div>
       </div>
 
-      {/* <div
-        className={`bg-lightBlue overflow-hidden  py-[10px] transition-transform duration-300  ${
-          showPdfs
-            ? 'w-1/4 min-w-[200px] max-w-[220px] translate-x-0 px-[20px]'
-            : '-translate-x-full'
-        }`}
-      >
-        {showPdfs ? <div>{renderResultsPDFS()}</div> : <div className=''></div>}
-      </div> */}
       <div className='bg-blueToTest max-h-screen flex-grow overflow-y-auto'>
         <div className='flex justify-between bg-white px-[30px] py-[30px]'>
           <div className='flex items-center p-[10px]'>Logo</div>
