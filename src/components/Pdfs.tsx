@@ -15,7 +15,7 @@ interface PDFListProps {
 
 function PDFS({ pdfList }: PDFProps) {
   return (
-    <div className='fixed overflow-y-auto pr-[20px]'>
+    <div className='fixed overflow-y-auto px-[20px]'>
       <div className=' cursor-pointer'>
         <div>
           <NewPdf />

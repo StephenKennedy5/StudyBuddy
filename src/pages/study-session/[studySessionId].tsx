@@ -185,18 +185,22 @@ function StudySession({ chatLogs, studySession, userPdfs }: StudySessionTypes) {
   // Create Style class for Chat when pdf hidden and shown
 
   return (
-    <div className='flex '>
+    <div className='flex min-h-screen'>
       <div
-        className={`bg-lightBlue py-[10px] transition-transform duration-300 ${
+        className={
           showPdfs
-            ? 'fixed left-0 top-0 h-screen min-h-screen w-1/4 min-w-[200px] max-w-[220px] translate-x-0 overflow-y-auto px-[20px]'
+            ? 'bg-lightBlue h-full min-h-screen w-1/4 min-w-[200px] max-w-[220px] flex-none translate-x-0 overflow-y-auto px-[20px]'
             : '-translate-x-full'
-        }`}
+        }
       >
-        {showPdfs ? <PDFS pdfList={userPdfs} /> : <div></div>}
+        <div
+          className={`bg-lightBlue fixed left-0 top-0 h-full w-full py-[10px] transition-transform duration-300 `}
+        >
+          {showPdfs ? <PDFS pdfList={userPdfs} /> : <div></div>}
+        </div>
       </div>
 
-      <div className='flex min-h-screen w-full flex-col '>
+      <div className='flex max-h-screen w-full flex-col overflow-auto'>
         <StudySessionHeader studySessionName={studySessionName} />
         <div className='bg-blueToTest flex flex-grow'>
           <div className='flex w-full flex-col justify-between pt-[20px]'>
