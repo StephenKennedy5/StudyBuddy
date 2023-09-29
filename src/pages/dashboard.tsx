@@ -135,8 +135,22 @@ function dashboard() {
   };
 
   return (
-    <div className='flex'>
+    <div className='flex min-h-screen'>
       <div
+        className={
+          showPdfs
+            ? 'bg-lightBlue h-full min-h-screen w-1/4 min-w-[200px] max-w-[220px] flex-none translate-x-0 overflow-y-auto px-[20px]'
+            : '-translate-x-full'
+        }
+      >
+        <div
+          className={`bg-lightBlue fixed left-0 top-0 h-full w-full py-[10px] transition-transform duration-300 `}
+        >
+          {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
+        </div>
+      </div>
+
+      {/* <div
         className={`bg-lightBlue overflow-hidden  py-[10px] transition-transform duration-300  ${
           showPdfs
             ? 'w-1/4 min-w-[200px] max-w-[220px] translate-x-0 px-[20px]'
@@ -144,8 +158,8 @@ function dashboard() {
         }`}
       >
         {showPdfs ? <div>{renderResultsPDFS()}</div> : <div className=''></div>}
-      </div>
-      <div className='bg-blueToTest flex-grow overflow-auto'>
+      </div> */}
+      <div className='bg-blueToTest max-h-screen flex-grow overflow-y-auto'>
         <div className='flex justify-between bg-white px-[30px] py-[30px]'>
           <div className='flex items-center p-[10px]'>Logo</div>
           <div className='mx-auto flex items-center p-[10px] text-[24px] font-bold leading-normal'>
