@@ -26,7 +26,7 @@ First API endpoint Checks the number of tokens on input message (Limit 1000?)
 TODO:
   Done 1. Add prompt that user is an expert in particular field 
   Done 2. Add previous message context to message
-  3. Have Chat update with user message before its submitted to database
+  Done 3. Have Chat update with user message before its submitted to database
   4. implement tokenizer count to return error message if too long
 
 */
