@@ -16,6 +16,7 @@ function newPdf() {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file && file.type === 'application/pdf') {
+      console.log({ file });
       const fileName = file.name;
       setTitleName(fileName);
     } else {
@@ -25,30 +26,55 @@ function newPdf() {
 
   const submitFile = async () => {
     if (!titleName) return;
-    const pdfTitle = titleName.split('.')[0];
-    const pdfText = 'This is a mock statement and filler.';
-    const requestBody = {
-      pdfTitle,
-      pdfText,
-    };
 
     try {
-      const response = await fetch(routes.newPdf(userId), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
-      if (response.ok) {
-        console.log('PDF uploaded successfully');
-        // Perform any other necessary actions
-      } else {
-        console.error('PDF upload failed');
+      const fileInput = document.getElementById('FileToUpload');
+      const file = fileInput.files[0];
+
+      if (!file || file.type !== 'application/pdf') {
+        console.error('Invalid or missing PDF file');
+        return;
       }
+
+      const pdfTitle = titleName.split('.')[0];
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const pdfText = e.target.result;
+        if (!(pdfText instanceof ArrayBuffer) || pdfText.byteLength === 0) {
+          console.error('Invalid pdfText format');
+          return;
+        }
+        console.log({ pdfText });
+
+        const requestBody = {
+          pdfTitle,
+          pdfText,
+        };
+
+        try {
+          const response = await fetch(routes.newPdf(userId), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+          if (response.ok) {
+            console.log('PDF uploaded successfully');
+            // Perform any other necessary actions
+          } else {
+            console.error('PDF upload failed');
+          }
+        } catch (error) {
+          console.error('Error Uploading PDF: ', error);
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
     } catch (error) {
-      // <div class='bg-lightBlue  w-1/4 min-w-[200px] translate-x-0  px-[20px] py-[10px] transition-transform duration-300'></div>;
-      console.error('Error Uploading PDF: ', error);
+      console.error('Error processing PDF: ', error);
     }
   };
 
@@ -66,13 +92,14 @@ function newPdf() {
             accept='.pdf'
             onChange={handleFileChange}
             className='hidden'
+            id='FileToUpload'
           />
         </div>
       </label>
       {titleName === null ? null : (
         <div
           className=' mt-[20px] cursor-pointer rounded-[10px] bg-green-100 px-[40px] py-[10px] text-center transition duration-300 ease-in-out hover:-translate-y-1 hover:bg-green-50 hover:shadow-lg'
-          onClick={() => submitFile()}
+          onClick={(event) => submitFile(event)}
         >
           Submit
         </div>

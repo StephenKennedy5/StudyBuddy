@@ -22,14 +22,26 @@ export default async function NewPdf(
   res: NextApiResponse
 ) {
   try {
+    const pdfData = 'Mock Data for Now';
     const userId = req.query.userid;
     const { pdfTitle, pdfText } = req.body;
+    console.log('Received pdfText:', pdfText);
+    console.log('pdfText type:', typeof pdfText);
+
+    // Check if pdfText is already a string or other format
+    const decodedPdfText = ArrayBuffer.isView(pdfText)
+      ? new TextDecoder('utf-8').decode(pdfText)
+      : pdfText;
+
+    console.log('Decoded pdfText:', decodedPdfText);
+    console.log('Decoded pdfText type:', typeof decodedPdfText);
+
     const newPdf = await knex('pdfs').insert([
       {
         id: uuid.v4(),
         title: pdfTitle,
         user_id: userId,
-        pdf_info: pdfText,
+        pdf_info: pdfData,
       },
     ]);
 
