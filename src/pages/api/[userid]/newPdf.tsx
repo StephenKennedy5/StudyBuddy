@@ -1,21 +1,19 @@
-/* End point for user to upload new PDF */
-/* Get PDF title from file drop for testing */
-
-/*
-{
-    id: UUID (Generated with Post call)
-    title: String (Taken from File)
-    user_id: UUID (Given as param)
-    pdf_info: Text (??)
-    upload_date: timestamp (Generated at time of Creation)
-}
-*/
-
+import multer from 'multer';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import knex from '../../../../database/knex';
 
 const uuid = require('uuid');
+
+// Extend NextApiRequest type to include file property from multer
+interface MulterNextApiRequest extends NextApiRequest {
+  file: {
+    buffer: Buffer;
+    // Add other properties as needed based on your multer configuration
+  };
+}
+
+const upload = multer();
 
 export default async function NewPdf(
   req: NextApiRequest,
@@ -23,18 +21,19 @@ export default async function NewPdf(
 ) {
   try {
     const pdfData = 'Mock Data for Now';
+    const pdfTitle = 'Moch Title';
     const userId = req.query.userid;
-    const { pdfTitle, pdfText } = req.body;
-    console.log('Received pdfText:', pdfText);
-    console.log('pdfText type:', typeof pdfText);
+    // const { pdfTitle, pdfText, formData } = req.body;
+    // const { formData } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file provided' });
+    }
 
-    // Check if pdfText is already a string or other format
-    const decodedPdfText = ArrayBuffer.isView(pdfText)
-      ? new TextDecoder('utf-8').decode(pdfText)
-      : pdfText;
+    const fileBuffer = req.file.buffer;
+    const fileText = fileBuffer.toString();
+    console.log('PDF Text: ', fileText);
 
-    console.log('Decoded pdfText:', decodedPdfText);
-    console.log('Decoded pdfText type:', typeof decodedPdfText);
+    // console.log('PDF Form data: ', formData);
 
     const newPdf = await knex('pdfs').insert([
       {
@@ -53,3 +52,9 @@ export default async function NewPdf(
     res.status(500).json({ error: 'An error occurred' });
   }
 }
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};

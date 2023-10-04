@@ -7,8 +7,10 @@ import { useState } from 'react';
 
 import { fetchCreds, routes } from '@/lib/routes';
 
-function newPdf() {
+function NewPdf() {
   const [titleName, setTitleName] = useState(null);
+  const [pdfFile, setPdfFile] = useState(null);
+  const [pdfProcessing, setPdfProcessing] = useState(false);
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
 
@@ -19,62 +21,45 @@ function newPdf() {
       console.log({ file });
       const fileName = file.name;
       setTitleName(fileName);
+      setPdfFile(file);
     } else {
       setTitleName(null);
     }
   };
 
   const submitFile = async () => {
-    if (!titleName) return;
+    if (!titleName || !pdfFile) return;
 
     try {
-      const fileInput = document.getElementById('FileToUpload');
-      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', pdfFile);
 
-      if (!file || file.type !== 'application/pdf') {
-        console.error('Invalid or missing PDF file');
-        return;
+      // Log information for debugging
+      console.log('Title:', titleName);
+      console.log('PDF File:', pdfFile);
+      console.log('Form Data:', formData);
+
+      try {
+        const response = await fetch(routes.newPdf(userId), {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          console.log('PDF uploaded successfully');
+          setTitleName(null);
+          // Perform any other necessary actions
+        } else {
+          console.error('PDF upload failed');
+          setTitleName(null);
+        }
+      } catch (error) {
+        console.error('Error Uploading PDF: ', error);
+        setTitleName(null);
       }
-
-      const pdfTitle = titleName.split('.')[0];
-
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const pdfText = e.target.result;
-        if (!(pdfText instanceof ArrayBuffer) || pdfText.byteLength === 0) {
-          console.error('Invalid pdfText format');
-          return;
-        }
-        console.log({ pdfText });
-
-        const requestBody = {
-          pdfTitle,
-          pdfText,
-        };
-
-        try {
-          const response = await fetch(routes.newPdf(userId), {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-          });
-
-          if (response.ok) {
-            console.log('PDF uploaded successfully');
-            // Perform any other necessary actions
-          } else {
-            console.error('PDF upload failed');
-          }
-        } catch (error) {
-          console.error('Error Uploading PDF: ', error);
-        }
-      };
-
-      reader.readAsArrayBuffer(file);
     } catch (error) {
       console.error('Error processing PDF: ', error);
+      setTitleName(null);
     }
   };
 
@@ -108,4 +93,4 @@ function newPdf() {
   );
 }
 
-export default newPdf;
+export default NewPdf;
