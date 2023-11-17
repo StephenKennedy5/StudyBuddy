@@ -2,10 +2,17 @@
 
 // Get Title from File being uploaded,
 // Use filler content for now for pdf_info
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { signOut, useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 import { fetchCreds, routes } from '@/lib/routes';
+import { s3Client } from '@/lib/s3';
+
+const awsBucket = process.env.NEXT_PUBLIC_AWS_REGION;
+if (!awsBucket) {
+  throw new Error('AWS_PDFS_BUCKET env variable is needed');
+}
 
 function NewPdf() {
   const [titleName, setTitleName] = useState(null);
@@ -18,7 +25,7 @@ function NewPdf() {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file && file.type === 'application/pdf') {
-      console.log({ file });
+      console.log({ HandleFileChange: file });
       const fileName = file.name;
       setTitleName(fileName);
       setPdfFile(file);
@@ -29,10 +36,28 @@ function NewPdf() {
 
   const submitFile = async () => {
     if (!titleName || !pdfFile) return;
+    console.log({ pdfFile });
+    console.log(typeof pdfFile);
 
+    // if (pdfFile) return;
     try {
+      const pdfType = pdfFile.type;
       const formData = new FormData();
       formData.append('file', pdfFile);
+
+      const timestamp = new Date().getTime();
+      const objectKey = `pdfs-dev/${userId}/${timestamp}_${titleName}.pdf`;
+
+      const params = {
+        Bucket: awsBucket,
+        Key: objectKey,
+        Body: pdfFile,
+        ContentType: pdfType,
+        // Add any additional parameters as needed
+      };
+      console.log('Sending to S3');
+      const result = await s3Client.send(new PutObjectCommand(params));
+      console.log('File uploaded successfully. ETag:', result.ETag);
 
       // Log information for debugging
       console.log('Title:', titleName);
@@ -46,20 +71,24 @@ function NewPdf() {
         });
 
         if (response.ok) {
-          console.log('PDF uploaded successfully');
           setTitleName(null);
+          setPdfFile(null);
+          console.log('PDF uploaded successfully');
           // Perform any other necessary actions
         } else {
-          console.error('PDF upload failed');
           setTitleName(null);
+          setPdfFile(null);
+          console.error('PDF upload failed');
         }
       } catch (error) {
-        console.error('Error Uploading PDF: ', error);
         setTitleName(null);
+        setPdfFile(null);
+        console.error('Error Uploading PDF: ', error);
       }
     } catch (error) {
-      console.error('Error processing PDF: ', error);
       setTitleName(null);
+      setPdfFile(null);
+      console.error('Error processing PDF: ', error);
     }
   };
 
