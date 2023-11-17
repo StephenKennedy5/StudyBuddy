@@ -1,25 +1,10 @@
 # StudyBuddy
 
-https://github.com/theodorusclarence/ts-nextjs-tailwind-starter
-
 An App to assist in studying of for classes or work.
 
-Dont dockerize the app code but can dockerize the database
+https://github.com/theodorusclarence/ts-nextjs-tailwind-starter
 
 npx create-next-app -e https://github.com/theodorusclarence/ts-nextjs-tailwind-starter/tree/pages-directory study-buddy
-
-Color Pallete
-Pure Black: #000000 | Ash: #bababa | Sky: #94a8b3 | Cream: #dcd3c9 | Soft Grey: #dedcde
-
-Primary Color (Background): RGB(238, 238, 238)
-Secondary Color (Accents): RGB(115, 138, 148)
-Text Color: RGB(40, 40, 40)
-Button Color: RGB(0, 105, 148)
-
-Blue: #0066FF
-Black: #1B1B20
-White: #FFFFFF
-Grey: #F6F6F7
 
 https://stackoverflow.com/questions/75774873/openai-chatgpt-gpt-3-5-api-error-this-is-a-chat-model-and-not-supported-in-t
 
