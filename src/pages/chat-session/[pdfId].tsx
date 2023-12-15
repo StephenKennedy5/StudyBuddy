@@ -64,7 +64,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
 
   const lastSixMessages = chatMessagesState.slice(-6);
 
-  const baseTextStyle = 'text-[16px] leading-normal py-[30px]';
+  const baseTextStyle = 'text-[16px] leading-normal py-[20px]';
   const pdfsShownStyle = 'px-[30px]';
   const pdfsHiddenStyle = 'px-[150px]';
 
@@ -231,7 +231,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
       </div>
 
       <div className='grid h-[calc(100vh-116px)] grid-cols-7'>
-        <div>
+        <div className='col-span-1 overflow-auto'>
           <div
             className={`h-full w-full overflow-auto border-r-[2px] border-gray-100 bg-white  transition-transform duration-300 `}
           >
