@@ -23,6 +23,7 @@ import { fetchCreds, routes } from '@/lib/routes';
 
 import HidePdfs from '@/components/HidePdfs';
 import { usePdfs } from '@/components/PdfsContext';
+import useOnScreen from '@/components/useOnScreen';
 
 import { authOptionsCb } from './../api/auth/[...nextauth]';
 
@@ -57,6 +58,8 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
   const router = useRouter();
   const chatContainerRef = useRef(null);
   const [askingQuestion, setAskingQuestion] = useState(false);
+  const elementRef = useRef<HTMLDivElement>(null);
+  const isOnScreen = useOnScreen(chatContainerRef);
 
   const [newQuestion, setNewQuestion] = useState('');
   const [textareaRows, setTextareaRows] = useState(1);
@@ -299,11 +302,11 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
                     onKeyDown={handleKeyDown}
                     value={newQuestion}
                     onChange={(e) => setNewQuestion(e.target.value)}
-                    className='focus:border-lightBlue border-mainBlue flex max-h-[300px] w-full resize-none items-center rounded-l-[10px] border bg-white px-[20px] py-[15px]'
+                    className='border-mainBlue flex max-h-[300px] w-full resize-none items-center rounded-l-[10px] border bg-white px-[20px] py-[15px] focus:border-opacity-75'
                   />
 
                   <div
-                    className='bg-mainBlue hover:bg-lightBlue  flex cursor-pointer items-center rounded-r-[10px] px-[10px] py-[10px] text-center text-white'
+                    className='bg-mainBlue flex  cursor-pointer items-center rounded-r-[10px] px-[10px] py-[10px] text-center text-white hover:opacity-75'
                     onClick={() => {
                       submitNewChatMessage();
                     }}
@@ -327,6 +330,30 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
             </div>
           </div>
         </div>
+      </div>
+      <div className='relative z-30'>
+        {!isOnScreen ? (
+          <div
+            onClick={() => scrollToBottom()}
+            className='bg-mainBlue absolute bottom-[3vh] left-1/2 -translate-x-1/2 transform cursor-pointer rounded-[50px]  px-[10px] py-[10px] text-white opacity-25 hover:opacity-75'
+          >
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              viewBox='0 0 24 24'
+              width='24'
+              height='24'
+              fill='none'
+              stroke='white'
+              strokeWidth='3'
+              stroke-linecap='round'
+              stroke-linejoin='round'
+            >
+              <path d='M5 8l7 7 7-7' />
+            </svg>
+          </div>
+        ) : (
+          <div></div>
+        )}
       </div>
     </div>
   );
