@@ -2,7 +2,9 @@
 // When user clicks on PDF it routes to the correct PDF within here
 
 // COPY layout of Dashboard for now
+import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import { useQuery } from '@tanstack/react-query';
+import { Discovery } from 'aws-sdk';
 import classNames from 'classnames';
 import { GetServerSideProps } from 'next';
 import { GetServerSidePropsContext } from 'next';
@@ -62,8 +64,8 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
 
   const lastSixMessages = chatMessagesState.slice(-6);
 
-  const baseTextStyle = 'text-white text-[18px] leading-normal py-[50px]';
-  const pdfsShownStyle = 'px-[100px]';
+  const baseTextStyle = 'text-[16px] leading-normal py-[30px]';
+  const pdfsShownStyle = 'px-[30px]';
   const pdfsHiddenStyle = 'px-[150px]';
 
   useEffect(() => {
@@ -98,7 +100,11 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
   const renderResultsPDFS = () => {
     if (isLoadingPDFs) {
       // Fix loading... animation
-      return <div className='loading text-center text-[24px]'>Loading</div>;
+      return (
+        <div className='loading text-center text-[24px]'>
+          Loading <span className='animate-pulse'>...</span>
+        </div>
+      );
     }
     if (isErrorPDFs) {
       return (
@@ -227,7 +233,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
       <div className='grid h-[calc(100vh-116px)] grid-cols-7'>
         <div>
           <div
-            className={`h-full w-full border-r-[2px] border-gray-100 bg-white  transition-transform duration-300 `}
+            className={`h-full w-full overflow-auto border-r-[2px] border-gray-100 bg-white  transition-transform duration-300 `}
           >
             {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
           </div>
@@ -241,15 +247,17 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
           </div>
         </div>
 
-        <div className='col-span-3 flex flex-col  border-x-[2px] border-gray-100'>
+        <div className='col-span-3 flex flex-col overflow-auto  border-x-[2px] border-gray-100'>
           <div className='flex-grow'>
             {chatMessagesState.map(({ chat_message, id, chat_bot }) => {
               // UserId !=
-              const chatBotFalse = 'bg-blueToTest';
+              const chatBotFalse =
+                'bg-mainBlue text-white rounded-[20px] mx-[20px] my-[20px]';
               // UserId ==
-              const chatBotTrue = 'bg-blueToTest2';
+              const chatBotTrue =
+                'bg-gray-100 rounded-[20px] mx-[20px] my-[20px]';
               // Base Styling
-              const chatMessageBase = '';
+              const chatMessageBase = 'text-black';
 
               const chatMessageCls = classNames({
                 [chatMessageBase]: true,
@@ -265,33 +273,56 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
                 </div>
               );
             })}
+            {askingQuestion ? (
+              <div className='mx-[20px] my-[20px]  rounded-[20px] bg-gray-100 px-[30px] py-[20px] text-[16px] leading-normal'>
+                <div className=''>
+                  Processing Question{' '}
+                  <span className='animate-pulse text-[18px]'>. . .</span>
+                </div>
+              </div>
+            ) : (
+              <div></div>
+            )}
+
             <div ref={chatContainerRef} />
           </div>
 
-          <div className=' bg-green-50 px-[40px] pb-[20px] pt-[40px]'>
-            <div className='mx-auto flex max-w-[650px] items-center'>
+          <div className='   bg-white px-[20px] pb-[20px] pt-[20px]'>
+            <div className='mx-auto max-w-[650px] items-center'>
               {/* Use a container div to create the input box */}
               <div className='relative flex-1'>
-                <textarea
-                  value={newQuestion}
-                  placeholder='Ask Question Here'
-                  onKeyDown={handleKeyDown}
-                  onChange={(e) => setNewQuestion(e.target.value)}
-                  rows={3}
-                  className={`focus:ring-mainBlue border-lightBlue flex w-full resize-none items-center rounded-lg border bg-white px-[40px] py-[10px] focus:outline-none focus:ring-2 ${
-                    textareaRows >= 3 ? 'overflow-y-auto' : ''
-                  }`}
-                />
-              </div>
-              {/* Set onClick to call the API endpoint of a new chat message */}
-              {/* Make a mock response message to act like a real conversation in which messages arrive 5 seconds later */}
-              <div
-                className='bg-mainBlue hover:bg-lightBlue ml-2 cursor-pointer rounded-full px-[20px] py-[10px] text-center text-white'
-                onClick={() => {
-                  submitNewChatMessage();
-                }}
-              >
-                Submit
+                <div className='flex w-full flex-row'>
+                  <TextareaAutosize
+                    minRows={1}
+                    maxRows={4}
+                    placeholder='Ask Question Here'
+                    onKeyDown={handleKeyDown}
+                    value={newQuestion}
+                    onChange={(e) => setNewQuestion(e.target.value)}
+                    className='focus:border-lightBlue border-mainBlue flex max-h-[300px] w-full resize-none items-center rounded-l-[10px] border bg-white px-[20px] py-[15px]'
+                  />
+
+                  <div
+                    className='bg-mainBlue hover:bg-lightBlue  flex cursor-pointer items-center rounded-r-[10px] px-[10px] py-[10px] text-center text-white'
+                    onClick={() => {
+                      submitNewChatMessage();
+                    }}
+                  >
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      viewBox='0 0 24 24'
+                      width='24'
+                      height='24'
+                      fill='none'
+                      stroke='white'
+                      strokeWidth='2'
+                      stroke-linecap='round'
+                      stroke-linejoin='round'
+                    >
+                      <path d='M5 12h14M12 5l7 7-7 7' />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
