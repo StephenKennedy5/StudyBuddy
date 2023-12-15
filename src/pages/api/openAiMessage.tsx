@@ -13,15 +13,15 @@ export default async function TestOpenAI(req, res) {
   try {
     const {
       chat_message,
-      studySessionName,
-      studySessionSubject,
+      // studySessionName,
+      // studySessionSubject,
       lastSixMessages,
     } = req.body;
 
     const message: ChatCompletionMessageParam[] = [
       {
         role: 'system',
-        content: `You are an expert in ${studySessionSubject} with decades worth of experience.`,
+        content: `You are an expert with decades worth of experience.`,
       },
     ];
     lastSixMessages.forEach((chat) => {

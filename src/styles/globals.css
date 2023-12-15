@@ -98,6 +98,12 @@
   }
 }
 
+@layer components {
+  .resize-container {
+    @apply resize;
+  }
+}
+
 @layer utilities {
   .animated-underline {
     background-image: linear-gradient(#33333300, #33333300),

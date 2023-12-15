@@ -15,4 +15,12 @@ Save chatlogs in postgres
 PDFS are given unique chatlog ID
 ChatLogs are linked using PDF ID
 
+Restructure database
+
+so study sessions are gone but by pdf now
+
+When Click on PDF have to open chat Logs and display PDF
+Change format of "study Session" to match new dashboard
+change styling of messaging to look like bubbles
+add a loading bubble that its typing back at you
 

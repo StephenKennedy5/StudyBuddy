@@ -47,25 +47,6 @@ function dashboard() {
   const { showPdfs, toggleShowPdfs } = usePdfs();
 
   const {
-    isLoading: isLoadingStudySessions,
-    isError: isErrorStudySessions,
-    isSuccess: isSuccessStudySessions,
-    data: dataStudySessions,
-  } = useQuery(
-    ['DashboardStudySessions', userId],
-    async () => {
-      const res = await fetch(routes.getStudySession(userId), {
-        method: 'GET',
-        credentials: fetchCreds as RequestCredentials,
-      });
-      if (!res.ok) throw new Error('Failed to fetch study Session');
-      const body = await res.json();
-      return body;
-    },
-    { enabled: !!userId }
-  );
-
-  const {
     isLoading: isLoadingPDFs,
     isError: isErrorPDFs,
     isSuccess: isSuccessPDFs,
@@ -83,33 +64,6 @@ function dashboard() {
     },
     { enabled: !!userId }
   );
-
-  const renderResultsStudySessions = () => {
-    if (isLoadingStudySessions) {
-      // Fix loading... animation
-      return <div className='loading text-center text-[24px]'>Loading</div>;
-    }
-    if (isErrorStudySessions) {
-      return (
-        <div className='text-center text-[24px]'>
-          Something went wrong. Please refresh page.
-        </div>
-      );
-    }
-    // session.user needs to exists for isSuccess to be true
-    if (isSuccessStudySessions && session?.user) {
-      return (
-        <div className=''>
-          <StudySessionMap
-            StudySessions={dataStudySessions}
-            showPdfs={showPdfs}
-            id={userId}
-          />
-        </div>
-      );
-    }
-    return <></>;
-  };
 
   const renderResultsPDFS = () => {
     if (isLoadingPDFs) {
@@ -135,23 +89,9 @@ function dashboard() {
   };
 
   return (
-    <div className='flex min-h-screen'>
-      <div
-        className={
-          showPdfs
-            ? 'bg-lightBlue h-full min-h-screen w-1/4 min-w-[200px] max-w-[220px] flex-none translate-x-0 overflow-y-auto px-[20px]'
-            : '-translate-x-full'
-        }
-      >
-        <div
-          className={`bg-lightBlue fixed left-0 top-0 h-full w-full py-[10px] transition-transform duration-300 `}
-        >
-          {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
-        </div>
-      </div>
-
-      <div className='bg-blueToTest max-h-screen flex-grow overflow-y-auto'>
-        <div className='flex justify-between bg-white px-[30px] py-[30px]'>
+    <div className='flex flex-col'>
+      <div>
+        <div className='flex justify-between border-b-[4px] border-gray-100 bg-white px-[30px] py-[30px]'>
           <div className='flex items-center p-[10px]'>Logo</div>
           <div className='mx-auto flex items-center p-[10px] text-[24px] font-bold leading-normal'>
             Welcome {userName}
@@ -160,15 +100,52 @@ function dashboard() {
             <SignOut />
           </div>
         </div>
-        <div className='relative top-[10px]'>
-          <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
-        </div>
-        <div className='bg-blueToTest mx-auto flex min-h-screen flex-wrap justify-center  transition-transform duration-300'>
-          <div className='flex flex-wrap px-[50px] py-[20px]'>
-            <div>{renderResultsStudySessions()}</div>
+      </div>
+
+      <div className='grid h-[calc(100vh-116px)] grid-cols-7'>
+        <div>
+          <div
+            className={`h-full w-full border-r-[2px] border-gray-100 bg-white  transition-transform duration-300 `}
+          >
+            {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
           </div>
         </div>
-        <div className='bg-white px-[30px] py-[40px]'>Footer</div>
+        <div className=' col-span-3 flex justify-center overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
+          {/* <div className='relative top-[10px]'>
+            <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
+          </div> */}
+          <div className='mt-[100px] px-[30px] text-center text-[32px] leading-loose'>
+            Upload a PDF to start chatting with it
+          </div>
+        </div>
+
+        <div className='col-span-3 flex flex-col  border-x-[2px] border-gray-100'>
+          <div className='flex-grow'></div>
+
+          <div className=' bg-green-50 px-[40px] pb-[20px] pt-[40px]'>
+            <div className='mx-auto flex max-w-[650px] items-center'>
+              {/* Use a container div to create the input box */}
+              <div className='relative flex-1'>
+                <textarea
+                  value=''
+                  placeholder='Asks Questions here about PDF'
+                  rows={2} // Set the number of rows dynamically
+                  className={`focus:ring-mainBlue border-lightBlue flex w-full resize-none items-center rounded-lg border bg-white px-[40px] py-[10px] focus:outline-none focus:ring-2 `} // Apply dynamic styles for overflow and height
+                />
+              </div>
+              {/* Set onClick to call the API endpoint of a new chat message */}
+              {/* Make a mock response message to act like a real conversation in which messages arrive 5 seconds later */}
+              <div
+                className='bg-mainBlue hover:bg-lightBlue ml-2 cursor-pointer rounded-full px-[20px] py-[10px] text-center text-white'
+                onClick={() => {
+                  sumbitNewChatMessage();
+                }}
+              >
+                Submit
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

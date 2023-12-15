@@ -6,15 +6,6 @@ User Table:
     - Creation Date (Timestamp)
     - Updated Date (timeStamp)
 
-Study Session Table:
-    - ID (UUID) 
-    - User ID (UUID) (FROM USER TABLE) (allowed to be null)
-    - Session Name (Text)
-    - Subject (Text)
-    - Chat ID (UUID) (FROM CHAT LOGS TABLE)
-    - Creation Date (Timestamp)
-    - Updated Date (Timestamp)
-
 PDF Table:
     - ID (UUID)
     - Title (Text)
@@ -22,19 +13,12 @@ PDF Table:
     - PDF INFO (Text?)
     - Upload Date (Timestamp)
 
-Chat Logs Table: (Remove table)
-    - ID (UUID)
-    - Session ID (UUID) (FROM STUDY SESSION TABLE)
-    - Field (Text) Not needed from all text will be from actual messages and not stored here
-    - Creation Date (Timestamp)
-    - Updated Date (Timestamp)
-
 Chat Message Table:
     - ID (UUID)
-    - Study Session ID ( From Study Session Table)
     - Chat ID (UUID) (FROM CHAT LOGS TABLE)
     - Chat Message (Text)
     - Creation Date (Timestamp)
+    - PDF Id
     
 Pivot Table for StudySession and PDFs
     - ID (UUID)

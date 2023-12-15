@@ -89,7 +89,7 @@ function NewPdf() {
       /> */}
       <label
         className={`group relative mt-[20px] inline-flex transform cursor-pointer items-center justify-center rounded-[10px]
-               bg-white px-[40px] py-[10px] text-center transition duration-300 ease-in-out
+               bg-gray-100 px-[40px] py-[10px] text-center transition duration-300 ease-in-out
               hover:-translate-y-1 hover:bg-gray-200 hover:shadow-lg`}
       >
         <div className=' text-center'>
@@ -105,7 +105,7 @@ function NewPdf() {
       </label>
       {titleName === null ? null : (
         <div
-          className=' mt-[20px] cursor-pointer rounded-[10px] bg-green-100 px-[40px] py-[10px] text-center transition duration-300 ease-in-out hover:-translate-y-1 hover:bg-green-50 hover:shadow-lg'
+          className=' mt-[20px] cursor-pointer rounded-[10px] bg-green-100 px-[20px] py-[10px] text-center transition duration-300 ease-in-out hover:-translate-y-1 hover:bg-green-50 hover:shadow-lg'
           onClick={(event) => submitFile(event)}
         >
           Submit

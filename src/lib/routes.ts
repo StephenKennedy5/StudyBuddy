@@ -61,14 +61,14 @@ export const routes = {
   newStudySession(userId: string): string {
     return `${baseUrl}/api/${userId}/new-study-session`;
   },
-  getChatLogs(userId: string, studySessionId: string): string {
-    return `${baseUrl}/api/${userId}/study-session/${studySessionId}/chatlogs`;
+  getChatLogs(userId: string, pdfId: string): string {
+    return `${baseUrl}/api/${userId}/chat-session/${pdfId}/chatLogs`;
   },
-  getStudySessions(userId: string, studySessionId: string): string {
-    return `${baseUrl}/api/${userId}/study-session/${studySessionId}/getStudySession`;
+  getStudySessions(userId: string, pdfId: string): string {
+    return `${baseUrl}/api/${userId}/chat-session/${pdfId}/getStudySession`;
   },
-  newChatMessage(userId: string, studySessionId: string): string {
-    return `${baseUrl}/api/${userId}/study-session/${studySessionId}/newchatmessage`;
+  newChatMessage(userId: string, pdfId: string): string {
+    return `${baseUrl}/api/${userId}/chat-session/${pdfId}/newChatMessage`;
   },
   newPdf(userId: string): string {
     return `${baseUrl}/api/${userId}/newPdf`;
@@ -76,7 +76,10 @@ export const routes = {
   openAiMessage(): string {
     return `${baseUrl}/api/openAiMessage`;
   },
-  getSixLatestMessages(userId: string, studySessionId: string): string {
-    return `${baseUrl}/api/${userId}/study-session/${studySessionId}/getSixChatMessages`;
+  getSixLatestMessages(userId: string, pdfId: string): string {
+    return `${baseUrl}/api/${userId}/chat-session/${pdfId}/getSixChatMessages`;
+  },
+  getPdfName(userId: string, pdfId: string): string {
+    return `${baseUrl}/api/${userId}/chat-session/${pdfId}/getPdfName`;
   },
 };
