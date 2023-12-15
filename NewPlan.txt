@@ -1,0 +1,18 @@
+3 screen split
+left: List of PDFs
+Middle: PDF Viewer
+Right: ChatLogs
+
+PDF list stays the same as now
+Create New middle section
+  Restyle the spread of chat log with PDF Viewer
+Keep Chat Logs same
+  Restyle to match background of PDF Reader aka white backgrund with the darkbackgrund as bubbles
+
+Save PDFs in S3?
+Save chatlogs in postgres
+
+PDFS are given unique chatlog ID
+ChatLogs are linked using PDF ID
+
+

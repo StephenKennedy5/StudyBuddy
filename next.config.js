@@ -3,6 +3,9 @@ const nextConfig = {
   eslint: {
     dirs: ['src'],
   },
+  experimental: {
+    serverComponentsExternalPackages: ['pdf2json'],
+  },
 
   reactStrictMode: true,
   swcMinify: true,

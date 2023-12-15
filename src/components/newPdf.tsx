@@ -5,27 +5,35 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { signOut, useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { FilePond } from 'react-filepond';
+
+import 'filepond/dist/filepond.min.css';
 
 import { fetchCreds, routes } from '@/lib/routes';
-import { s3Client } from '@/lib/s3';
 
-const awsBucket = process.env.NEXT_PUBLIC_AWS_REGION;
-if (!awsBucket) {
-  throw new Error('AWS_PDFS_BUCKET env variable is needed');
-}
+/*
+  Step 1
+    Send File to Backend
+  Step 2
+    Use fs in backend to convert pdf to text
+  Step 3
+    Convert string to TXT File
+  Step 4
+    Return Success or Failure of upload 
+
+*/
 
 function NewPdf() {
   const [titleName, setTitleName] = useState(null);
   const [pdfFile, setPdfFile] = useState(null);
   const [pdfProcessing, setPdfProcessing] = useState(false);
+  const [pdfContent, setPdfContent] = useState('');
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
 
-  //   Calls new PDF API endpoint
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file && file.type === 'application/pdf') {
-      console.log({ HandleFileChange: file });
       const fileName = file.name;
       setTitleName(fileName);
       setPdfFile(file);
@@ -37,32 +45,10 @@ function NewPdf() {
   const submitFile = async () => {
     if (!titleName || !pdfFile) return;
     console.log({ pdfFile });
-    console.log(typeof pdfFile);
 
-    // if (pdfFile) return;
     try {
-      const pdfType = pdfFile.type;
       const formData = new FormData();
       formData.append('file', pdfFile);
-
-      const timestamp = new Date().getTime();
-      const objectKey = `pdfs-dev/${userId}/${timestamp}_${titleName}.pdf`;
-
-      const params = {
-        Bucket: awsBucket,
-        Key: objectKey,
-        Body: pdfFile,
-        ContentType: pdfType,
-        // Add any additional parameters as needed
-      };
-      console.log('Sending to S3');
-      const result = await s3Client.send(new PutObjectCommand(params));
-      console.log('File uploaded successfully. ETag:', result.ETag);
-
-      // Log information for debugging
-      console.log('Title:', titleName);
-      console.log('PDF File:', pdfFile);
-      console.log('Form Data:', formData);
 
       try {
         const response = await fetch(routes.newPdf(userId), {
@@ -94,6 +80,13 @@ function NewPdf() {
 
   return (
     <div className='mb-[20px] flex flex-col'>
+      {/* <FilePond
+        server={{
+          process: '/api/upload',
+          fetch: null,
+          revert: null,
+        }}
+      /> */}
       <label
         className={`group relative mt-[20px] inline-flex transform cursor-pointer items-center justify-center rounded-[10px]
                bg-white px-[40px] py-[10px] text-center transition duration-300 ease-in-out
