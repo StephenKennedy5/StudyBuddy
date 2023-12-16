@@ -106,66 +106,10 @@ function Dashboard() {
     }
     setAskingQuestion(true);
 
-    // Optimistic update: Add the new question to the chat logs
-    const newQuestionMessage = {
-      id: 'temp-id', // You can use a temporary ID to distinguish optimistic updates
-      pdf_id: pdfId,
-      chat_message: newQuestion,
-      creation_date: new Date().toISOString(),
-      user_id: userId,
-      chat_bot: false,
-    };
-    console.log({ Message: newQuestionMessage.chat_message });
-    setChatMessages((prevMessages) => [...prevMessages, newQuestionMessage]);
-
-    // Add study session name/subject to the following question
-    const requestBody = {
-      chat_message: newQuestion,
-      // studySessionName: studySessionName,
-      // studySessionSubject: studySessionSubject,
-      lastSixMessages: lastSixMessages,
-    };
-
-    try {
-      const response = await fetch(routes.newChatMessage(userId, pdfId), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (response.ok) {
-        console.log('Chat message sent successfully');
-        const newMessage = await response.json();
-
-        // Replace the temporary message with the actual response from the server
-        setChatMessages(() => [...newMessage]);
-
-        setNewQuestion('');
-        setAskingQuestion(false);
-        // Perform any other necessary actions
-      } else {
-        console.error('Chat message failed to upload');
-
-        // Revert the optimistic update on error
-        setChatMessages((prevMessages) =>
-          prevMessages.filter((message) => message.id !== 'temp-id')
-        );
-
-        // Handle the error, e.g., show an error message to the user
-      }
-    } catch (error) {
-      console.error('Error uploading chat message: ', error);
+    setNewQuestion('');
+    setTimeout(() => {
       setAskingQuestion(false);
-
-      // Revert the optimistic update on error
-      setChatMessages((prevMessages) =>
-        prevMessages.filter((message) => message.id !== 'temp-id')
-      );
-
-      // Handle the error, e.g., show an error message to the user
-    }
+    }, 5000);
   };
 
   const handleKeyDown = (e) => {
@@ -207,9 +151,17 @@ function Dashboard() {
         </div>
 
         <div className='col-span-3 flex flex-col overflow-auto border-x-[2px] border-gray-100'>
-          <div className='flex-grow'></div>
+          <div className='flex-grow'>
+            {askingQuestion ? (
+              <div className='mx-[20px] my-[20px] animate-pulse  rounded-[20px] bg-red-300 px-[30px] py-[20px] text-[16px] leading-normal'>
+                Please Upload a PDF to Begin Chatting
+              </div>
+            ) : (
+              <div></div>
+            )}
+          </div>
 
-          <div className='   bg-white px-[20px] pb-[20px] pt-[20px]'>
+          <div className='bg-white px-[20px] pb-[20px] pt-[20px]'>
             <div className='mx-auto max-w-[650px] items-center'>
               {/* Use a container div to create the input box */}
               <div className='relative flex-1'>
@@ -217,7 +169,7 @@ function Dashboard() {
                   <TextareaAutosize
                     minRows={1}
                     maxRows={4}
-                    placeholder='Ask Question Here'
+                    placeholder='Upload a PDF To being Chatting'
                     onKeyDown={handleKeyDown}
                     value={newQuestion}
                     onChange={(e) => setNewQuestion(e.target.value)}
