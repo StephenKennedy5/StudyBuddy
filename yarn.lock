@@ -1807,6 +1807,11 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.1.6.tgz"
   integrity sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==
 
+"@heroicons/react@^2.0.18":
+  version "2.0.18"
+  resolved "https://registry.npmjs.org/@heroicons/react/-/react-2.0.18.tgz"
+  integrity sha512-7TyMjRrZZMBPa+/5Y8lN0iyvUU/01PeMGX2+RE7cQWpEUIcb4QotzUObFkJDejj/HUH4qjP/eQ0gzzKs2f+6Yw==
+
 "@humanwhocodes/config-array@^0.11.10":
   version "0.11.10"
   resolved "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.11.10.tgz"
@@ -2984,7 +2989,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^17.0.0 || ^18.0.0", "@types/react@^18.2.12":
+"@types/react@*", "@types/react@^16.8.0 || ^17.0.0 || ^18.0.0", "@types/react@^17.0.0 || ^18.0.0", "@types/react@^18.2.12":
   version "18.2.12"
   resolved "https://registry.npmjs.org/@types/react/-/react-18.2.12.tgz"
   integrity sha512-ndmBMLCgn38v3SntMeoJaIrO6tGHYKMEBohCUmw8HoLLQdRMOIGXfeYaBTLe2lsFaSB3MOK1VXscYFnmLtTSmw==
@@ -3277,6 +3282,11 @@
     "@webassemblyjs/ast" "1.9.0"
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
+
+"@wojtekmaj/react-hooks@^1.18.1":
+  version "1.18.1"
+  resolved "https://registry.npmjs.org/@wojtekmaj/react-hooks/-/react-hooks-1.18.1.tgz"
+  integrity sha512-hvaKC4+xBt+jrccMZsV3oHveaAjcO/Lw833vH78Y/auIwya14H4WH9E1i7EEnm/RcGJmUzCYNA9Ulx9aY1TMhQ==
 
 "@xmldom/xmldom@^0.8.8":
   version "0.8.8"
@@ -7216,6 +7226,11 @@ lz-string@^1.4.4:
   resolved "https://registry.npmjs.org/lz-string/-/lz-string-1.4.4.tgz"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY= sha512-0ckx7ZHRPqb0oUm8zNr+90mtf9DQB60H1wMCjBtfi62Kl3a7JbHob6gA2bC+xRvZoOL+1hzUK8jeuEIQE8svEQ==
 
+make-cancellable-promise@^1.3.1:
+  version "1.3.2"
+  resolved "https://registry.npmjs.org/make-cancellable-promise/-/make-cancellable-promise-1.3.2.tgz"
+  integrity sha512-GCXh3bq/WuMbS+Ky4JBPW1hYTOU+znU+Q5m9Pu+pI8EoUqIHk9+tviOKC6/qhHh8C4/As3tzJ69IF32kdz85ww==
+
 make-dir@^2.0.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/make-dir/-/make-dir-2.1.0.tgz"
@@ -7235,6 +7250,11 @@ make-error@^1.1.1:
   version "1.3.6"
   resolved "https://registry.npmjs.org/make-error/-/make-error-1.3.6.tgz"
   integrity sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==
+
+make-event-props@^1.6.0:
+  version "1.6.2"
+  resolved "https://registry.npmjs.org/make-event-props/-/make-event-props-1.6.2.tgz"
+  integrity sha512-iDwf7mA03WPiR8QxvcVHmVWEPfMY1RZXerDVNCRYW7dUr2ppH3J58Rwb39/WG39yTZdRSxr3x+2v22tvI0VEvA==
 
 makeerror@1.0.12:
   version "1.0.12"
@@ -7325,6 +7345,11 @@ meow@^8.0.0:
     trim-newlines "^3.0.0"
     type-fest "^0.18.0"
     yargs-parser "^20.2.3"
+
+merge-refs@^1.2.1:
+  version "1.2.2"
+  resolved "https://registry.npmjs.org/merge-refs/-/merge-refs-1.2.2.tgz"
+  integrity sha512-RwcT7GsQR3KbuLw1rRuodq4Nt547BKEBkliZ0qqsrpyNne9bGTFtsFIsIpx82huWhcl3kOlOlH4H0xkPk/DqVw==
 
 merge-stream@^2.0.0:
   version "2.0.0"
@@ -8113,6 +8138,14 @@ pdfjs-dist@1.10.100:
     node-ensure "^0.0.0"
     worker-loader "^1.0.0"
 
+pdfjs-dist@3.11.174:
+  version "3.11.174"
+  resolved "https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-3.11.174.tgz"
+  integrity sha512-TdTZPf1trZ8/UFu5Cx/GXB7GZM30LT+wWUNfsi6Bq8ePLnb+woNKtDymI2mxZYBpMbonNFqKmiz684DIfnd8dA==
+  optionalDependencies:
+    canvas "^2.11.2"
+    path2d-polyfill "^2.0.1"
+
 pg-cloudflare@^1.1.1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/pg-cloudflare/-/pg-cloudflare-1.1.1.tgz"
@@ -8378,7 +8411,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.8.1:
+prop-types@^15.6.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -8529,7 +8562,21 @@ react-is@^18.2.0:
   resolved "https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
-react@*, "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^17.0.0 || ^18.0.0", "react@^17.0.2 || ^18", react@^18.0.0, react@^18.2.0, "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", react@>=16.8.0, react@>=17.0.0, "react@16 - 18":
+react-pdf@^7.6.0:
+  version "7.6.0"
+  resolved "https://registry.npmjs.org/react-pdf/-/react-pdf-7.6.0.tgz"
+  integrity sha512-b2/8V6xhe5pn4Y01ELKTQZ+RhdZl1KpSAMGbN+HCZ/kwhYTIc4Pn5ctz1wRQUu1gOJbIEG4CcjMD9vTCzNdwjw==
+  dependencies:
+    clsx "^2.0.0"
+    make-cancellable-promise "^1.3.1"
+    make-event-props "^1.6.0"
+    merge-refs "^1.2.1"
+    pdfjs-dist "3.11.174"
+    prop-types "^15.6.2"
+    tiny-invariant "^1.0.0"
+    tiny-warning "^1.0.0"
+
+react@*, "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^17.0.0 || ^18.0.0", "react@^17.0.2 || ^18", react@^18.0.0, react@^18.2.0, "react@>= 16", "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", react@>=16.8.0, react@>=17.0.0, "react@16 - 18":
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -9726,6 +9773,16 @@ tiny-glob@^0.2.9:
   dependencies:
     globalyzer "0.1.0"
     globrex "^0.1.2"
+
+tiny-invariant@^1.0.0:
+  version "1.3.1"
+  resolved "https://registry.npmjs.org/tiny-invariant/-/tiny-invariant-1.3.1.tgz"
+  integrity sha512-AD5ih2NlSssTCwsMznbvwMZpJ1cbhkGd2uueNxzv2jDlEeZdU04JQfRnggJQ8DrcVBGjAsCKwFBbDlVNtEMlzw==
+
+tiny-warning@^1.0.0:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/tiny-warning/-/tiny-warning-1.0.3.tgz"
+  integrity sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==
 
 tmpl@1.0.5:
   version "1.0.5"

@@ -3,13 +3,14 @@ import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { GetServerSideProps } from 'next';
 import { GetServerSidePropsContext } from 'next';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { getServerSession } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { ParsedUrlQuery } from 'querystring';
 import * as React from 'react';
 import { RefObject, useEffect, useRef, useState } from 'react';
-import SignOut from 'src/components/buttons/signOutButton';
+import SignOut from 'src/components/buttons/SignOutButton';
 import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
 import StudySessionMap from 'src/components/StudySessionDashboard';
@@ -59,6 +60,10 @@ interface Session {
   user?: User | null | undefined;
   expires?: string;
 }
+
+const Sample = dynamic(() => import('src/components/PdfViewer'), {
+  ssr: false,
+});
 
 function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
   // const [showPdfs, setShowPdfs] = useState(true);
@@ -254,6 +259,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
           </div> */}
           <div className='mt-[100px] px-[30px] text-center text-[32px] leading-loose'>
             Upload a PDF to start chatting with it
+            <Sample />
           </div>
         </div>
 
@@ -305,7 +311,6 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
 
           <div className='   bg-white px-[20px] pb-[20px] pt-[20px]'>
             <div className='mx-auto max-w-[650px] items-center'>
-              {/* Use a container div to create the input box */}
               <div className='relative flex-1'>
                 <div className='flex w-full flex-row'>
                   <TextareaAutosize

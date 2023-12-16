@@ -191,7 +191,7 @@ function Dashboard() {
                       stroke='white'
                       strokeWidth='2'
                       strokeLinecap='round'
-                      stroke-linejoin='round'
+                      strokeLinejoin='round'
                     >
                       <path d='M5 12h14M12 5l7 7-7 7' />
                     </svg>
