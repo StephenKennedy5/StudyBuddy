@@ -190,7 +190,7 @@ function Dashboard() {
                       fill='none'
                       stroke='white'
                       strokeWidth='2'
-                      stroke-linecap='round'
+                      strokeLinecap='round'
                       stroke-linejoin='round'
                     >
                       <path d='M5 12h14M12 5l7 7-7 7' />
