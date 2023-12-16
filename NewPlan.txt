@@ -38,6 +38,15 @@ Change dashboard to match new styling Done
 Remove functionality from ask question here to just say please 
 upload a PDF to start chatting in chat area  Done
 
-Clean up typescript errors
 
-fix too many connections bug
+Clean up typescript errors Done
+
+fix too many connections bug Wont Occur
+
+Fix force to scroll down if view port is in view
+Create PDF display
+
+
+Save PDF to S3
+Save URL to S3 in Database
+
