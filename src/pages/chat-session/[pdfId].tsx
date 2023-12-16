@@ -54,6 +54,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
   const chatContainerRef = useRef(null);
   const [askingQuestion, setAskingQuestion] = useState(false);
   const isOnScreen = useOnScreen(chatContainerRef);
+  const [displayError, setDisplayError] = useState(false);
 
   const [newQuestion, setNewQuestion] = useState('');
   const [textareaRows, setTextareaRows] = useState(1);
@@ -189,12 +190,15 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
     } catch (error) {
       console.error('Error uploading chat message: ', error);
       setAskingQuestion(false);
-
+      setDisplayError(true);
       // Revert the optimistic update on error
       setChatMessages((prevMessages) =>
         prevMessages.filter((message) => message.id !== 'temp-id')
       );
-
+      setNewQuestion('');
+      setTimeout(() => {
+        setDisplayError(false);
+      }, 5000);
       // Handle the error, e.g., show an error message to the user
     }
   };
@@ -280,7 +284,13 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
             ) : (
               <div></div>
             )}
-
+            {displayError ? (
+              <div className='mx-[20px] my-[20px] rounded-[20px] bg-red-300 px-[30px] py-[20px] text-[16px] leading-normal'>
+                <div className=''>Error Asking Question. Please Try Again </div>
+              </div>
+            ) : (
+              <div></div>
+            )}
             <div ref={chatContainerRef} />
           </div>
 
