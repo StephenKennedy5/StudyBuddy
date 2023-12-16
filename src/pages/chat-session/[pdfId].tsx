@@ -1,10 +1,5 @@
-// Convert [studySessionId].tsx to this file
-// When user clicks on PDF it routes to the correct PDF within here
-
-// COPY layout of Dashboard for now
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import { useQuery } from '@tanstack/react-query';
-import { Discovery } from 'aws-sdk';
 import classNames from 'classnames';
 import { GetServerSideProps } from 'next';
 import { GetServerSidePropsContext } from 'next';
@@ -58,7 +53,6 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
   const router = useRouter();
   const chatContainerRef = useRef(null);
   const [askingQuestion, setAskingQuestion] = useState(false);
-  const elementRef = useRef<HTMLDivElement>(null);
   const isOnScreen = useOnScreen(chatContainerRef);
 
   const [newQuestion, setNewQuestion] = useState('');

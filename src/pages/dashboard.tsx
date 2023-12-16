@@ -1,3 +1,4 @@
+import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import { useQuery } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { GetServerSidePropsContext } from 'next';
@@ -39,12 +40,17 @@ interface StudySessionArray {
   userPdfs: UserPdfsProps[];
 }
 
-function dashboard() {
+function Dashboard() {
   // const [showPdfs, setShowPdfs] = useState(true);
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
   const userName = session?.user?.name as string;
   const { showPdfs, toggleShowPdfs } = usePdfs();
+
+  const [newQuestion, setNewQuestion] = useState('');
+  const [askingQuestion, setAskingQuestion] = useState(false);
+  const [chatMessagesState, setChatMessages] = useState([]);
+  const lastSixMessages = chatMessagesState.slice(-6);
 
   const {
     isLoading: isLoadingPDFs,
@@ -68,7 +74,11 @@ function dashboard() {
   const renderResultsPDFS = () => {
     if (isLoadingPDFs) {
       // Fix loading... animation
-      return <div className='loading text-center text-[24px]'>Loading</div>;
+      return (
+        <div className='loading text-center text-[24px]'>
+          Loading <span className='animate-pulse'>...</span>
+        </div>
+      );
     }
     if (isErrorPDFs) {
       return (
@@ -88,6 +98,83 @@ function dashboard() {
     return <></>;
   };
 
+  const submitNewChatMessage = async () => {
+    if (newQuestion.trim() === '') return;
+    if (askingQuestion) {
+      console.log('Tried asking another question');
+      return;
+    }
+    setAskingQuestion(true);
+
+    // Optimistic update: Add the new question to the chat logs
+    const newQuestionMessage = {
+      id: 'temp-id', // You can use a temporary ID to distinguish optimistic updates
+      pdf_id: pdfId,
+      chat_message: newQuestion,
+      creation_date: new Date().toISOString(),
+      user_id: userId,
+      chat_bot: false,
+    };
+    console.log({ Message: newQuestionMessage.chat_message });
+    setChatMessages((prevMessages) => [...prevMessages, newQuestionMessage]);
+
+    // Add study session name/subject to the following question
+    const requestBody = {
+      chat_message: newQuestion,
+      // studySessionName: studySessionName,
+      // studySessionSubject: studySessionSubject,
+      lastSixMessages: lastSixMessages,
+    };
+
+    try {
+      const response = await fetch(routes.newChatMessage(userId, pdfId), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (response.ok) {
+        console.log('Chat message sent successfully');
+        const newMessage = await response.json();
+
+        // Replace the temporary message with the actual response from the server
+        setChatMessages(() => [...newMessage]);
+
+        setNewQuestion('');
+        setAskingQuestion(false);
+        // Perform any other necessary actions
+      } else {
+        console.error('Chat message failed to upload');
+
+        // Revert the optimistic update on error
+        setChatMessages((prevMessages) =>
+          prevMessages.filter((message) => message.id !== 'temp-id')
+        );
+
+        // Handle the error, e.g., show an error message to the user
+      }
+    } catch (error) {
+      console.error('Error uploading chat message: ', error);
+      setAskingQuestion(false);
+
+      // Revert the optimistic update on error
+      setChatMessages((prevMessages) =>
+        prevMessages.filter((message) => message.id !== 'temp-id')
+      );
+
+      // Handle the error, e.g., show an error message to the user
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitNewChatMessage();
+    }
+  };
+
   return (
     <div className='flex flex-col'>
       <div>
@@ -103,7 +190,7 @@ function dashboard() {
       </div>
 
       <div className='grid h-[calc(100vh-116px)] grid-cols-7'>
-        <div>
+        <div className='col-span-1 overflow-auto'>
           <div
             className={`h-full w-full border-r-[2px] border-gray-100 bg-white  transition-transform duration-300 `}
           >
@@ -119,29 +206,45 @@ function dashboard() {
           </div>
         </div>
 
-        <div className='col-span-3 flex flex-col  border-x-[2px] border-gray-100'>
+        <div className='col-span-3 flex flex-col overflow-auto border-x-[2px] border-gray-100'>
           <div className='flex-grow'></div>
 
-          <div className=' bg-green-50 px-[40px] pb-[20px] pt-[40px]'>
-            <div className='mx-auto flex max-w-[650px] items-center'>
+          <div className='   bg-white px-[20px] pb-[20px] pt-[20px]'>
+            <div className='mx-auto max-w-[650px] items-center'>
               {/* Use a container div to create the input box */}
               <div className='relative flex-1'>
-                <textarea
-                  value=''
-                  placeholder='Asks Questions here about PDF'
-                  rows={2} // Set the number of rows dynamically
-                  className={`focus:ring-mainBlue border-lightBlue flex w-full resize-none items-center rounded-lg border bg-white px-[40px] py-[10px] focus:outline-none focus:ring-2 `} // Apply dynamic styles for overflow and height
-                />
-              </div>
-              {/* Set onClick to call the API endpoint of a new chat message */}
-              {/* Make a mock response message to act like a real conversation in which messages arrive 5 seconds later */}
-              <div
-                className='bg-mainBlue hover:bg-lightBlue ml-2 cursor-pointer rounded-full px-[20px] py-[10px] text-center text-white'
-                onClick={() => {
-                  sumbitNewChatMessage();
-                }}
-              >
-                Submit
+                <div className='flex w-full flex-row'>
+                  <TextareaAutosize
+                    minRows={1}
+                    maxRows={4}
+                    placeholder='Ask Question Here'
+                    onKeyDown={handleKeyDown}
+                    value={newQuestion}
+                    onChange={(e) => setNewQuestion(e.target.value)}
+                    className='border-mainBlue flex max-h-[300px] w-full resize-none items-center rounded-l-[10px] border bg-white px-[20px] py-[15px] focus:border-opacity-75'
+                  />
+
+                  <div
+                    className='bg-mainBlue flex  cursor-pointer items-center rounded-r-[10px] px-[10px] py-[10px] text-center text-white hover:opacity-75'
+                    onClick={() => {
+                      submitNewChatMessage();
+                    }}
+                  >
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      viewBox='0 0 24 24'
+                      width='24'
+                      height='24'
+                      fill='none'
+                      stroke='white'
+                      strokeWidth='2'
+                      stroke-linecap='round'
+                      stroke-linejoin='round'
+                    >
+                      <path d='M5 12h14M12 5l7 7-7 7' />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -161,4 +264,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return { props: {} };
 }
 
-export default dashboard;
+export default Dashboard;
