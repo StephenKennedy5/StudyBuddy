@@ -1,6 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
-import { ChatCompletionMessageParam } from 'openai';
+
+interface MessageProps {
+  role: 'system' | 'assistant' | 'user';
+  content: string;
+}
+interface ChatMessage {
+  chat_bot: boolean;
+  chat_message: string;
+}
 
 const openAiKey = process.env.OPENAI_API_KEY;
 if (!openAiKey) {
@@ -9,27 +17,25 @@ if (!openAiKey) {
 
 const openai = new OpenAI({ apiKey: openAiKey });
 
-export default async function TestOpenAI(req, res) {
+export default async function ChatOpenAI(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
-    const {
-      chat_message,
-      // studySessionName,
-      // studySessionSubject,
-      lastSixMessages,
-    } = req.body;
+    const { chat_message, lastSixMessages } = req.body;
 
-    const message: ChatCompletionMessageParam[] = [
+    const message: MessageProps[] = [
       {
         role: 'system',
         content: `You are an expert with decades worth of experience.`,
       },
     ];
-    lastSixMessages.forEach((chat) => {
+    lastSixMessages.forEach((chat: ChatMessage) => {
       const messageObject = chat.chat_bot
         ? { role: 'assistant', content: chat.chat_message }
         : { role: 'user', content: chat.chat_message };
 
-      message.push(messageObject);
+      message.push(messageObject as MessageProps);
     });
     const newMessage = {
       role: 'user',
@@ -37,7 +43,7 @@ export default async function TestOpenAI(req, res) {
     };
 
     if (chat_message !== undefined) {
-      message.push(newMessage);
+      message.push(newMessage as MessageProps);
       const response = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: message,

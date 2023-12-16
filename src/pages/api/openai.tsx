@@ -8,7 +8,10 @@ if (!openAiKey) {
 
 const openai = new OpenAI({ apiKey: openAiKey });
 
-export default async function TestOpenAI(req, res) {
+export default async function TestOpenAI(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     const chat_message = req.body;
 

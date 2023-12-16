@@ -59,7 +59,9 @@ export function MyAdapter(
       console.log('getUserByAccount');
       return null;
     },
-    async updateUser(user) {
+    async updateUser(
+      user: Partial<AdapterUser> & Pick<AdapterUser, 'id'>
+    ): Promise<AdapterUser | null> {
       return null;
     },
     async deleteUser(userId) {

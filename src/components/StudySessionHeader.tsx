@@ -2,9 +2,15 @@
 
 import { useRouter } from 'next/router';
 
-import SignOut from '@/components/buttons/signOutButton';
+import SignOut from '@/components/buttons/SignOutButton';
 
-export default function StudySessionHeader({ studySessionName }) {
+interface StudySessionHeaderProps {
+  studySessionName: string;
+}
+
+export default function StudySessionHeader({
+  studySessionName,
+}: StudySessionHeaderProps) {
   const router = useRouter();
   return (
     <div className='flex justify-between px-[30px] py-[25px]'>

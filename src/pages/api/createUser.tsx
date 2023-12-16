@@ -1,17 +1,9 @@
-/* End point to create new user */
-/*
-{
-    id: UUID (Generated with Post call)
-    name: String (Taken from File)
-    email: UUID (Given as param)
-}
-*/
-
 import { NextApiRequest, NextApiResponse } from 'next';
+import { v4 as uuid } from 'uuid';
 
 import knex from '../../../database/knex';
 
-const uuid = require('uuid');
+const id: string = uuid();
 
 export default async function newUser(
   req: NextApiRequest,
@@ -21,7 +13,7 @@ export default async function newUser(
     const { name, email } = req.body;
     const newUser = await knex('users').insert([
       {
-        id: uuid.v4(),
+        id: id,
         name: name,
         email: email,
       },

@@ -8,7 +8,7 @@ import { getServerSession } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { ParsedUrlQuery } from 'querystring';
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 import SignOut from 'src/components/buttons/signOutButton';
 import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
@@ -24,34 +24,50 @@ import { authOptionsCb } from './../api/auth/[...nextauth]';
 
 /* Hide and show user PDF tab with button click */
 
-type StudySessionProps = {
-  session_name: string;
-  subject: string;
-  chat_log_id: string;
+interface PdfInfo {
   id: string;
-};
-
-interface UserPdfsProps {
-  id: string;
-  pdf_info: string;
   title: string;
-  upload_date: string;
   user_id: string;
+  pdf_info: string;
+  upload_date: string;
+  updated_date: string;
+}
+interface ChatLogsProps {
+  id: string;
+  chat_message: string;
+  creation_date: string;
+  user_id: string;
+  chat_bot: boolean;
+  pdf_id: string;
 }
 
-interface StudySessionArray {
-  studySessions: StudySessionProps[];
-  userPdfs: UserPdfsProps[];
+interface ChatSessionProps {
+  chatLogs: ChatLogsProps[];
+  pdfId: string;
+  pdfName: PdfInfo;
 }
 
-function ChatSession({ chatLogs, pdfId, pdfName }) {
+interface User {
+  sub: string;
+  name?: string | null | undefined;
+  email?: string | null | undefined;
+  image?: string | null | undefined;
+}
+
+// Adjust the session object type to include the User type
+interface Session {
+  user?: User | null | undefined;
+  expires?: string;
+}
+
+function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
   // const [showPdfs, setShowPdfs] = useState(true);
   const { data: session, status } = useSession();
-  const userId = session?.user?.sub;
-  const userName = session?.user?.name as string;
+  const userId = session?.user?.sub || '';
+  // const userName = session?.user?.name as string;
   const { showPdfs, toggleShowPdfs } = usePdfs();
   const router = useRouter();
-  const chatContainerRef = useRef(null);
+  const chatContainerRef: RefObject<HTMLDivElement> = useRef(null);
   const [askingQuestion, setAskingQuestion] = useState(false);
   const isOnScreen = useOnScreen(chatContainerRef);
   const [displayError, setDisplayError] = useState(false);
@@ -138,9 +154,9 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
     }
     setAskingQuestion(true);
 
-    // Optimistic update: Add the new question to the chat logs
+    // Optimistic update adds the new question to the chat logs
     const newQuestionMessage = {
-      id: 'temp-id', // You can use a temporary ID to distinguish optimistic updates
+      id: 'temp-id',
       pdf_id: pdfId,
       chat_message: newQuestion,
       creation_date: new Date().toISOString(),
@@ -150,11 +166,8 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
     console.log({ Message: newQuestionMessage.chat_message });
     setChatMessages((prevMessages) => [...prevMessages, newQuestionMessage]);
 
-    // Add study session name/subject to the following question
     const requestBody = {
       chat_message: newQuestion,
-      // studySessionName: studySessionName,
-      // studySessionSubject: studySessionSubject,
       lastSixMessages: lastSixMessages,
     };
 
@@ -176,7 +189,6 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
 
         setNewQuestion('');
         setAskingQuestion(false);
-        // Perform any other necessary actions
       } else {
         console.error('Chat message failed to upload');
 
@@ -184,8 +196,6 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
         setChatMessages((prevMessages) =>
           prevMessages.filter((message) => message.id !== 'temp-id')
         );
-
-        // Handle the error, e.g., show an error message to the user
       }
     } catch (error) {
       console.error('Error uploading chat message: ', error);
@@ -199,11 +209,10 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
       setTimeout(() => {
         setDisplayError(false);
       }, 5000);
-      // Handle the error, e.g., show an error message to the user
     }
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       submitNewChatMessage();
@@ -364,13 +373,15 @@ function ChatSession({ chatLogs, pdfId, pdfName }) {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(
+  const session = (await getServerSession(
     context.req,
     context.res,
     authOptionsCb(context.req, context.res)
-  );
+  )) as Session;
 
-  const userId = session?.user?.sub;
+  console.log({ session });
+
+  const userId = session?.user?.sub || '';
   const { pdfId } = context.params as ParsedUrlQuery;
 
   try {
@@ -383,7 +394,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     if (!pdfTitle.ok) {
       throw new Error(`API request failed with status: ${pdfTitle.status}`);
     }
-    const pdfName = await pdfTitle.json();
+    const pdfName: PdfInfo = await pdfTitle.json();
 
     return { props: { chatLogs, pdfId, pdfName } };
   } catch (error) {

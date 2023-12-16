@@ -1,6 +1,11 @@
 import classNames from 'classnames';
 
-export default function HidePdfs({ showPdfs, toggleShowPdfs }) {
+interface HidePdfsProps {
+  showPdfs: boolean;
+  toggleShowPdfs: () => void;
+}
+
+export default function HidePdfs({ showPdfs, toggleShowPdfs }: HidePdfsProps) {
   const HidePdfsBaseCls = `bg-blueToTest hover:bg-blueToTest2 absolute z-40 
   cursor-pointer rounded-[10px] border-[1px] border-solid border-white 
   bg-opacity-70 px-[20px] py-[10px] text-[18px] text-white 

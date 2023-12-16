@@ -1,3 +1,4 @@
+import { GetServerSidePropsContext } from 'next';
 import { getServerSession } from 'next-auth';
 import { getCsrfToken, getProviders, signIn } from 'next-auth/react';
 
@@ -24,7 +25,7 @@ export default function SignIn() {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(
     context.req,
     context.res,

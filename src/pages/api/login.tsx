@@ -1,23 +1,8 @@
-/* 
-  Endpoint to Check if user exists 
-  if exists return users info verification
-  if doesnt exist calls to create new user
-*/
-/*
-{
-    id: UUID (Generated with Post call)
-    name: String (Taken from File)
-    email: UUID (Given as param)
-}
-*/
-
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import knex from '../../../database/knex';
-
-const uuid = require('uuid');
-
 import { fetchCreds, routes } from '@/lib/routes';
+
+import knex from '../../../database/knex';
 
 export default async function Login(req: NextApiRequest, res: NextApiResponse) {
   try {

@@ -1,7 +1,3 @@
-/* Cal newPdf API endpoint to upload new pdf */
-
-// Get Title from File being uploaded,
-// Use filler content for now for pdf_info
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { signOut, useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -11,28 +7,16 @@ import 'filepond/dist/filepond.min.css';
 
 import { fetchCreds, routes } from '@/lib/routes';
 
-/*
-  Step 1
-    Send File to Backend
-  Step 2
-    Use fs in backend to convert pdf to text
-  Step 3
-    Convert string to TXT File
-  Step 4
-    Return Success or Failure of upload 
-
-*/
-
 function NewPdf() {
-  const [titleName, setTitleName] = useState(null);
-  const [pdfFile, setPdfFile] = useState(null);
+  const [titleName, setTitleName] = useState<string | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfProcessing, setPdfProcessing] = useState(false);
   const [pdfContent, setPdfContent] = useState('');
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file && file.type === 'application/pdf') {
       const fileName = file.name;
       setTitleName(fileName);
@@ -42,7 +26,7 @@ function NewPdf() {
     }
   };
 
-  const submitFile = async () => {
+  const submitFile = async (event: React.MouseEvent<HTMLDivElement>) => {
     if (!titleName || !pdfFile) return;
     console.log({ pdfFile });
 
