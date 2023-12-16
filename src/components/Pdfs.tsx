@@ -1,4 +1,5 @@
 /* Component that will return a list of PDFs Objects */
+import { useRouter } from 'next/router';
 import NewPdf from 'src/components/newPdf';
 
 interface PDFProps {
@@ -13,10 +14,18 @@ interface PDFListProps {
   user_id: string;
 }
 
+/*
+
+  Edit So when PDF is clicked on it brings up chat session and view pdf
+  U
+
+*/
+
 function PDFS({ pdfList }: PDFProps) {
+  const router = useRouter();
   return (
-    <div className='fixed overflow-y-auto px-[20px]'>
-      <div className=' cursor-pointer'>
+    <div className=' overflow-y-auto px-[10px]'>
+      <div className=' cursor-pointer '>
         <div>
           <NewPdf />
         </div>
@@ -25,11 +34,11 @@ function PDFS({ pdfList }: PDFProps) {
             <div
               key={id}
               className={`
-              group mb-[20px] transform rounded-[10px] bg-white p-[20px]
+              group mb-[20px] transform rounded-[10px] bg-gray-100 p-[20px]
               transition duration-300 ease-in-out hover:-translate-y-1
               hover:bg-gray-200 hover:shadow-lg
             `}
-              onClick={() => console.log({ title })}
+              onClick={() => router.push(`/chat-session/${id}`)}
             >
               <div>{title}</div>
             </div>

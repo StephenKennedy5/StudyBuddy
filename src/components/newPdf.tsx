@@ -1,7 +1,3 @@
-/* Cal newPdf API endpoint to upload new pdf */
-
-// Get Title from File being uploaded,
-// Use filler content for now for pdf_info
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { signOut, useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -11,28 +7,16 @@ import 'filepond/dist/filepond.min.css';
 
 import { fetchCreds, routes } from '@/lib/routes';
 
-/*
-  Step 1
-    Send File to Backend
-  Step 2
-    Use fs in backend to convert pdf to text
-  Step 3
-    Convert string to TXT File
-  Step 4
-    Return Success or Failure of upload 
-
-*/
-
 function NewPdf() {
-  const [titleName, setTitleName] = useState(null);
-  const [pdfFile, setPdfFile] = useState(null);
+  const [titleName, setTitleName] = useState<string | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfProcessing, setPdfProcessing] = useState(false);
   const [pdfContent, setPdfContent] = useState('');
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file && file.type === 'application/pdf') {
       const fileName = file.name;
       setTitleName(fileName);
@@ -42,7 +26,7 @@ function NewPdf() {
     }
   };
 
-  const submitFile = async () => {
+  const submitFile = async (event: React.MouseEvent<HTMLDivElement>) => {
     if (!titleName || !pdfFile) return;
     console.log({ pdfFile });
 
@@ -89,7 +73,7 @@ function NewPdf() {
       /> */}
       <label
         className={`group relative mt-[20px] inline-flex transform cursor-pointer items-center justify-center rounded-[10px]
-               bg-white px-[40px] py-[10px] text-center transition duration-300 ease-in-out
+               bg-gray-100 px-[40px] py-[10px] text-center transition duration-300 ease-in-out
               hover:-translate-y-1 hover:bg-gray-200 hover:shadow-lg`}
       >
         <div className=' text-center'>
@@ -105,7 +89,7 @@ function NewPdf() {
       </label>
       {titleName === null ? null : (
         <div
-          className=' mt-[20px] cursor-pointer rounded-[10px] bg-green-100 px-[40px] py-[10px] text-center transition duration-300 ease-in-out hover:-translate-y-1 hover:bg-green-50 hover:shadow-lg'
+          className=' mt-[20px] cursor-pointer rounded-[10px] bg-green-100 px-[20px] py-[10px] text-center transition duration-300 ease-in-out hover:-translate-y-1 hover:bg-green-50 hover:shadow-lg'
           onClick={(event) => submitFile(event)}
         >
           Submit

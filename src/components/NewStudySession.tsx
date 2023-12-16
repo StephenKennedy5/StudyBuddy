@@ -8,8 +8,19 @@ import { fetchCreds, routes } from '@/lib/routes';
 interface NewStudySessionProps {
   id: string;
 }
+interface ModalProps {
+  isCreateNewOpen: boolean;
+  setIsCreateNewOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  router: ReturnType<typeof useRouter>;
+  id: string;
+}
 
-function Modal({ isCreateNewOpen, setIsCreateNewOpen, router, id }) {
+function Modal({
+  isCreateNewOpen,
+  setIsCreateNewOpen,
+  router,
+  id,
+}: ModalProps) {
   const [subject, setSubject] = useState('');
   const [sessionName, setSessionName] = useState('');
   const [newStudySessionValidation, setNewStudySessionValidation] =
@@ -118,7 +129,7 @@ function Modal({ isCreateNewOpen, setIsCreateNewOpen, router, id }) {
   );
 }
 
-function NewStudySession({ id }) {
+function NewStudySession({ id }: NewStudySessionProps) {
   const [isCreateNewOpen, setIsCreateNewOpen] = useState(false);
   const router = useRouter();
   return (

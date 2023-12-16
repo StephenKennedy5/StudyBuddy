@@ -1,3 +1,4 @@
+import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import { useQuery } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { GetServerSidePropsContext } from 'next';
@@ -39,31 +40,17 @@ interface StudySessionArray {
   userPdfs: UserPdfsProps[];
 }
 
-function dashboard() {
+function Dashboard() {
   // const [showPdfs, setShowPdfs] = useState(true);
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
   const userName = session?.user?.name as string;
   const { showPdfs, toggleShowPdfs } = usePdfs();
 
-  const {
-    isLoading: isLoadingStudySessions,
-    isError: isErrorStudySessions,
-    isSuccess: isSuccessStudySessions,
-    data: dataStudySessions,
-  } = useQuery(
-    ['DashboardStudySessions', userId],
-    async () => {
-      const res = await fetch(routes.getStudySession(userId), {
-        method: 'GET',
-        credentials: fetchCreds as RequestCredentials,
-      });
-      if (!res.ok) throw new Error('Failed to fetch study Session');
-      const body = await res.json();
-      return body;
-    },
-    { enabled: !!userId }
-  );
+  const [newQuestion, setNewQuestion] = useState('');
+  const [askingQuestion, setAskingQuestion] = useState(false);
+  const [chatMessagesState, setChatMessages] = useState([]);
+  const lastSixMessages = chatMessagesState.slice(-6);
 
   const {
     isLoading: isLoadingPDFs,
@@ -84,37 +71,14 @@ function dashboard() {
     { enabled: !!userId }
   );
 
-  const renderResultsStudySessions = () => {
-    if (isLoadingStudySessions) {
-      // Fix loading... animation
-      return <div className='loading text-center text-[24px]'>Loading</div>;
-    }
-    if (isErrorStudySessions) {
-      return (
-        <div className='text-center text-[24px]'>
-          Something went wrong. Please refresh page.
-        </div>
-      );
-    }
-    // session.user needs to exists for isSuccess to be true
-    if (isSuccessStudySessions && session?.user) {
-      return (
-        <div className=''>
-          <StudySessionMap
-            StudySessions={dataStudySessions}
-            showPdfs={showPdfs}
-            id={userId}
-          />
-        </div>
-      );
-    }
-    return <></>;
-  };
-
   const renderResultsPDFS = () => {
     if (isLoadingPDFs) {
       // Fix loading... animation
-      return <div className='loading text-center text-[24px]'>Loading</div>;
+      return (
+        <div className='loading text-center text-[24px]'>
+          Loading <span className='animate-pulse'>...</span>
+        </div>
+      );
     }
     if (isErrorPDFs) {
       return (
@@ -134,24 +98,31 @@ function dashboard() {
     return <></>;
   };
 
-  return (
-    <div className='flex min-h-screen'>
-      <div
-        className={
-          showPdfs
-            ? 'bg-lightBlue h-full min-h-screen w-1/4 min-w-[200px] max-w-[220px] flex-none translate-x-0 overflow-y-auto px-[20px]'
-            : '-translate-x-full'
-        }
-      >
-        <div
-          className={`bg-lightBlue fixed left-0 top-0 h-full w-full py-[10px] transition-transform duration-300 `}
-        >
-          {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
-        </div>
-      </div>
+  const submitNewChatMessage = async () => {
+    if (newQuestion.trim() === '') return;
+    if (askingQuestion) {
+      console.log('Tried asking another question');
+      return;
+    }
+    setAskingQuestion(true);
 
-      <div className='bg-blueToTest max-h-screen flex-grow overflow-y-auto'>
-        <div className='flex justify-between bg-white px-[30px] py-[30px]'>
+    setNewQuestion('');
+    setTimeout(() => {
+      setAskingQuestion(false);
+    }, 5000);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitNewChatMessage();
+    }
+  };
+
+  return (
+    <div className='flex flex-col'>
+      <div>
+        <div className='flex justify-between border-b-[4px] border-gray-100 bg-white px-[30px] py-[30px]'>
           <div className='flex items-center p-[10px]'>Logo</div>
           <div className='mx-auto flex items-center p-[10px] text-[24px] font-bold leading-normal'>
             Welcome {userName}
@@ -160,15 +131,76 @@ function dashboard() {
             <SignOut />
           </div>
         </div>
-        <div className='relative top-[10px]'>
-          <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
-        </div>
-        <div className='bg-blueToTest mx-auto flex min-h-screen flex-wrap justify-center  transition-transform duration-300'>
-          <div className='flex flex-wrap px-[50px] py-[20px]'>
-            <div>{renderResultsStudySessions()}</div>
+      </div>
+
+      <div className='grid h-[calc(100vh-116px)] grid-cols-7'>
+        <div className='col-span-1 overflow-auto'>
+          <div
+            className={`h-full w-full border-r-[2px] border-gray-100 bg-white  transition-transform duration-300 `}
+          >
+            {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
           </div>
         </div>
-        <div className='bg-white px-[30px] py-[40px]'>Footer</div>
+        <div className=' col-span-3 flex justify-center overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
+          {/* <div className='relative top-[10px]'>
+            <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
+          </div> */}
+          <div className='mt-[100px] px-[30px] text-center text-[32px] leading-loose'>
+            Upload a PDF to start chatting with it
+          </div>
+        </div>
+
+        <div className='col-span-3 flex flex-col overflow-auto border-x-[2px] border-gray-100'>
+          <div className='flex-grow'>
+            {askingQuestion ? (
+              <div className='mx-[20px] my-[20px] animate-pulse  rounded-[20px] bg-red-300 px-[30px] py-[20px] text-[16px] leading-normal'>
+                Please Upload a PDF to Begin Chatting
+              </div>
+            ) : (
+              <div></div>
+            )}
+          </div>
+
+          <div className='bg-white px-[20px] pb-[20px] pt-[20px]'>
+            <div className='mx-auto max-w-[650px] items-center'>
+              {/* Use a container div to create the input box */}
+              <div className='relative flex-1'>
+                <div className='flex w-full flex-row'>
+                  <TextareaAutosize
+                    minRows={1}
+                    maxRows={4}
+                    placeholder='Upload a PDF To being Chatting'
+                    onKeyDown={handleKeyDown}
+                    value={newQuestion}
+                    onChange={(e) => setNewQuestion(e.target.value)}
+                    className='border-mainBlue flex max-h-[300px] w-full resize-none items-center rounded-l-[10px] border bg-white px-[20px] py-[15px] focus:border-opacity-75'
+                  />
+
+                  <div
+                    className='bg-mainBlue flex  cursor-pointer items-center rounded-r-[10px] px-[10px] py-[10px] text-center text-white hover:opacity-75'
+                    onClick={() => {
+                      submitNewChatMessage();
+                    }}
+                  >
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      viewBox='0 0 24 24'
+                      width='24'
+                      height='24'
+                      fill='none'
+                      stroke='white'
+                      strokeWidth='2'
+                      stroke-linecap='round'
+                      stroke-linejoin='round'
+                    >
+                      <path d='M5 12h14M12 5l7 7-7 7' />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -184,4 +216,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return { props: {} };
 }
 
-export default dashboard;
+export default Dashboard;

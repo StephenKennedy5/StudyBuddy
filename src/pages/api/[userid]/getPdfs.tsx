@@ -10,7 +10,10 @@ export default async function GetStudySessions(
 ) {
   try {
     const userId = req.query.userid;
-    const getPdfs = await knex('pdfs').select().where('user_id', userId);
+    const getPdfs = await knex('pdfs')
+      .select()
+      .where('user_id', userId)
+      .orderBy('updated_date', 'desc');
 
     res.status(200).json(getPdfs);
   } catch (error) {

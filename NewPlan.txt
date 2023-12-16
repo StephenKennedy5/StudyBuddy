@@ -15,4 +15,29 @@ Save chatlogs in postgres
 PDFS are given unique chatlog ID
 ChatLogs are linked using PDF ID
 
+Restructure database
 
+so study sessions are gone but by pdf now
+
+When Click on PDF have to open chat Logs and display PDF
+Change format of "study Session" to match new dashboard
+
+
+change styling of messaging to look like bubbles Done
+add a loading bubble that its typing back at you Done
+
+Split the screen in 3 overflows Done
+
+update pdfs on latest change/newest message order Done
+
+Button the shows up when ask chat message is out of viewport Done
+Change textarea styling to have button within text area to submit question Done
+
+Change dashboard to match new styling Done
+
+Remove functionality from ask question here to just say please 
+upload a PDF to start chatting in chat area  Done
+
+Clean up typescript errors
+
+fix too many connections bug

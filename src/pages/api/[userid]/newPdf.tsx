@@ -21,7 +21,7 @@ export default async function NewPdf(
 ) {
   try {
     const pdfData = 'Mock Data for Now';
-    const pdfTitle = 'Moch Title';
+    const pdfTitle = 'Mock Title';
     const userId = req.query.userid;
     // const { pdfTitle, pdfText, formData } = req.body;
     // const { formData } = req.body;
@@ -29,9 +29,9 @@ export default async function NewPdf(
       return res.status(400).json({ error: 'No file provided' });
     }
 
-    const fileBuffer = req.file.buffer;
-    const fileText = fileBuffer.toString();
-    console.log('PDF Text: ', fileText);
+    // const fileBuffer = req.file.buffer;
+    // const fileText = fileBuffer.toString();
+    // console.log('PDF Text: ', fileText);
 
     // console.log('PDF Form data: ', formData);
 

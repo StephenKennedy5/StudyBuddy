@@ -4,7 +4,20 @@ import { useEffect, useRef, useState } from 'react';
 
 import { fetchCreds, routes } from '@/lib/routes';
 
-function Chat({ chatMessages, studySessionId }) {
+interface ChatMessageProps {
+  id: string;
+  chat_message: string;
+}
+
+interface StudySessionIdProps {
+  StudySessionId: string;
+}
+interface ChatProps {
+  chatMessages: ChatMessageProps[];
+  studySessionId: StudySessionIdProps;
+}
+
+function Chat({ chatMessages, studySessionId }: ChatProps) {
   const [newQuestion, setNewQuestion] = useState('');
   const [isScrollable, setIsScrollable] = useState(false);
   const [textareaRows, setTextareaRows] = useState(1);
@@ -20,32 +33,32 @@ function Chat({ chatMessages, studySessionId }) {
 
     const requestBody = { chat_message: newQuestion };
 
-    try {
-      const response = await fetch(
-        routes.newChatMessage(userId, studySessionId),
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-        }
-      );
-      if (response.ok) {
-        console.log('Chat message sent successfully');
-        const newMessage = await response.json();
-        setChatMessages(() => [...newMessage]);
-        setNewQuestion('');
-        // Perform any other necessary actions
-      } else {
-        console.error('Chat message failed to upload');
-      }
-    } catch (error) {
-      console.error('Error uploading chat message: ', error);
-    }
+    // try {
+    //   const response = await fetch(
+    //     routes.newChatMessage(userId, studySessionId),
+    //     {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body: JSON.stringify(requestBody),
+    //     }
+    //   );
+    //   if (response.ok) {
+    //     console.log('Chat message sent successfully');
+    //     const newMessage = await response.json();
+    //     setChatMessages(() => [...newMessage]);
+    //     setNewQuestion('');
+    //     // Perform any other necessary actions
+    //   } else {
+    //     console.error('Chat message failed to upload');
+    //   }
+    // } catch (error) {
+    //   console.error('Error uploading chat message: ', error);
+    // }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     // Update the input value
     setNewQuestion(e.target.value);
 
@@ -55,7 +68,7 @@ function Chat({ chatMessages, studySessionId }) {
     setTextareaRows(newRows);
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       sumbitNewChatMessage();
