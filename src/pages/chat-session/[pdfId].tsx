@@ -234,7 +234,7 @@ function ChatSession({ chatLogs, pdfId, pdfInfo }: ChatSessionProps) {
             onClick={() => router.push('/dashboard')}
             className='flex items-center justify-center'
           >
-            <div className=' bg-mainBlue hover:bg-lightBlue flex cursor-pointer items-center rounded-[10px] px-[10px] py-[15px] text-center text-white'>
+            <div className=' bg-mainBlue flex cursor-pointer items-center rounded-[10px] px-[10px] py-[15px] text-center text-white hover:bg-opacity-75'>
               Dashboard
             </div>
           </div>

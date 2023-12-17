@@ -82,9 +82,9 @@ function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
   return (
     <div className='mb-[20px] flex flex-col'>
       <label
-        className={`group relative mt-[20px] inline-flex transform cursor-pointer items-center justify-center rounded-[10px]
-               bg-gray-100 px-[40px] py-[10px] text-center transition duration-300 ease-in-out
-              hover:-translate-y-1 hover:bg-gray-200 hover:shadow-lg`}
+        className={`bg-mainBlue group relative mt-[20px] inline-flex transform cursor-pointer items-center justify-center
+               rounded-[10px] px-[40px] py-[10px] text-center text-white transition duration-300 ease-in-out
+              hover:-translate-y-1 hover:bg-opacity-75 hover:shadow-lg`}
       >
         <div className=' text-center'>
           <span>{titleName === null ? <div>Upload PDF</div> : titleName}</span>
