@@ -8,7 +8,7 @@ interface HidePdfsProps {
 export default function HidePdfs({ showPdfs, toggleShowPdfs }: HidePdfsProps) {
   const HidePdfsBaseCls = `bg-mainBlue bg-opacity-50 hover:bg-opacity-75 absolute z-40 
   cursor-pointer rounded-[10px] border-[1px] border-solid border-white 
-   px-[10px] py-[10px] text-[18px] text-white 
+   px-[5px] py-[5px] text-[18px] text-white 
   transition-transform duration-300 ease-in-out`;
   const showPdfsTrue = 'translate-x-[10px]';
   // const showPdfsFalse = 'translate-x-[10px]';
