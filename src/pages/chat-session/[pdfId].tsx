@@ -29,9 +29,10 @@ interface PdfInfo {
   id: string;
   title: string;
   user_id: string;
-  pdf_info: string;
   upload_date: string;
   updated_date: string;
+  AWS_Key: string;
+  AWS_Bucket: string;
 }
 interface ChatLogsProps {
   id: string;
@@ -45,7 +46,7 @@ interface ChatLogsProps {
 interface ChatSessionProps {
   chatLogs: ChatLogsProps[];
   pdfId: string;
-  pdfName: PdfInfo;
+  pdfInfo: PdfInfo;
 }
 
 interface User {
@@ -65,7 +66,7 @@ const PdfViewer = dynamic(() => import('src/components/PdfViewer'), {
   ssr: false,
 });
 
-function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
+function ChatSession({ chatLogs, pdfId, pdfInfo }: ChatSessionProps) {
   // const [showPdfs, setShowPdfs] = useState(true);
   const { data: session, status } = useSession();
   const userId = session?.user?.sub || '';
@@ -238,7 +239,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
             </div>
           </div>
           <div className='mx-auto flex items-center p-[10px] text-[24px] font-bold leading-normal'>
-            Chatting with {pdfName.title}
+            Chatting with {pdfInfo.title}
           </div>
           <div>
             <SignOut />
@@ -256,7 +257,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
         </div>
         <div className=' col-span-3 overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
           <div>
-            <PdfViewer pdfFile={pdfFile} />
+            <PdfViewer pdfFile={pdfInfo.AWS_Key} />
           </div>
         </div>
 
@@ -396,9 +397,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     if (!pdfTitle.ok) {
       throw new Error(`API request failed with status: ${pdfTitle.status}`);
     }
-    const pdfName: PdfInfo = await pdfTitle.json();
+    const pdfInfo: PdfInfo = await pdfTitle.json();
 
-    return { props: { chatLogs, pdfId, pdfName } };
+    return { props: { chatLogs, pdfId, pdfInfo } };
   } catch (error) {
     console.error('API request error:', error);
     return { props: { chatLogs: [] } };

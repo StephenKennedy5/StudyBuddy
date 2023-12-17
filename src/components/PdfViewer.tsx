@@ -21,7 +21,7 @@ const maxWidth = 800;
 
 type PDFFile = string | File | null;
 interface pdfFileProps {
-  pdfFile: File | null;
+  pdfFile: File | string | null;
 }
 
 // Take Button and bring out to NewPdf
