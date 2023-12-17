@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import * as React from 'react';
 import { useState } from 'react';
-import SignOut from 'src/components/buttons/signOutButton';
+import SignOut from 'src/components/buttons/SignOutButton';
 import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
 import StudySessionMap from 'src/components/StudySessionDashboard';

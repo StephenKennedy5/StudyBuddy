@@ -46,6 +46,9 @@ fix too many connections bug Wont Occur
 Fix force to scroll down if view port is in view
 Create PDF display
 
+When PDF is uploaded bring to new chat sessions
+Have the pdf url be the pdf state and set state as prop for PdfViewer
+Fix input for pdf to send to PDFViewerComponent
 
 Save PDF to S3
 Save URL to S3 in Database

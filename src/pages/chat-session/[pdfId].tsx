@@ -61,7 +61,10 @@ interface Session {
   expires?: string;
 }
 
-const Sample = dynamic(() => import('src/components/PdfViewer'), {
+const PdfViewer = dynamic(() => import('src/components/PdfViewer'), {
+  ssr: false,
+});
+const PdfViewerNew = dynamic(() => import('src/components/PdfViewerNew'), {
   ssr: false,
 });
 
@@ -76,6 +79,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
   const [askingQuestion, setAskingQuestion] = useState(false);
   const isOnScreen = useOnScreen(chatContainerRef);
   const [displayError, setDisplayError] = useState(false);
+  const [pdfFile, setPdfFile] = useState<File | string | null>(null);
 
   const [newQuestion, setNewQuestion] = useState('');
   const [textareaRows, setTextareaRows] = useState(1);
@@ -135,8 +139,8 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
     // session.user needs to exists for isSuccess to be true
     if (isSuccessPDFs && session?.user) {
       return (
-        <div>
-          <PDFS pdfList={dataPDFs} />
+        <div onClick={() => console.log(pdfFile)}>
+          <PDFS pdfList={dataPDFs} pdfFile={pdfFile} setPdfFile={setPdfFile} />
         </div>
       );
     }
@@ -254,12 +258,8 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
           </div>
         </div>
         <div className=' col-span-3 flex justify-center overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
-          {/* <div className='relative top-[10px]'>
-            <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
-          </div> */}
-          <div className='mt-[100px] px-[30px] text-center text-[32px] leading-loose'>
-            Upload a PDF to start chatting with it
-            <Sample />
+          <div>
+            <PdfViewer pdfFile={pdfFile} />
           </div>
         </div>
 

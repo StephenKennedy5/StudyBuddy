@@ -7,23 +7,33 @@ import 'filepond/dist/filepond.min.css';
 
 import { fetchCreds, routes } from '@/lib/routes';
 
-function NewPdf() {
+interface NewPdfProps {
+  pdfFile: File | null;
+  setPdfFile: React.Dispatch<React.SetStateAction<File | null>>;
+}
+
+function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
   const [titleName, setTitleName] = useState<string | null>(null);
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  // const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfProcessing, setPdfProcessing] = useState(false);
   const [pdfContent, setPdfContent] = useState('');
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && file.type === 'application/pdf') {
-      const fileName = file.name;
+  const handleFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const { files } = event.target;
+
+    console.log(files);
+    if (files && files[0]) {
+      const fileName = files[0].name;
       setTitleName(fileName);
-      setPdfFile(file);
+      setPdfFile(files[0]);
     } else {
       setTitleName(null);
     }
+    return;
   };
 
   const submitFile = async (event: React.MouseEvent<HTMLDivElement>) => {
@@ -64,13 +74,6 @@ function NewPdf() {
 
   return (
     <div className='mb-[20px] flex flex-col'>
-      {/* <FilePond
-        server={{
-          process: '/api/upload',
-          fetch: null,
-          revert: null,
-        }}
-      /> */}
       <label
         className={`group relative mt-[20px] inline-flex transform cursor-pointer items-center justify-center rounded-[10px]
                bg-gray-100 px-[40px] py-[10px] text-center transition duration-300 ease-in-out

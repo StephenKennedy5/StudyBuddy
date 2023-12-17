@@ -20,9 +20,14 @@ const resizeObserverOptions = {};
 const maxWidth = 800;
 
 type PDFFile = string | File | null;
+interface pdfFileProps {
+  pdfFile: File | null;
+}
 
-export default function Sample() {
-  const [file, setFile] = useState<PDFFile>('./sample.pdf');
+// Take Button and bring out to NewPdf
+
+export default function PdfViewer({ pdfFile }: pdfFileProps) {
+  const [file, setFile] = useState<PDFFile>(null);
   const [numPages, setNumPages] = useState<number>();
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>();
@@ -39,6 +44,7 @@ export default function Sample() {
 
   function onFileChange(event: React.ChangeEvent<HTMLInputElement>): void {
     const { files } = event.target;
+    console.log(files);
 
     if (files && files[0]) {
       setFile(files[0] || null);
@@ -53,9 +59,6 @@ export default function Sample() {
 
   return (
     <div className='Example'>
-      <header>
-        <h1>react-pdf sample page</h1>
-      </header>
       <div className='Example__container'>
         <div className='Example__container__load'>
           <label htmlFor='file'>Load from file:</label>{' '}
@@ -63,7 +66,7 @@ export default function Sample() {
         </div>
         <div className='Example__container__document' ref={setContainerRef}>
           <Document
-            file={file}
+            file={pdfFile}
             onLoadSuccess={onDocumentLoadSuccess}
             options={options}
           >

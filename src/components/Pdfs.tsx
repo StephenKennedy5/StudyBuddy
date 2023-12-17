@@ -4,6 +4,8 @@ import NewPdf from 'src/components/newPdf';
 
 interface PDFProps {
   pdfList: PDFListProps[];
+  pdfFile: File | null;
+  setPdfFile: React.Dispatch<React.SetStateAction<File | null>>;
 }
 
 interface PDFListProps {
@@ -21,13 +23,13 @@ interface PDFListProps {
 
 */
 
-function PDFS({ pdfList }: PDFProps) {
+function PDFS({ pdfList, pdfFile, setPdfFile }: PDFProps) {
   const router = useRouter();
   return (
     <div className=' overflow-y-auto px-[10px]'>
       <div className=' cursor-pointer '>
         <div>
-          <NewPdf />
+          <NewPdf pdfFile={pdfFile} setPdfFile={setPdfFile} />
         </div>
         {pdfList.map(({ title, id }) => {
           return (
