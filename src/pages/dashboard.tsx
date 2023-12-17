@@ -1,5 +1,6 @@
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import { useQuery } from '@tanstack/react-query';
+import { Discovery } from 'aws-sdk';
 import { GetServerSideProps } from 'next';
 import { GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
@@ -139,15 +140,25 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className='grid h-[calc(100vh-116px)] grid-cols-7'>
-        <div className='col-span-1 overflow-auto'>
-          <div
-            className={`h-full w-full border-r-[2px] border-gray-100 bg-white  transition-transform duration-300 `}
-          >
-            {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
+      <div
+        className={`grid h-[calc(100vh-116px)]  ${
+          showPdfs ? 'grid-cols-7' : 'grid-cols-6'
+        }`}
+      >
+        {showPdfs && (
+          <div className={` col-span-1 overflow-auto`}>
+            <div
+              className={`h-full w-full border-r-[2px] border-gray-100 bg-white  transition-transform duration-300 `}
+            >
+              {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
+            </div>
           </div>
-        </div>
+        )}
+
         <div className=' col-span-3  overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
+          <div className='relative top-[10px]'>
+            <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
+          </div>
           <div>
             {pdfFile === null ? (
               <div className='mt-[100px] flex justify-center px-[30px] text-center text-[32px] leading-loose'>
@@ -171,10 +182,8 @@ function Dashboard() {
               <div></div>
             )}
           </div>
-
           <div className='bg-white px-[20px] pb-[20px] pt-[20px]'>
             <div className='mx-auto max-w-[650px] items-center'>
-              {/* Use a container div to create the input box */}
               <div className='relative flex-1'>
                 <div className='flex w-full flex-row'>
                   <TextareaAutosize
