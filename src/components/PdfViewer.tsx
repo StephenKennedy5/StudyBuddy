@@ -42,14 +42,14 @@ export default function PdfViewer({ pdfFile }: pdfFileProps) {
 
   useResizeObserver(containerRef, resizeObserverOptions, onResize);
 
-  function onFileChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    const { files } = event.target;
-    console.log(files);
+  // function onFileChange(event: React.ChangeEvent<HTMLInputElement>): void {
+  //   const { files } = event.target;
+  //   console.log(files);
 
-    if (files && files[0]) {
-      setFile(files[0] || null);
-    }
-  }
+  //   if (files && files[0]) {
+  //     setFile(files[0] || null);
+  //   }
+  // }
 
   function onDocumentLoadSuccess({
     numPages: nextNumPages,
