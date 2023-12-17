@@ -2,6 +2,7 @@ import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import { useQuery } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { GetServerSidePropsContext } from 'next';
+import dynamic from 'next/dynamic';
 import { getServerSession } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import * as React from 'react';
@@ -40,12 +41,17 @@ interface StudySessionArray {
   userPdfs: UserPdfsProps[];
 }
 
+const PdfViewer = dynamic(() => import('src/components/PdfViewer'), {
+  ssr: false,
+});
+
 function Dashboard() {
   // const [showPdfs, setShowPdfs] = useState(true);
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
   const userName = session?.user?.name as string;
   const { showPdfs, toggleShowPdfs } = usePdfs();
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const [newQuestion, setNewQuestion] = useState('');
   const [askingQuestion, setAskingQuestion] = useState(false);
@@ -91,7 +97,7 @@ function Dashboard() {
     if (isSuccessPDFs && session?.user) {
       return (
         <div>
-          <PDFS pdfList={dataPDFs} />
+          <PDFS pdfList={dataPDFs} pdfFile={pdfFile} setPdfFile={setPdfFile} />
         </div>
       );
     }
@@ -141,12 +147,17 @@ function Dashboard() {
             {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
           </div>
         </div>
-        <div className=' col-span-3 flex justify-center overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
-          {/* <div className='relative top-[10px]'>
-            <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
-          </div> */}
-          <div className='mt-[100px] px-[30px] text-center text-[32px] leading-loose'>
-            Upload a PDF to start chatting with it
+        <div className=' col-span-3  overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
+          <div>
+            {pdfFile === null ? (
+              <div className='mt-[100px] flex justify-center px-[30px] text-center text-[32px] leading-loose'>
+                Upload a PDF to start chatting with it
+              </div>
+            ) : (
+              <div>
+                <PdfViewer pdfFile={pdfFile} />
+              </div>
+            )}
           </div>
         </div>
 

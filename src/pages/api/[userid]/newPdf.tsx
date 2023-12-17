@@ -13,6 +13,10 @@ interface MulterNextApiRequest extends NextApiRequest {
   };
 }
 
+/* 
+  Step 1 Check if it hits s3
+*/
+
 const upload = multer();
 
 export default async function NewPdf(

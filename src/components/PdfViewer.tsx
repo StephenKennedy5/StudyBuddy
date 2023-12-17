@@ -27,7 +27,7 @@ interface pdfFileProps {
 // Take Button and bring out to NewPdf
 
 export default function PdfViewer({ pdfFile }: pdfFileProps) {
-  const [file, setFile] = useState<PDFFile>(null);
+  // const [file, setFile] = useState<PDFFile>(null);
   const [numPages, setNumPages] = useState<number>();
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>();
@@ -59,28 +59,22 @@ export default function PdfViewer({ pdfFile }: pdfFileProps) {
 
   return (
     <div className='Example'>
-      <div className='Example__container'>
-        <div className='Example__container__load'>
-          <label htmlFor='file'>Load from file:</label>{' '}
-          <input onChange={onFileChange} type='file' />
-        </div>
-        <div className='Example__container__document' ref={setContainerRef}>
-          <Document
-            file={pdfFile}
-            onLoadSuccess={onDocumentLoadSuccess}
-            options={options}
-          >
-            {Array.from(new Array(numPages), (el, index) => (
-              <Page
-                key={`page_${index + 1}`}
-                pageNumber={index + 1}
-                width={
-                  containerWidth ? Math.min(containerWidth, maxWidth) : maxWidth
-                }
-              />
-            ))}
-          </Document>
-        </div>
+      <div className='Example__container__document' ref={setContainerRef}>
+        <Document
+          file={pdfFile}
+          onLoadSuccess={onDocumentLoadSuccess}
+          options={options}
+        >
+          {Array.from(new Array(numPages), (el, index) => (
+            <Page
+              key={`page_${index + 1}`}
+              pageNumber={index + 1}
+              width={
+                containerWidth ? Math.min(containerWidth, maxWidth) : maxWidth
+              }
+            />
+          ))}
+        </Document>
       </div>
     </div>
   );

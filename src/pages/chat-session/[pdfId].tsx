@@ -64,9 +64,6 @@ interface Session {
 const PdfViewer = dynamic(() => import('src/components/PdfViewer'), {
   ssr: false,
 });
-const PdfViewerNew = dynamic(() => import('src/components/PdfViewerNew'), {
-  ssr: false,
-});
 
 function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
   // const [showPdfs, setShowPdfs] = useState(true);
@@ -79,7 +76,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
   const [askingQuestion, setAskingQuestion] = useState(false);
   const isOnScreen = useOnScreen(chatContainerRef);
   const [displayError, setDisplayError] = useState(false);
-  const [pdfFile, setPdfFile] = useState<File | string | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const [newQuestion, setNewQuestion] = useState('');
   const [textareaRows, setTextareaRows] = useState(1);
@@ -257,7 +254,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
             {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
           </div>
         </div>
-        <div className=' col-span-3 flex justify-center overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
+        <div className=' col-span-3 overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
           <div>
             <PdfViewer pdfFile={pdfFile} />
           </div>

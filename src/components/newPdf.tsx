@@ -32,6 +32,7 @@ function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
       setPdfFile(files[0]);
     } else {
       setTitleName(null);
+      setPdfFile(null);
     }
     return;
   };
