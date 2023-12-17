@@ -84,6 +84,6 @@ Step 6
   If user has an input for PDF select display what the pdf looks like in middle section Done
   when user selects submit upload pdf to s3 Done
   when uploadToS3 give file name of UUID/{fileName}.pdf Done
-  send this to Create point in Database as aws aws_key
-  aws bucket is just name of bucket
-  name is {fileName} (User Facing)
+  send this to Create point in Database as aws aws_key Done
+  aws bucket is just name of bucket 
+  name is {fileName} (User Facing) Done

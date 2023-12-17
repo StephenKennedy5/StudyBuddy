@@ -1,4 +1,5 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import { useS3Upload } from 'next-s3-upload';
 import { useState } from 'react';
@@ -20,6 +21,7 @@ function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
   const { data: session, status } = useSession();
   const { uploadToS3 } = useS3Upload();
   const userId = session?.user?.sub;
+  const router = useRouter();
 
   const handleFileChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -29,7 +31,8 @@ function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
     console.log(files);
     if (files && files[0]) {
       const fileName = files[0].name;
-      setTitleName(fileName);
+      const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, '');
+      setTitleName(fileNameWithoutExtension);
       setPdfFile(files[0]);
     } else {
       setTitleName(null);
@@ -42,8 +45,32 @@ function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
     if (!titleName || !pdfFile) return;
 
     const { url } = await uploadToS3(pdfFile);
-    console.log('SUBMITTED FILE');
-    console.log(url);
+    const match = url.match(/\/next-s3-uploads\/([^\/]+)/);
+    const pdfId = match ? match[1] : '';
+
+    try {
+      const requestBody = {
+        pdfTitle: titleName,
+        AWS_key: url,
+        AWS_bucket: 'study-buddy-dev',
+        id: pdfId,
+      };
+
+      const response = await fetch(routes.newPdf(userId), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (response.ok) {
+        const jsonResponse = await response.json();
+        console.log({ jsonResponse });
+        router.push(`/chat-session/${pdfId}`);
+      }
+    } catch (error) {
+      console.error('Error making new PDF: ', error);
+    }
+
     setTitleName(null);
     setPdfFile(null);
     return;
