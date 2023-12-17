@@ -1,7 +1,7 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { signOut, useSession } from 'next-auth/react';
+import { useS3Upload } from 'next-s3-upload';
 import { useState } from 'react';
-import { FilePond } from 'react-filepond';
 
 import 'filepond/dist/filepond.min.css';
 
@@ -18,6 +18,7 @@ function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
   const [pdfProcessing, setPdfProcessing] = useState(false);
   const [pdfContent, setPdfContent] = useState('');
   const { data: session, status } = useSession();
+  const { uploadToS3 } = useS3Upload();
   const userId = session?.user?.sub;
 
   const handleFileChange = (
@@ -39,38 +40,13 @@ function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
 
   const submitFile = async (event: React.MouseEvent<HTMLDivElement>) => {
     if (!titleName || !pdfFile) return;
-    console.log({ pdfFile });
 
-    try {
-      const formData = new FormData();
-      formData.append('file', pdfFile);
-
-      try {
-        const response = await fetch(routes.newPdf(userId), {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (response.ok) {
-          setTitleName(null);
-          setPdfFile(null);
-          console.log('PDF uploaded successfully');
-          // Perform any other necessary actions
-        } else {
-          setTitleName(null);
-          setPdfFile(null);
-          console.error('PDF upload failed');
-        }
-      } catch (error) {
-        setTitleName(null);
-        setPdfFile(null);
-        console.error('Error Uploading PDF: ', error);
-      }
-    } catch (error) {
-      setTitleName(null);
-      setPdfFile(null);
-      console.error('Error processing PDF: ', error);
-    }
+    const { url } = await uploadToS3(pdfFile);
+    console.log('SUBMITTED FILE');
+    console.log(url);
+    setTitleName(null);
+    setPdfFile(null);
+    return;
   };
 
   return (

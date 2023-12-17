@@ -1,4 +1,3 @@
-import multer from 'multer';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import knex from '../../../../database/knex';
@@ -14,10 +13,16 @@ interface MulterNextApiRequest extends NextApiRequest {
 }
 
 /* 
-  Step 1 Check if it hits s3
+  Take in File Name
+  New URL
+  Parse New URL for UUID val
+  set UUID val to pdf Val
+  AWS KEY = NEW URL
+  AWS Bucket = study-buddy-dev
+  name = FileName
+  updated_date = Date.now()
+  upload_date = Date.now()
 */
-
-const upload = multer();
 
 export default async function NewPdf(
   req: NextApiRequest,
