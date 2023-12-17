@@ -1,76 +1,86 @@
-import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
+import { useS3Upload } from 'next-s3-upload';
 import { useState } from 'react';
-import { FilePond } from 'react-filepond';
 
 import 'filepond/dist/filepond.min.css';
 
 import { fetchCreds, routes } from '@/lib/routes';
 
-function NewPdf() {
+interface NewPdfProps {
+  pdfFile: File | null;
+  setPdfFile: React.Dispatch<React.SetStateAction<File | null>>;
+}
+
+function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
   const [titleName, setTitleName] = useState<string | null>(null);
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  // const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfProcessing, setPdfProcessing] = useState(false);
   const [pdfContent, setPdfContent] = useState('');
   const { data: session, status } = useSession();
+  const { uploadToS3 } = useS3Upload();
   const userId = session?.user?.sub;
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && file.type === 'application/pdf') {
-      const fileName = file.name;
-      setTitleName(fileName);
-      setPdfFile(file);
+  const handleFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const { files } = event.target;
+
+    if (files && files[0]) {
+      const fileName = files[0].name;
+      const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, '');
+      setTitleName(fileNameWithoutExtension);
+      setPdfFile(files[0]);
     } else {
       setTitleName(null);
+      setPdfFile(null);
     }
+    return;
   };
 
   const submitFile = async (event: React.MouseEvent<HTMLDivElement>) => {
     if (!titleName || !pdfFile) return;
-    console.log({ pdfFile });
+
+    const { url } = await uploadToS3(pdfFile);
+    const match = url.match(/\/next-s3-uploads\/([^\/]+)/);
+    const pdfId = match ? match[1] : '';
 
     try {
-      const formData = new FormData();
-      formData.append('file', pdfFile);
+      const requestBody = {
+        pdfTitle: titleName,
+        AWS_key: url,
+        AWS_bucket: 'study-buddy-dev',
+        id: pdfId,
+      };
 
-      try {
-        const response = await fetch(routes.newPdf(userId), {
-          method: 'POST',
-          body: formData,
+      const response = await fetch(routes.newPdf(userId), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (response.ok) {
+        const jsonResponse = await response.json();
+        console.log({ jsonResponse }); // All PDFs
+        queryClient.invalidateQueries({
+          queryKey: ['ChatSessionPDFS', userId],
         });
-
-        if (response.ok) {
-          setTitleName(null);
-          setPdfFile(null);
-          console.log('PDF uploaded successfully');
-          // Perform any other necessary actions
-        } else {
-          setTitleName(null);
-          setPdfFile(null);
-          console.error('PDF upload failed');
-        }
-      } catch (error) {
-        setTitleName(null);
-        setPdfFile(null);
-        console.error('Error Uploading PDF: ', error);
+        router.push(`/chat-session/${pdfId}`);
       }
     } catch (error) {
-      setTitleName(null);
-      setPdfFile(null);
-      console.error('Error processing PDF: ', error);
+      console.error('Error making new PDF: ', error);
     }
+
+    setTitleName(null);
+    setPdfFile(null);
+    return;
   };
 
   return (
     <div className='mb-[20px] flex flex-col'>
-      {/* <FilePond
-        server={{
-          process: '/api/upload',
-          fetch: null,
-          revert: null,
-        }}
-      /> */}
       <label
         className={`group relative mt-[20px] inline-flex transform cursor-pointer items-center justify-center rounded-[10px]
                bg-gray-100 px-[40px] py-[10px] text-center transition duration-300 ease-in-out

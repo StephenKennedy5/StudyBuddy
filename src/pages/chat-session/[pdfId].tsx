@@ -1,15 +1,16 @@
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { GetServerSideProps } from 'next';
 import { GetServerSidePropsContext } from 'next';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { getServerSession } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { ParsedUrlQuery } from 'querystring';
 import * as React from 'react';
 import { RefObject, useEffect, useRef, useState } from 'react';
-import SignOut from 'src/components/buttons/signOutButton';
+import SignOut from 'src/components/buttons/SignOutButton';
 import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
 import StudySessionMap from 'src/components/StudySessionDashboard';
@@ -28,9 +29,10 @@ interface PdfInfo {
   id: string;
   title: string;
   user_id: string;
-  pdf_info: string;
   upload_date: string;
   updated_date: string;
+  AWS_Key: string;
+  AWS_Bucket: string;
 }
 interface ChatLogsProps {
   id: string;
@@ -44,7 +46,7 @@ interface ChatLogsProps {
 interface ChatSessionProps {
   chatLogs: ChatLogsProps[];
   pdfId: string;
-  pdfName: PdfInfo;
+  pdfInfo: PdfInfo;
 }
 
 interface User {
@@ -60,7 +62,11 @@ interface Session {
   expires?: string;
 }
 
-function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
+const PdfViewer = dynamic(() => import('src/components/PdfViewer'), {
+  ssr: false,
+});
+
+function ChatSession({ chatLogs, pdfId, pdfInfo }: ChatSessionProps) {
   // const [showPdfs, setShowPdfs] = useState(true);
   const { data: session, status } = useSession();
   const userId = session?.user?.sub || '';
@@ -71,6 +77,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
   const [askingQuestion, setAskingQuestion] = useState(false);
   const isOnScreen = useOnScreen(chatContainerRef);
   const [displayError, setDisplayError] = useState(false);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const [newQuestion, setNewQuestion] = useState('');
   const [textareaRows, setTextareaRows] = useState(1);
@@ -98,7 +105,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
     isSuccess: isSuccessPDFs,
     data: dataPDFs,
   } = useQuery(
-    ['DashboardPDFS', userId],
+    ['ChatSessionPDFS', userId],
     async () => {
       const res = await fetch(routes.getPdfs(userId), {
         method: 'GET',
@@ -131,7 +138,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
     if (isSuccessPDFs && session?.user) {
       return (
         <div>
-          <PDFS pdfList={dataPDFs} />
+          <PDFS pdfList={dataPDFs} pdfFile={pdfFile} setPdfFile={setPdfFile} />
         </div>
       );
     }
@@ -232,7 +239,7 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
             </div>
           </div>
           <div className='mx-auto flex items-center p-[10px] text-[24px] font-bold leading-normal'>
-            Chatting with {pdfName.title}
+            Chatting with {pdfInfo.title}
           </div>
           <div>
             <SignOut />
@@ -240,20 +247,26 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
         </div>
       </div>
 
-      <div className='grid h-[calc(100vh-116px)] grid-cols-7'>
-        <div className='col-span-1 overflow-auto'>
-          <div
-            className={`h-full w-full overflow-auto border-r-[2px] border-gray-100 bg-white  transition-transform duration-300 `}
-          >
-            {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
+      <div
+        className={`grid h-[calc(100vh-116px)]  ${
+          showPdfs ? 'grid-cols-7' : 'grid-cols-6'
+        }`}
+      >
+        {showPdfs && (
+          <div className={` col-span-1 overflow-auto`}>
+            <div
+              className={`h-full w-full border-r-[2px] border-gray-100 bg-white  transition-transform duration-300 `}
+            >
+              {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
+            </div>
           </div>
-        </div>
-        <div className=' col-span-3 flex justify-center overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
-          {/* <div className='relative top-[10px]'>
+        )}
+        <div className=' col-span-3 overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
+          <div className='relative top-[10px]'>
             <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
-          </div> */}
-          <div className='mt-[100px] px-[30px] text-center text-[32px] leading-loose'>
-            Upload a PDF to start chatting with it
+          </div>
+          <div>
+            <PdfViewer pdfFile={pdfInfo.AWS_Key} />
           </div>
         </div>
 
@@ -305,7 +318,6 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
 
           <div className='   bg-white px-[20px] pb-[20px] pt-[20px]'>
             <div className='mx-auto max-w-[650px] items-center'>
-              {/* Use a container div to create the input box */}
               <div className='relative flex-1'>
                 <div className='flex w-full flex-row'>
                   <TextareaAutosize
@@ -332,8 +344,8 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
                       fill='none'
                       stroke='white'
                       strokeWidth='2'
-                      stroke-linecap='round'
-                      stroke-linejoin='round'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
                     >
                       <path d='M5 12h14M12 5l7 7-7 7' />
                     </svg>
@@ -358,8 +370,8 @@ function ChatSession({ chatLogs, pdfId, pdfName }: ChatSessionProps) {
               fill='none'
               stroke='white'
               strokeWidth='3'
-              stroke-linecap='round'
-              stroke-linejoin='round'
+              strokeLinecap='round'
+              strokeLinejoin='round'
             >
               <path d='M5 8l7 7 7-7' />
             </svg>
@@ -394,9 +406,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     if (!pdfTitle.ok) {
       throw new Error(`API request failed with status: ${pdfTitle.status}`);
     }
-    const pdfName: PdfInfo = await pdfTitle.json();
+    const pdfInfo: PdfInfo = await pdfTitle.json();
 
-    return { props: { chatLogs, pdfId, pdfName } };
+    // Fetch all Pdfs
+
+    return { props: { chatLogs, pdfId, pdfInfo } };
   } catch (error) {
     console.error('API request error:', error);
     return { props: { chatLogs: [] } };

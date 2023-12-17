@@ -2,18 +2,21 @@
 import { useRouter } from 'next/router';
 import NewPdf from 'src/components/newPdf';
 
-interface PDFProps {
-  pdfList: PDFListProps[];
-}
-
-interface PDFListProps {
+interface PdfListProps {
   id: string;
-  pdf_info: string;
   title: string;
-  upload_date: string;
   user_id: string;
+  upload_date: string;
+  updated_date: string;
+  AWS_Key: string;
+  AWS_Bucket: string;
 }
 
+interface PDFProps {
+  pdfList: PdfListProps[];
+  pdfFile: File | null;
+  setPdfFile: React.Dispatch<React.SetStateAction<File | null>>;
+}
 /*
 
   Edit So when PDF is clicked on it brings up chat session and view pdf
@@ -21,13 +24,13 @@ interface PDFListProps {
 
 */
 
-function PDFS({ pdfList }: PDFProps) {
+function PDFS({ pdfList, pdfFile, setPdfFile }: PDFProps) {
   const router = useRouter();
   return (
     <div className=' overflow-y-auto px-[10px]'>
       <div className=' cursor-pointer '>
         <div>
-          <NewPdf />
+          <NewPdf pdfFile={pdfFile} setPdfFile={setPdfFile} />
         </div>
         {pdfList.map(({ title, id }) => {
           return (

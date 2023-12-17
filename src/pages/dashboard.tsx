@@ -1,12 +1,14 @@
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import { useQuery } from '@tanstack/react-query';
+import { Discovery } from 'aws-sdk';
 import { GetServerSideProps } from 'next';
 import { GetServerSidePropsContext } from 'next';
+import dynamic from 'next/dynamic';
 import { getServerSession } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import * as React from 'react';
 import { useState } from 'react';
-import SignOut from 'src/components/buttons/signOutButton';
+import SignOut from 'src/components/buttons/SignOutButton';
 import NewPdf from 'src/components/newPdf';
 import PDFS from 'src/components/Pdfs';
 import StudySessionMap from 'src/components/StudySessionDashboard';
@@ -40,12 +42,17 @@ interface StudySessionArray {
   userPdfs: UserPdfsProps[];
 }
 
+const PdfViewer = dynamic(() => import('src/components/PdfViewer'), {
+  ssr: false,
+});
+
 function Dashboard() {
   // const [showPdfs, setShowPdfs] = useState(true);
   const { data: session, status } = useSession();
   const userId = session?.user?.sub;
   const userName = session?.user?.name as string;
   const { showPdfs, toggleShowPdfs } = usePdfs();
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const [newQuestion, setNewQuestion] = useState('');
   const [askingQuestion, setAskingQuestion] = useState(false);
@@ -91,7 +98,7 @@ function Dashboard() {
     if (isSuccessPDFs && session?.user) {
       return (
         <div>
-          <PDFS pdfList={dataPDFs} />
+          <PDFS pdfList={dataPDFs} pdfFile={pdfFile} setPdfFile={setPdfFile} />
         </div>
       );
     }
@@ -133,20 +140,35 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className='grid h-[calc(100vh-116px)] grid-cols-7'>
-        <div className='col-span-1 overflow-auto'>
-          <div
-            className={`h-full w-full border-r-[2px] border-gray-100 bg-white  transition-transform duration-300 `}
-          >
-            {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
+      <div
+        className={`grid h-[calc(100vh-116px)]  ${
+          showPdfs ? 'grid-cols-7' : 'grid-cols-6'
+        }`}
+      >
+        {showPdfs && (
+          <div className={` col-span-1 overflow-auto`}>
+            <div
+              className={`h-full w-full border-r-[2px] border-gray-100 bg-white  transition-transform duration-300 `}
+            >
+              {showPdfs ? <div>{renderResultsPDFS()}</div> : <div></div>}
+            </div>
           </div>
-        </div>
-        <div className=' col-span-3 flex justify-center overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
-          {/* <div className='relative top-[10px]'>
+        )}
+
+        <div className=' col-span-3  overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
+          <div className='relative top-[10px]'>
             <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
-          </div> */}
-          <div className='mt-[100px] px-[30px] text-center text-[32px] leading-loose'>
-            Upload a PDF to start chatting with it
+          </div>
+          <div>
+            {pdfFile === null ? (
+              <div className='mt-[100px] flex justify-center px-[30px] text-center text-[32px] leading-loose'>
+                Upload a PDF to start chatting with it
+              </div>
+            ) : (
+              <div>
+                <PdfViewer pdfFile={pdfFile} />
+              </div>
+            )}
           </div>
         </div>
 
@@ -160,10 +182,8 @@ function Dashboard() {
               <div></div>
             )}
           </div>
-
           <div className='bg-white px-[20px] pb-[20px] pt-[20px]'>
             <div className='mx-auto max-w-[650px] items-center'>
-              {/* Use a container div to create the input box */}
               <div className='relative flex-1'>
                 <div className='flex w-full flex-row'>
                   <TextareaAutosize
@@ -190,8 +210,8 @@ function Dashboard() {
                       fill='none'
                       stroke='white'
                       strokeWidth='2'
-                      stroke-linecap='round'
-                      stroke-linejoin='round'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
                     >
                       <path d='M5 12h14M12 5l7 7-7 7' />
                     </svg>

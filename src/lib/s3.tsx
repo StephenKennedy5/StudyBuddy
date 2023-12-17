@@ -1,5 +1,5 @@
 // Create S3 client
-import { S3Client } from '@aws-sdk/client-s3';
+import { ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 
 const awsKeyId = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID;
 if (!awsKeyId) {
@@ -23,3 +23,21 @@ export const s3Client = new S3Client({
     secretAccessKey: secretAccessKey,
   },
 });
+
+const testBucket = 'study-buddy-dev'; // Replace with your actual bucket name
+const testPrefix = 'pdfs-dev/';
+
+const testListObjectsCommand = new ListObjectsCommand({
+  Bucket: testBucket,
+  Prefix: testPrefix,
+});
+
+s3Client
+  .send(testListObjectsCommand)
+  .then((response) => {
+    console.log('S3 connection successful!');
+    console.log('Objects in the bucket:', response.Contents);
+  })
+  .catch((error) => {
+    console.error('Error connecting to S3:', error);
+  });

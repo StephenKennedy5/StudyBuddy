@@ -44,9 +44,49 @@ Clean up typescript errors Done
 fix too many connections bug Wont Occur
 
 Fix force to scroll down if view port is in view
-Create PDF display
+Create PDF display Done 
 
+Style PDF Display Leave for now
 
 Save PDF to S3
 Save URL to S3 in Database
 
+
+When PDF is uploaded bring to new chat sessions
+Have the pdf url be the pdf state and set state as prop for PdfViewer
+Fix input for pdf to send to PDFViewerComponent
+
+
+
+
+aws
+upload client to my server upload my server to aws
+
+aws
+Step 1 Check to make sure my client is connected
+Step 2 Create API Endpoint that sends PDF to Bucket
+Step 3 Upon sending to AWS Create New PDF INFO
+  user_id  | 3a46f0d5-e264-430b-a362-90f23bc85fee
+  s3_bucket | animepics-photos-dev (Name of Bucket)
+  s3_key    | result_photos/3a46f0d5-e264-430b-a362-90f23bc85fee/style1.png (String to Object in Buket)
+  name      | style1.png (User Facing Name)
+  id        | dd582e7a-cc14-4cf9-b23d-d10fa3bd56c2
+  created   | 2023-03-21 03:30:58.300433+00
+  updated   | 2023-03-21 03:30:58.300442+00
+Step 4 Create API Endpoint to Recieve from Bucket
+  - Recieve PDF back from aws to display
+Step 5
+  - Upond going to chat session display pdf and chat history
+Step 6
+  - Upon new upload reroute user to new chat session
+
+ On dashboard
+  If user has an input for PDF select display what the pdf looks like in middle section Done
+  when user selects submit upload pdf to s3 Done
+  when uploadToS3 give file name of UUID/{fileName}.pdf Done
+  send this to Create point in Database as aws aws_key Done
+  aws bucket is just name of bucket 
+  name is {fileName} (User Facing) Done
+
+Update PDF side when new pdf is added to pdf side bar Done
+readd hide and show pdfs
