@@ -2,20 +2,21 @@
 import { useRouter } from 'next/router';
 import NewPdf from 'src/components/newPdf';
 
+interface PdfListProps {
+  id: string;
+  title: string;
+  user_id: string;
+  upload_date: string;
+  updated_date: string;
+  AWS_Key: string;
+  AWS_Bucket: string;
+}
+
 interface PDFProps {
-  pdfList: PDFListProps[];
+  pdfList: PdfListProps[];
   pdfFile: File | null;
   setPdfFile: React.Dispatch<React.SetStateAction<File | null>>;
 }
-
-interface PDFListProps {
-  id: string;
-  pdf_info: string;
-  title: string;
-  upload_date: string;
-  user_id: string;
-}
-
 /*
 
   Edit So when PDF is clicked on it brings up chat session and view pdf

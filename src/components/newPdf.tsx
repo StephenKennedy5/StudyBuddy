@@ -1,4 +1,4 @@
-import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import { useS3Upload } from 'next-s3-upload';
@@ -22,13 +22,13 @@ function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
   const { uploadToS3 } = useS3Upload();
   const userId = session?.user?.sub;
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const handleFileChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     const { files } = event.target;
 
-    console.log(files);
     if (files && files[0]) {
       const fileName = files[0].name;
       const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, '');
@@ -64,7 +64,10 @@ function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
 
       if (response.ok) {
         const jsonResponse = await response.json();
-        console.log({ jsonResponse });
+        console.log({ jsonResponse }); // All PDFs
+        queryClient.invalidateQueries({
+          queryKey: ['ChatSessionPDFS', userId],
+        });
         router.push(`/chat-session/${pdfId}`);
       }
     } catch (error) {

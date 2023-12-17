@@ -1,5 +1,5 @@
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { GetServerSideProps } from 'next';
 import { GetServerSidePropsContext } from 'next';
@@ -105,7 +105,7 @@ function ChatSession({ chatLogs, pdfId, pdfInfo }: ChatSessionProps) {
     isSuccess: isSuccessPDFs,
     data: dataPDFs,
   } = useQuery(
-    ['DashboardPDFS', userId],
+    ['ChatSessionPDFS', userId],
     async () => {
       const res = await fetch(routes.getPdfs(userId), {
         method: 'GET',
@@ -137,7 +137,7 @@ function ChatSession({ chatLogs, pdfId, pdfInfo }: ChatSessionProps) {
     // session.user needs to exists for isSuccess to be true
     if (isSuccessPDFs && session?.user) {
       return (
-        <div onClick={() => console.log(pdfFile)}>
+        <div>
           <PDFS pdfList={dataPDFs} pdfFile={pdfFile} setPdfFile={setPdfFile} />
         </div>
       );
@@ -398,6 +398,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       throw new Error(`API request failed with status: ${pdfTitle.status}`);
     }
     const pdfInfo: PdfInfo = await pdfTitle.json();
+
+    // Fetch all Pdfs
 
     return { props: { chatLogs, pdfId, pdfInfo } };
   } catch (error) {

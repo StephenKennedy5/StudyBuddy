@@ -87,3 +87,6 @@ Step 6
   send this to Create point in Database as aws aws_key Done
   aws bucket is just name of bucket 
   name is {fileName} (User Facing) Done
+
+Update PDF side when new pdf is added to pdf side bar
+readd hide and show pdfs
