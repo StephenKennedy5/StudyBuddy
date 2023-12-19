@@ -12,7 +12,13 @@ export default async function getPdfFromS3(
     const pdfId = req.query.pdfId;
 
     const pdfInfo = await knex('pdfs').select().where('id', pdfId).first();
-    res.status(200).json(pdfInfo);
+
+    if (pdfInfo) {
+      const s3Url = `https://${pdfInfo.AWS_Bucket}.s3.us-east-1.amazonaws.com/${pdfInfo.AWS_Key}`;
+      res.status(200).json(s3Url);
+    } else {
+      res.status(404).json({ error: 'PDF not found' });
+    }
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'An error occurred' });

@@ -90,3 +90,12 @@ Step 6
 
 Update PDF side when new pdf is added to pdf side bar Done
 readd hide and show pdfs
+
+update database key to just be the post amazon url
+can make another column to be actual url
+
+create formdata to upload pdf to backend
+parse pdf in backend using fs and pdf2json
+save parse data as txt 
+convert to embeddings and send to vector database
+KNN vector database to use embeddings as part of chat message

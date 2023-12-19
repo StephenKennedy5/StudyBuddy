@@ -12,7 +12,7 @@ export default async function NewPdf(
 ) {
   try {
     const userId = req.query.userid;
-    const { pdfTitle, AWS_key, AWS_bucket, id } = req.body;
+    const { pdfTitle, AWS_key, AWS_bucket, id, AWS_url } = req.body;
 
     const newPdf = await knex('pdfs').insert([
       {
@@ -23,11 +23,12 @@ export default async function NewPdf(
         updated_date: new Date(),
         AWS_Key: AWS_key,
         AWS_Bucket: AWS_bucket,
+        AWS_url: AWS_url,
       },
     ]);
 
     const allPdfs = await knex('pdfs').select().where('user_id', userId);
-    res.status(200).json(allPdfs); // Change to a 204
+    res.status(200).json(allPdfs);
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'An error occurred' });

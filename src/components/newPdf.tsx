@@ -45,15 +45,20 @@ function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
     if (!titleName || !pdfFile) return;
 
     const { url } = await uploadToS3(pdfFile);
+    // Match For title Name
     const match = url.match(/\/next-s3-uploads\/([^\/]+)/);
     const pdfId = match ? match[1] : '';
+    // Match for aws key
+    const keyMatch = url.match(/next-s3-uploads\/[^/]+\/.+$/);
+    const aws_key = keyMatch ? keyMatch[0] : null;
 
     try {
       const requestBody = {
         pdfTitle: titleName,
-        AWS_key: url,
+        AWS_key: aws_key,
         AWS_bucket: 'study-buddy-dev',
         id: pdfId,
+        AWS_url: url,
       };
 
       const response = await fetch(routes.newPdf(userId), {

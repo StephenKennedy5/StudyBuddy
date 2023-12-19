@@ -47,6 +47,7 @@ interface ChatSessionProps {
   chatLogs: ChatLogsProps[];
   pdfId: string;
   pdfInfo: PdfInfo;
+  pdfS3Link: string;
 }
 
 interface User {
@@ -66,7 +67,12 @@ const PdfViewer = dynamic(() => import('src/components/PdfViewer'), {
   ssr: false,
 });
 
-function ChatSession({ chatLogs, pdfId, pdfInfo }: ChatSessionProps) {
+function ChatSession({
+  chatLogs,
+  pdfId,
+  pdfInfo,
+  pdfS3Link,
+}: ChatSessionProps) {
   // const [showPdfs, setShowPdfs] = useState(true);
   const { data: session, status } = useSession();
   const userId = session?.user?.sub || '';
@@ -88,6 +94,7 @@ function ChatSession({ chatLogs, pdfId, pdfInfo }: ChatSessionProps) {
   const baseTextStyle = 'text-[16px] leading-normal py-[20px]';
   const pdfsShownStyle = 'px-[30px]';
   const pdfsHiddenStyle = 'px-[150px]';
+  console.log(pdfS3Link);
 
   useEffect(() => {
     setChatMessages(chatLogs);
@@ -291,7 +298,7 @@ function ChatSession({ chatLogs, pdfId, pdfInfo }: ChatSessionProps) {
             <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
           </div>
           <div>
-            <PdfViewer pdfFile={pdfInfo.AWS_Key} />
+            <PdfViewer pdfFile={pdfS3Link} />
           </div>
         </div>
 
@@ -433,9 +440,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
     const pdfInfo: PdfInfo = await pdfTitle.json();
 
-    // Fetch all Pdfs
+    const pdfS3Url = await fetch(routes.getS3Link(userId, pdfId as string));
+    if (!pdfS3Url.ok) {
+      throw new Error(
+        `API request pdfS3Url failed with status: ${pdfS3Url.status}`
+      );
+    }
+    const pdfS3Link = await pdfS3Url.json();
 
-    return { props: { chatLogs, pdfId, pdfInfo } };
+    return { props: { chatLogs, pdfId, pdfInfo, pdfS3Link } };
   } catch (error) {
     console.error('API request error:', error);
     return { props: { chatLogs: [] } };

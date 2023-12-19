@@ -82,7 +82,7 @@ export const routes = {
   getPdfName(userId: string, pdfId: string): string {
     return `${baseUrl}/api/${userId}/chat-session/${pdfId}/getPdfName`;
   },
-  getPdfInfo(userId: string, pdfId: string): string {
+  getS3Link(userId: string, pdfId: string): string {
     return `${baseUrl}/api/${userId}/chat-session/${pdfId}/getPdfFromS3`;
   },
   uploadPdf(): string {
