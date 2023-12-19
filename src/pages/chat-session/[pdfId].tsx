@@ -99,6 +99,25 @@ function ChatSession({ chatLogs, pdfId, pdfInfo }: ChatSessionProps) {
     [pdfsHiddenStyle]: !showPdfs,
   });
 
+  const uploadPdf = async () => {
+    console.log('Call uploadPdf');
+
+    try {
+      console.log('IN TRY STATEMENT');
+      const pdfFormData = new FormData();
+      pdfFormData.append('pdfFile', 'public/pdfs/dummy.pdf');
+      const ping = await fetch(routes.uploadPdf(), {
+        method: 'Get',
+        credentials: fetchCreds as RequestCredentials,
+      });
+      if (!ping.ok) throw new Error('Failed to ping uploadPDF');
+      const body = await ping.json();
+      return body;
+    } catch (e) {
+      console.log('error on uploadPdf', e);
+    }
+  };
+
   const {
     isLoading: isLoadingPDFs,
     isError: isErrorPDFs,
@@ -138,6 +157,12 @@ function ChatSession({ chatLogs, pdfId, pdfInfo }: ChatSessionProps) {
     if (isSuccessPDFs && session?.user) {
       return (
         <div>
+          <div
+            onClick={() => uploadPdf()}
+            className='bg-mainBlue cursor-pointer p-[20px] text-white opacity-75'
+          >
+            Button
+          </div>
           <PDFS pdfList={dataPDFs} pdfFile={pdfFile} setPdfFile={setPdfFile} />
         </div>
       );
