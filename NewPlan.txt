@@ -1,101 +1,34 @@
-3 screen split
-left: List of PDFs
-Middle: PDF Viewer
-Right: ChatLogs
-
-PDF list stays the same as now
-Create New middle section
-  Restyle the spread of chat log with PDF Viewer
-Keep Chat Logs same
-  Restyle to match background of PDF Reader aka white backgrund with the darkbackgrund as bubbles
-
-Save PDFs in S3?
-Save chatlogs in postgres
-
-PDFS are given unique chatlog ID
-ChatLogs are linked using PDF ID
-
-Restructure database
-
-so study sessions are gone but by pdf now
-
-When Click on PDF have to open chat Logs and display PDF
-Change format of "study Session" to match new dashboard
+add to package.json
+"fastapi-dev" : "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --reload --port 8080",
+"next-dev": "next dev",
+"dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
 
 
-change styling of messaging to look like bubbles Done
-add a loading bubble that its typing back at you Done
+add to next.config.json 
+rewrites: async () => {
+    return [
+      {
+        source: "/api/:path*",
+        destination:
+          process.env.NODE_ENV === "development"
+            ? "http://127.0.0.1:8080/api/:path*"
+            : "/api/",
+      },
+      {
+        source: "/docs",
+        destination:
+          process.env.NODE_ENV === "development"
+            ? "http://127.0.0.1:8080/docs"
+            : "/api/docs",
+      },
+      {
+        source: "/openapi.json",
+        destination:
+          process.env.NODE_ENV === "development"
+            ? "http://127.0.0.1:8080/openapi.json"
+            : "/api/openapi.json",
+      },
+    ];
+  },
 
-Split the screen in 3 overflows Done
-
-update pdfs on latest change/newest message order Done
-
-Button the shows up when ask chat message is out of viewport Done
-Change textarea styling to have button within text area to submit question Done
-
-Change dashboard to match new styling Done
-
-Remove functionality from ask question here to just say please 
-upload a PDF to start chatting in chat area  Done
-
-
-Clean up typescript errors Done
-
-fix too many connections bug Wont Occur
-
-Fix force to scroll down if view port is in view
-Create PDF display Done 
-
-Style PDF Display Leave for now
-
-Save PDF to S3
-Save URL to S3 in Database
-
-
-When PDF is uploaded bring to new chat sessions
-Have the pdf url be the pdf state and set state as prop for PdfViewer
-Fix input for pdf to send to PDFViewerComponent
-
-
-
-
-aws
-upload client to my server upload my server to aws
-
-aws
-Step 1 Check to make sure my client is connected
-Step 2 Create API Endpoint that sends PDF to Bucket
-Step 3 Upon sending to AWS Create New PDF INFO
-  user_id  | 3a46f0d5-e264-430b-a362-90f23bc85fee
-  s3_bucket | animepics-photos-dev (Name of Bucket)
-  s3_key    | result_photos/3a46f0d5-e264-430b-a362-90f23bc85fee/style1.png (String to Object in Buket)
-  name      | style1.png (User Facing Name)
-  id        | dd582e7a-cc14-4cf9-b23d-d10fa3bd56c2
-  created   | 2023-03-21 03:30:58.300433+00
-  updated   | 2023-03-21 03:30:58.300442+00
-Step 4 Create API Endpoint to Recieve from Bucket
-  - Recieve PDF back from aws to display
-Step 5
-  - Upond going to chat session display pdf and chat history
-Step 6
-  - Upon new upload reroute user to new chat session
-
- On dashboard
-  If user has an input for PDF select display what the pdf looks like in middle section Done
-  when user selects submit upload pdf to s3 Done
-  when uploadToS3 give file name of UUID/{fileName}.pdf Done
-  send this to Create point in Database as aws aws_key Done
-  aws bucket is just name of bucket 
-  name is {fileName} (User Facing) Done
-
-Update PDF side when new pdf is added to pdf side bar Done
-readd hide and show pdfs
-
-update database key to just be the post amazon url
-can make another column to be actual url
-
-create formdata to upload pdf to backend
-parse pdf in backend using fs and pdf2json
-save parse data as txt 
-convert to embeddings and send to vector database
-KNN vector database to use embeddings as part of chat message
+requirements.txt will have which packages to pip install

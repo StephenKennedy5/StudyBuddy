@@ -54,6 +54,7 @@ function Dashboard() {
   const { showPdfs, toggleShowPdfs } = usePdfs();
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
+  // Combine the newQuestion, askingQuesiton, and chatMessagesState into 1 state
   const [newQuestion, setNewQuestion] = useState('');
   const [askingQuestion, setAskingQuestion] = useState(false);
   const [chatMessagesState, setChatMessages] = useState([]);
@@ -155,7 +156,7 @@ function Dashboard() {
           </div>
         )}
 
-        <div className=' col-span-3  overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
+        <div className='col-span-3 overflow-x-auto overflow-y-auto border-x-[2px] border-gray-100 bg-white px-[10px] py-[10px]'>
           <div className='relative top-[10px]'>
             <HidePdfs showPdfs={showPdfs} toggleShowPdfs={toggleShowPdfs} />
           </div>

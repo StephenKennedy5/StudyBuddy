@@ -94,7 +94,6 @@ function ChatSession({
   const baseTextStyle = 'text-[16px] leading-normal py-[20px]';
   const pdfsShownStyle = 'px-[30px]';
   const pdfsHiddenStyle = 'px-[150px]';
-  console.log(pdfS3Link);
 
   useEffect(() => {
     setChatMessages(chatLogs);
@@ -112,9 +111,11 @@ function ChatSession({
     try {
       console.log('IN TRY STATEMENT');
       const pdfFormData = new FormData();
-      pdfFormData.append('pdfFile', 'public/pdfs/dummy.pdf');
+      const pdfFileToUpload = URL.createObjectURL(pdfFile as File);
+      pdfFormData.append('pdfFile', pdfFileToUpload);
       const ping = await fetch(routes.uploadPdf(), {
-        method: 'Get',
+        method: 'POST',
+        body: pdfFormData,
         credentials: fetchCreds as RequestCredentials,
       });
       if (!ping.ok) throw new Error('Failed to ping uploadPDF');

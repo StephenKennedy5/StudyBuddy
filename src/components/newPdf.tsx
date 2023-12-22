@@ -15,7 +15,6 @@ interface NewPdfProps {
 
 function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
   const [titleName, setTitleName] = useState<string | null>(null);
-  // const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfProcessing, setPdfProcessing] = useState(false);
   const [pdfContent, setPdfContent] = useState('');
   const { data: session, status } = useSession();
