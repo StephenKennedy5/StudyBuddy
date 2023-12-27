@@ -47,13 +47,13 @@ const nextConfig = {
             ? 'http://127.0.0.1:8080/api/:path*'
             : '/api/fastapi',
       },
-      // {
-      //   source: '/docs',
-      //   destination:
-      //     process.env.NODE_ENV === 'development'
-      //       ? 'http://127.0.0.1:8080/docs'
-      //       : '/api/docs',
-      // },
+      {
+        source: '/docs',
+        destination:
+          process.env.NODE_ENV === 'development'
+            ? 'http://127.0.0.1:8080/docs'
+            : '/api/docs',
+      },
       // {
       //   source: '/openapi.json',
       //   destination:

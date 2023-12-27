@@ -3,3 +3,5 @@ uvicorn[standard]==0.23.2
 langchain==0.0.352
 PyMuPDF==1.23.8
 pypdf==3.17.3
+fastapi-cors==0.0.6
+pydantic==2.5.3

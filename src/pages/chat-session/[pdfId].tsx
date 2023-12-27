@@ -105,24 +105,40 @@ function ChatSession({
     [pdfsHiddenStyle]: !showPdfs,
   });
 
-  const uploadPdf = async () => {
-    console.log('Call uploadPdf');
-
+  const testFastApi = async () => {
+    console.log('Call testFastApi');
     try {
-      console.log('IN TRY STATEMENT');
-      const pdfFormData = new FormData();
-      const pdfFileToUpload = URL.createObjectURL(pdfFile as File);
-      pdfFormData.append('pdfFile', pdfFileToUpload);
-      const ping = await fetch(routes.uploadPdf(), {
-        method: 'POST',
-        body: pdfFormData,
+      const test = await fetch(routes.testRoute(), {
+        method: 'GET',
         credentials: fetchCreds as RequestCredentials,
       });
-      if (!ping.ok) throw new Error('Failed to ping uploadPDF');
-      const body = await ping.json();
-      return body;
+      const testBody = await test.json();
+      console.log(testBody);
     } catch (e) {
-      console.log('error on uploadPdf', e);
+      console.error('Error calling scrapePdf(): ', e);
+    }
+  };
+
+  const scrapePdf = async () => {
+    console.log('Calling Scrape Pdf');
+    console.log({ pdfId });
+    const pdfIdBody = {
+      id: pdfId,
+    };
+    try {
+      const scrape = await fetch(routes.scrapePdf(pdfId), {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pdfIdBody),
+        credentials: fetchCreds as RequestCredentials,
+      });
+      const scrapeData = await scrape.json();
+      console.log({ scrapeData });
+    } catch (e) {
+      console.error('Error for calling scraping pdf: ', e);
     }
   };
 
@@ -166,7 +182,7 @@ function ChatSession({
       return (
         <div>
           <div
-            onClick={() => uploadPdf()}
+            onClick={() => scrapePdf()}
             className='bg-mainBlue cursor-pointer p-[20px] text-white opacity-75'
           >
             Button

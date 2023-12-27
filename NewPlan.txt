@@ -1,34 +1,12 @@
-add to package.json
-"fastapi-dev" : "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --reload --port 8080",
-"next-dev": "next dev",
-"dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
+Connect python BE with Site
 
-
-add to next.config.json 
-rewrites: async () => {
-    return [
-      {
-        source: "/api/:path*",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8080/api/:path*"
-            : "/api/",
-      },
-      {
-        source: "/docs",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8080/docs"
-            : "/api/docs",
-      },
-      {
-        source: "/openapi.json",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8080/openapi.json"
-            : "/api/openapi.json",
-      },
-    ];
-  },
-
-requirements.txt will have which packages to pip install
+Done 1. Create Test route
+Done 2. Check to make sure route can be called
+3. create actual route
+4. Pass in s3 url to test if route can scrape
+5. connect fast api to database
+6. pass in pdf id 
+7. use pdf id to query database for s3 info
+8. use s3 info to scrape the pdf
+9. Store as txt file for now
+10. Create embeddings of the scraped pdf
