@@ -2,8 +2,11 @@ Connect python BE with Site
 
 Done 1. Create Test route
 Done 2. Check to make sure route can be called
-3. create actual route
-4. Pass in s3 url to test if route can scrape
+Done 3. create actual route
+Done 4. Pass in s3 url to test if route can scrape
+
+Convert aws_name,aws_key,aws_url all to lowercase in database
+
 5. connect fast api to database
 6. pass in pdf id 
 7. use pdf id to query database for s3 info

@@ -105,25 +105,11 @@ function ChatSession({
     [pdfsHiddenStyle]: !showPdfs,
   });
 
-  const testFastApi = async () => {
-    console.log('Call testFastApi');
-    try {
-      const test = await fetch(routes.testRoute(), {
-        method: 'GET',
-        credentials: fetchCreds as RequestCredentials,
-      });
-      const testBody = await test.json();
-      console.log(testBody);
-    } catch (e) {
-      console.error('Error calling scrapePdf(): ', e);
-    }
-  };
-
   const scrapePdf = async () => {
     console.log('Calling Scrape Pdf');
-    console.log({ pdfId });
+    console.log({ pdfS3Link });
     const pdfIdBody = {
-      id: pdfId,
+      id: pdfS3Link,
     };
     try {
       const scrape = await fetch(routes.scrapePdf(pdfId), {
