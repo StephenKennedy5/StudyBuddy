@@ -5,11 +5,11 @@ Done 2. Check to make sure route can be called
 Done 3. create actual route
 Done 4. Pass in s3 url to test if route can scrape
 
-Convert aws_name,aws_key,aws_url all to lowercase in database
+Done Convert aws_name,aws_key,aws_url all to lowercase in database
 
-5. connect fast api to database
-6. pass in pdf id 
-7. use pdf id to query database for s3 info
-8. use s3 info to scrape the pdf
+Done 5. connect fast api to database
+Done 6. pass in pdf id 
+Done 7. use pdf id to query database for s3 info
+Done 8. use s3 info to scrape the pdf
 9. Store as txt file for now
 10. Create embeddings of the scraped pdf

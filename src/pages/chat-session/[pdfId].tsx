@@ -107,9 +107,9 @@ function ChatSession({
 
   const scrapePdf = async () => {
     console.log('Calling Scrape Pdf');
-    console.log({ pdfS3Link });
+    console.log({ pdfId });
     const pdfIdBody = {
-      id: pdfS3Link,
+      id: pdfId,
     };
     try {
       const scrape = await fetch(routes.scrapePdf(pdfId), {

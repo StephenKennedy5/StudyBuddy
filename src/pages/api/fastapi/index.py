@@ -41,9 +41,9 @@ class PDF(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     upload_date = Column(DateTime, nullable=False)
     updated_date = Column(DateTime, nullable=False)
-    AWS_key = Column(Text, nullable=False)
-    AWS_bucket = Column(Text, nullable=False)
-    AWS_url = Column(Text)
+    aws_key = Column(Text, nullable=False)
+    aws_bucket = Column(Text, nullable=False)
+    aws_url = Column(Text)
 
     user = relationship("User", back_populates="pdfs")
     chat_messages = relationship("ChatMessage", back_populates="pdf")
@@ -98,17 +98,18 @@ class PdfId(BaseModel):
 @app.post("/api/fastapi/pdfScraper/scraper")
 def scraper(pdfId: PdfId):
     print("This is the pdfId: ", pdfId.id)
-    url = pdfId.id
+    pdf_record = db.query(PDF).filter(PDF.id == pdfId.id).first()
+    if pdf_record is None:
+        raise HTTPException(status_code=404, detail="PDF not found")
+    pdf_record_dic = pdf_record.__dict__
+    print(pdf_record_dic["id"])
+    print(pdf_record_dic["aws_url"])
+
+    url = pdf_record_dic["aws_url"]
     loader = PyMuPDFLoader(url)
     data = loader.load()
     page_contents = [page.page_content for page in data]
     output = " ".join(page_contents)
     format_output = output.replace("\n", " ")
-
-    user_id = "46a5814d-a0d2-45cb-bc4e-c358d907bdc8"
-    user_record = db.query(User).filter(User.id == user_id).first()
-    if user_record is None:
-        raise HTTPException(status_code=404, detail="PDF not found")
-    print(user_record)
 
     return {"message": format_output}
