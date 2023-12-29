@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from langchain.document_loaders import PyMuPDFLoader
+from langchain.text_splitter import CharacterTextSplitter
 from sqlalchemy import (
     create_engine,
     Column,
@@ -111,5 +112,21 @@ def scraper(pdfId: PdfId):
     page_contents = [page.page_content for page in data]
     output = " ".join(page_contents)
     format_output = output.replace("\n", " ")
+    print(format_output)
+    print(len(format_output))
+    text_splitter = CharacterTextSplitter(
+        separator=" ",
+        chunk_size=200,
+        chunk_overlap=20,
+        length_function=len,
+        is_separator_regex=False,
+    )
+    texts = text_splitter.create_documents([format_output])
+    print(texts)
+    print(texts[0])
+    print(len(texts))
+    # Loop through texts and send to embeddings
+
+    # Save embeddings to Vector Database
 
     return {"message": format_output}

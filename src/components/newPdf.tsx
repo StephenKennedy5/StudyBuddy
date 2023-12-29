@@ -54,10 +54,10 @@ function NewPdf({ pdfFile, setPdfFile }: NewPdfProps) {
     try {
       const requestBody = {
         pdfTitle: titleName,
-        AWS_key: aws_key,
-        AWS_bucket: 'study-buddy-dev',
+        aws_key: aws_key,
+        aws_bucket: 'study-buddy-dev',
         id: pdfId,
-        AWS_url: url,
+        aws_url: url,
       };
 
       const response = await fetch(routes.newPdf(userId), {

@@ -1,15 +1,10 @@
-Connect python BE with Site
+Chunk parsed string into 500 token bits
 
-Done 1. Create Test route
-Done 2. Check to make sure route can be called
-Done 3. create actual route
-Done 4. Pass in s3 url to test if route can scrape
+Done use langchain text splitter to split into chunks
 
-Done Convert aws_name,aws_key,aws_url all to lowercase in database
+send parsed strings to be embedded by api
+save embeddings in vector database
 
-Done 5. connect fast api to database
-Done 6. pass in pdf id 
-Done 7. use pdf id to query database for s3 info
-Done 8. use s3 info to scrape the pdf
-9. Store as txt file for now
-10. Create embeddings of the scraped pdf
+
+Save number of prompt tokens and completitions token 
+into database when using regular openAI API
