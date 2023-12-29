@@ -106,9 +106,9 @@ def scraper(pdfId: PdfId):
     format_output = output.replace("\n", " ")
 
     user_id = "46a5814d-a0d2-45cb-bc4e-c358d907bdc8"
-    pdf_record = db.query(PDF).filter(PDF.user_id == user_id).first()
-    if pdf_record is None:
+    user_record = db.query(User).filter(User.id == user_id).first()
+    if user_record is None:
         raise HTTPException(status_code=404, detail="PDF not found")
-    print(pdf_record)
+    print(user_record)
 
     return {"message": format_output}
