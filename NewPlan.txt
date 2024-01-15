@@ -3,8 +3,19 @@ Chunk parsed string into 500 token bits
 Done use langchain text splitter to split into chunks
 
 send parsed strings to be embedded by api
+Parsing done but need to set up database before creating embeddings
+
+set up fastAPI to be always connected to zilliz/milvus when app is running
+when app shuts down then disconnect from server
+
+Milvus database
+create milvus connection to docker db 
+create a different DB based on user signed in (Just for Dev)
+create schema of pdf data for collections
+collection for each different pdf 
 save embeddings in vector database
 
+User asks question query the collection related to the pdf
 
 Save number of prompt tokens and completitions token 
 into database when using regular openAI API
