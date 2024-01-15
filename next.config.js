@@ -38,6 +38,31 @@ const nextConfig = {
   env: {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   },
+  rewrites: async () => {
+    return [
+      {
+        source: '/api/fastapi/:path*',
+        destination:
+          process.env.NODE_ENV === 'development'
+            ? 'http://127.0.0.1:8080/api/:path*'
+            : '/api/fastapi',
+      },
+      {
+        source: '/docs',
+        destination:
+          process.env.NODE_ENV === 'development'
+            ? 'http://127.0.0.1:8080/docs'
+            : '/api/docs',
+      },
+      // {
+      //   source: '/openapi.json',
+      //   destination:
+      //     process.env.NODE_ENV === 'development'
+      //       ? 'http://127.0.0.1:8080/openapi.json'
+      //       : '/api/openapi.json',
+      // },
+    ];
+  },
 };
 
 module.exports = nextConfig;

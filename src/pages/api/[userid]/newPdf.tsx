@@ -12,7 +12,7 @@ export default async function NewPdf(
 ) {
   try {
     const userId = req.query.userid;
-    const { pdfTitle, AWS_key, AWS_bucket, id, AWS_url } = req.body;
+    const { pdfTitle, aws_key, aws_bucket, id, aws_url } = req.body;
 
     const newPdf = await knex('pdfs').insert([
       {
@@ -21,9 +21,9 @@ export default async function NewPdf(
         user_id: userId,
         upload_date: new Date(),
         updated_date: new Date(),
-        AWS_Key: AWS_key,
-        AWS_Bucket: AWS_bucket,
-        AWS_url: AWS_url,
+        aws_key: aws_key,
+        aws_bucket: aws_bucket,
+        aws_url: aws_url,
       },
     ]);
 

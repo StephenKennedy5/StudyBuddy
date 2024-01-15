@@ -1,39 +1,6 @@
-/* 
-
-    Index -> Login -> Dashboard
-
-    Dashboard will take GetStudySessions API Call and GET PDFs API call to populate dashboard
-
-    Dashboard will have Study Session ID ready to route to individual Study Session. 
-
-    On study Session Page User will get history of chat logs of convo
-
-
-    Create Routes that will be used in API Calls to gather info from the database
-
-    Get Study Sessions 
-        Takes
-            - Has UserID
-        Return
-            - Array of Dics of Study Sessions for particular User
-            [
-                {
-                    StudySession: Text
-                    Subject: Text
-                    chat_log_id: UUID
-                },
-                {
-                    StudySession: Text
-                    Subject: Text
-                    chat_log_id: UUID
-                }
-            ]
-
-
-*/
-
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const FETCH_CREDENTIALS = process.env.NEXT_PUBLIC_FETCH_CREDENTIALS;
+const fastApiUrl = process.env.NEXT_PUBLIC_FASTAPI_URL;
 
 if (!baseUrl) {
   throw new Error('NEXT_PUBLIC_BASE_URL env variable is needed');
@@ -41,6 +8,10 @@ if (!baseUrl) {
 
 if (!FETCH_CREDENTIALS) {
   throw new Error('need to define NEXT_PUBLIC_FETCH_CREDENTIALS');
+}
+
+if (!fastApiUrl) {
+  throw new Error('Need to define NEXT_PUBLIC_FASTAPI_URL');
 }
 
 export const fetchCreds = FETCH_CREDENTIALS || 'same-origin';
@@ -87,5 +58,11 @@ export const routes = {
   },
   uploadPdf(): string {
     return `${baseUrl}/api/upload`;
+  },
+  testRoute(): string {
+    return `${fastApiUrl}/api/fastapi/index`;
+  },
+  scrapePdf(pdfId: string) {
+    return `${fastApiUrl}/api/fastapi/pdfScraper/scraper`;
   },
 };

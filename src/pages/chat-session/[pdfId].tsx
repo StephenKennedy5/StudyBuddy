@@ -105,24 +105,26 @@ function ChatSession({
     [pdfsHiddenStyle]: !showPdfs,
   });
 
-  const uploadPdf = async () => {
-    console.log('Call uploadPdf');
-
+  const scrapePdf = async () => {
+    console.log('Calling Scrape Pdf');
+    console.log({ pdfId });
+    const pdfIdBody = {
+      id: pdfId,
+    };
     try {
-      console.log('IN TRY STATEMENT');
-      const pdfFormData = new FormData();
-      const pdfFileToUpload = URL.createObjectURL(pdfFile as File);
-      pdfFormData.append('pdfFile', pdfFileToUpload);
-      const ping = await fetch(routes.uploadPdf(), {
+      const scrape = await fetch(routes.scrapePdf(pdfId), {
         method: 'POST',
-        body: pdfFormData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pdfIdBody),
         credentials: fetchCreds as RequestCredentials,
       });
-      if (!ping.ok) throw new Error('Failed to ping uploadPDF');
-      const body = await ping.json();
-      return body;
+      const scrapeData = await scrape.json();
+      console.log({ scrapeData });
     } catch (e) {
-      console.log('error on uploadPdf', e);
+      console.error('Error for calling scraping pdf: ', e);
     }
   };
 
@@ -166,7 +168,7 @@ function ChatSession({
       return (
         <div>
           <div
-            onClick={() => uploadPdf()}
+            onClick={() => scrapePdf()}
             className='bg-mainBlue cursor-pointer p-[20px] text-white opacity-75'
           >
             Button

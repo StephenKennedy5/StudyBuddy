@@ -1,34 +1,21 @@
-add to package.json
-"fastapi-dev" : "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --reload --port 8080",
-"next-dev": "next dev",
-"dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
+Chunk parsed string into 500 token bits
 
+Done use langchain text splitter to split into chunks
 
-add to next.config.json 
-rewrites: async () => {
-    return [
-      {
-        source: "/api/:path*",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8080/api/:path*"
-            : "/api/",
-      },
-      {
-        source: "/docs",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8080/docs"
-            : "/api/docs",
-      },
-      {
-        source: "/openapi.json",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8080/openapi.json"
-            : "/api/openapi.json",
-      },
-    ];
-  },
+send parsed strings to be embedded by api
+Parsing done but need to set up database before creating embeddings
 
-requirements.txt will have which packages to pip install
+set up fastAPI to be always connected to zilliz/milvus when app is running
+when app shuts down then disconnect from server
+
+Milvus database
+create milvus connection to docker db 
+create a different DB based on user signed in (Just for Dev)
+create schema of pdf data for collections
+collection for each different pdf 
+save embeddings in vector database
+
+User asks question query the collection related to the pdf
+
+Save number of prompt tokens and completitions token 
+into database when using regular openAI API
