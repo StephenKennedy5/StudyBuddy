@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi import HTTPException
+from pymilvus import connections, Milvus
+
 
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -90,6 +92,12 @@ app.add_middleware(
 def hello_world():
     print("Hello World")
     return {"message": "Hello World"}
+
+
+@app.get("")
+def get_milvus_connection():
+    connections.connect(alias="milvus_default", host="localhost", port="19530")
+    return Milvus(alias="default_milvus")
 
 
 class PdfId(BaseModel):
