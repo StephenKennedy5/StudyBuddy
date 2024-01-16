@@ -10,6 +10,7 @@ from pymilvus import (
     CollectionSchema,
     DataType,
     Collection,
+    db,
 )
 
 
@@ -82,7 +83,7 @@ connection_url = "postgresql+psycopg2://stephen:buddydb@localhost:5432/studydb"
 
 engine = create_engine(connection_url, echo=False)
 
-db = scoped_session(sessionmaker(bind=engine))
+data_base = scoped_session(sessionmaker(bind=engine))
 
 origins = [
     "http://localhost",
@@ -98,10 +99,10 @@ app.add_middleware(
 )
 
 
-@app.get("/api/fastapi/index")
-def hello_world():
-    print("Hello World")
-    return {"message": "Hello World"}
+@app.get("/api/fastapi/health")
+def health():
+    print("Health")
+    return {"Index": "Health"}
 
 
 """
@@ -114,19 +115,30 @@ Creation of new Collectinos Steps
 """
 
 
+class DataBaseName(BaseModel):
+    database_name: str
+
+
 # User ID to be database name
-@app.get("/api/fastapi/createDatabase")
-def create_milvus_database():
-    return {"message": "create Database"}
+# At most 64 DBs
+@app.post("/api/fastapi/createDatabase")
+def create_milvus_database(database_name: DataBaseName):
+    conn = connections.connect(host="localhost", port="19530")
+    db_name = database_name.database_name
+    if db_name in db.list_database():
+        return {"Message": "Database already exists"}
+    db.create_database(db_name)
+    print(db.list_database())
+    return {"message": database_name}
 
 
-# PDF ID to become Alias
+# 2 PDF ID to become Alias
 @app.get("/api/fastapi/createCollections")
 def create_milvus_collection():
     return {"message": "create collection"}
 
 
-# insert embeddings into collection
+# 3 insert embeddings into collection
 @app.get("/api/fastapi/insertEmbeddings")
 def insert_embeddings():
     return {"message": "insert Embeddings"}
@@ -148,7 +160,7 @@ class PdfId(BaseModel):
 @app.post("/api/fastapi/pdfScraper/scraper")
 def scraper(pdfId: PdfId):
     print("This is the pdfId: ", pdfId.id)
-    pdf_record = db.query(PDF).filter(PDF.id == pdfId.id).first()
+    pdf_record = data_base.query(PDF).filter(PDF.id == pdfId.id).first()
     if pdf_record is None:
         raise HTTPException(status_code=404, detail="PDF not found")
     pdf_record_dic = pdf_record.__dict__
