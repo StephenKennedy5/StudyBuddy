@@ -126,6 +126,19 @@ function ChatSession({
     } catch (e) {
       console.error('Error for calling scraping pdf: ', e);
     }
+    console.log('Testing Milvus');
+    try {
+      const mil = await fetch(routes.getMilvusConnection(), {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: fetchCreds as RequestCredentials,
+      });
+    } catch (e) {
+      console.error('Error for calling getmilvusConnection: ', e);
+    }
   };
 
   const {
