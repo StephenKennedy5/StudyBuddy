@@ -15,6 +15,19 @@ create schema of pdf data for collections
 collection for each different pdf 
 save embeddings in vector database
 
+Plan
+Upon user sign in to dashboard create connection to database (Milvus Hello World called and worked)
+if first sign in then create database (worry about this later)
+if previous sign in connect to existing database (worry about this later)
+
+Upon user selecting a pdf to chat to (1)
+Connect to the specific pdf collection (1)
+When user ask question to chatbot query collection to give better response (2)
+
+if user upload pdf
+create new collection with embeddings from pdf
+go to flow of user ask question to chatbot 
+
 User asks question query the collection related to the pdf
 
 Save number of prompt tokens and completitions token 

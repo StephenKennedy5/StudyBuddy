@@ -65,4 +65,7 @@ export const routes = {
   scrapePdf(pdfId: string) {
     return `${fastApiUrl}/api/fastapi/pdfScraper/scraper`;
   },
+  getMilvusConnection() {
+    return `${fastApiUrl}/api/fastapi/connectMilvus`;
+  },
 };
