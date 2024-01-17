@@ -180,12 +180,6 @@ function ChatSession({
     if (isSuccessPDFs && session?.user) {
       return (
         <div>
-          <div
-            onClick={() => scrapePdf()}
-            className='bg-mainBlue cursor-pointer p-[20px] text-white opacity-75'
-          >
-            Button
-          </div>
           <PDFS pdfList={dataPDFs} pdfFile={pdfFile} setPdfFile={setPdfFile} />
         </div>
       );

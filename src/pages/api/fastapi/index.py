@@ -126,16 +126,78 @@ def create_milvus_database(database_name: DataBaseName):
     conn = connections.connect(host="localhost", port="19530")
     db_name = database_name.database_name
     if db_name in db.list_database():
+        print(conn)
         return {"Message": "Database already exists"}
     db.create_database(db_name)
     print(db.list_database())
+    print(conn)
+    connections.disconnect("default")
+
     return {"message": database_name}
 
 
-# 2 PDF ID to become Alias
-@app.get("/api/fastapi/createCollections")
-def create_milvus_collection():
-    return {"message": "create collection"}
+class CollectionNameParams(BaseModel):
+    collection_name: str
+    database_name: str
+
+
+"""
+SCHEMA
+PDF ID
+PDF Name
+pdf_length
+embeddings (openAI only does 1536 dim)
+embedding timestamp
+"""
+
+
+# 2 PDF ID to become Alias d
+@app.post("/api/fastapi/createCollections")
+def create_milvus_collection(collection_name_args: CollectionNameParams):
+    # Connect to database of the user
+    db_name = collection_name_args.database_name
+    collection_name = collection_name_args.collection_name
+    alias = "default"
+
+    # Check if db_exists and if collection with db_exist
+    try:
+        print("TRYING TO ESTABLISH CONNECITON")
+        conn = connections.connect(host="localhost", port="19530")
+        print("ESTABLISHED CONNECTION")
+    except Exception as e:
+        connections.disconnect(alias)
+        return {"Error": str(e)}
+
+    # Create Schema
+    schema_fields = [
+        FieldSchema(name="pdf_id", dtype=DataType.INT64, is_primary=True),
+        FieldSchema(name="pdf_name", dtype=DataType.VARCHAR, max_length=100),
+        FieldSchema(name="pdf_length", dtype=DataType.INT32),
+        FieldSchema(name="pdf_embeddings", dtype=DataType.FLOAT_VECTOR, dim=1536),
+        FieldSchema(name="pdf_embedding_timestamp", dtype=DataType.INT64),
+    ]
+
+    collection_schema = CollectionSchema(
+        schema_fields,
+        auto_id=False,
+    )
+
+    try:
+        # Create collection for the pdf id
+        create_collection = Collection(name=collection_name, schema=collection_schema)
+        print("Collection created successfully!")
+
+        # Print a list of all collections
+        print("List of all collections:")
+        print(conn.list_collections())
+    except Exception as e:
+        print(f"Error creating collection: {e}")
+
+    finally:
+        # Disconnect after performing operations
+        connections.disconnect(alias)
+
+    return {"message": collection_name_args}
 
 
 # 3 insert embeddings into collection
@@ -215,7 +277,6 @@ def hello_world_milvus():
     # Note: the `using` parameter of the following methods is default to "default".
     print(fmt.format("start connecting to Milvus"))
     connections.connect("default", host="localhost", port="19530")
-
     has = utility.has_collection("hello_milvus")
     print(f"Does collection hello_milvus exist in Milvus: {has}")
 
